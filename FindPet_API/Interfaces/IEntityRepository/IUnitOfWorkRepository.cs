@@ -8,6 +8,7 @@ public interface IUnitOfWorkRepository
 
     IOwnerRepository Owner { get; }
 
+
     IAdRepository Ad { get; }
     Task Save();
 }

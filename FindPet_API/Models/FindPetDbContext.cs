@@ -11,13 +11,18 @@ public class FindPetDbContext : DbContext
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<User>().UseTpcMappingStrategy();
         #region SetNullDeleteBehavior
 
+
+
+
+
         modelBuilder.Entity<Pet>()
-            .HasOne(x => x.Owner)
-            .WithMany(y => y.Pets)
-            .HasForeignKey(x => x.OwnerId)
-            .OnDelete(DeleteBehavior.Restrict); // Замените DeleteBehavior.Restrict на DeleteBehavior.SetNull
+                .HasOne(x => x.Owner)
+                .WithMany(y => y.Pets)
+                .HasForeignKey(x => x.OwnerId)
+                .OnDelete(DeleteBehavior.Restrict); // Замените DeleteBehavior.Restrict на DeleteBehavior.SetNull
 
         modelBuilder.Entity<Pet>()
             .HasOne(x => x.Finder)
@@ -47,6 +52,7 @@ public class FindPetDbContext : DbContext
     }
 
     public DbSet<Pet>? Pets { get; set; } = null!;
+    //public DbSet<User>? Users { get; set; } = null!;
 
     public DbSet<Ad>? Ads { get; set; } = null!;
 

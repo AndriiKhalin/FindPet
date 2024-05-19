@@ -10,7 +10,7 @@ public interface IAdRepository
 
     Task<Pet?> GetPetByAd(Guid adId);
 
-    Task<IUser> GetUserByAd(Guid adId);
+    Task<User> GetUserByAd(Guid adId);
 
     Task<bool> AdExistsAsync(Guid adId);
 

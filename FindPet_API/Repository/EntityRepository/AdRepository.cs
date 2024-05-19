@@ -26,7 +26,7 @@ public class AdRepository : BaseRepository<Ad>, IAdRepository
         return await GetByConditionAsync(x => x.Id == adId).Result.Include(x => x.Pet).Select(x => x.Pet).FirstOrDefaultAsync();
     }
 
-    public async Task<IUser> GetUserByAd(Guid adId)
+    public async Task<User> GetUserByAd(Guid adId)
     {
         return await GetByConditionAsync(x => x.Id == adId).Result.Include(x => x.User).Select(x => x.User).FirstOrDefaultAsync();
     }

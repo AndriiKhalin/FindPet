@@ -123,26 +123,26 @@ public class AdService : IAdService
         throw new NotImplementedException();
     }
 
-    //public async Task<Ad> CreateAdAsync(Guid petId, Guid userId, AdForCreateDto ad)
-    //{
-    //    if (petId == Guid.Empty || userId == Guid.Empty || ad == null)
-    //    {
-    //        _logger.LogError("Error");
-    //        throw new ArgumentNullException("Invalid petId,userId or ad object.");
-    //    }
+    public async Task<Ad> CreateAdAsync(Guid petId, Guid userId, AdForCreateDto ad)
+    {
+        if (petId == Guid.Empty || userId == Guid.Empty || ad == null)
+        {
+            _logger.LogError("Error");
+            throw new ArgumentNullException("Invalid petId,userId or ad object.");
+        }
 
-    //    var petEntity = await _unitOfWorkRep.Pet.GetPetAsync(petId);
-    //    //var userEntity = await _unitOfWorkRep.User.Get(petId);
+        var petEntity = await _unitOfWorkRep.Pet.GetPetAsync(petId);
+        var userEntity = await _unitOfWorkRep.User.Get(petId);
 
-    //    var transportMap = _mapper.Map<Transport>(transport);
-    //    transportMap.TransportCategoryId = categoryEntity.Id;
-    //    transportMap.ImgUrl = await _manageImage.UploadFileAsync(transport.ImgUrl); ;
-    //    transportMap.CreatedUpdatedAt = DateTime.UtcNow;
+        var transportMap = _mapper.Map<Transport>(transport);
+        transportMap.TransportCategoryId = categoryEntity.Id;
+        transportMap.ImgUrl = await _manageImage.UploadFileAsync(transport.ImgUrl); ;
+        transportMap.CreatedUpdatedAt = DateTime.UtcNow;
 
-    //    await _unitOfWorkRep.Transport.CreateTransport(transportMap);
+        await _unitOfWorkRep.Transport.CreateTransport(transportMap);
 
-    //    await _unitOfWorkRep.Save();
+        await _unitOfWorkRep.Save();
 
-    //    return transportMap;
-    //}
+        return transportMap;
+    }
 }

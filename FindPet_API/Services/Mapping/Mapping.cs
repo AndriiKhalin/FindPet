@@ -12,9 +12,9 @@ public class Mapping : Profile
 {
     public Mapping()
     {
-        CreateMap<IUser, UserDto>().ReverseMap();
-        CreateMap<IUser, UserForCreateDto>().ReverseMap();
-        CreateMap<IUser, UserForUpdateDto>().ReverseMap();
+        CreateMap<User, UserDto>().ReverseMap();
+        CreateMap<User, UserForCreateDto>().ReverseMap();
+        CreateMap<User, UserForUpdateDto>().ReverseMap();
 
         CreateMap<Owner, OwnerDto>().ReverseMap();
         CreateMap<Owner, OwnerForCreateDto>().ReverseMap();

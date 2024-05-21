@@ -2,21 +2,21 @@
 
 namespace Interfaces.IEntityRepository;
 
-public interface IAdRepository
+public interface IAdRepository : IBaseRepository<Ad>
 {
-    Task<IEnumerable<Ad>> GetAdsAsync();
+    Task<IEnumerable<Ad>> GetsAsync();
 
-    Task<Ad?> GetAdAsync(Guid adId);
+    Task<Ad?> GetAsync(Guid adId);
 
-    Task<Pet?> GetPetByAd(Guid adId);
+    //Task<Pet?> GetPetByAd(Guid adId);
 
-    Task<User> GetUserByAd(Guid adId);
+    //Task<User> GetUserByAd(Guid adId);
 
-    Task<bool> AdExistsAsync(Guid adId);
+    Task<bool> IsExistAsync(Guid adId);
 
-    Task DeleteAdAsync(Guid adId);
+    Task DeleteAsync(Guid adId);
 
-    Task UpdateAdAsync(Ad ad);
+    Task UpdateAsync(Ad ad);
 
-    Task CreateAdAsync(Ad ad);
+    Task CreateAsync(Ad ad);
 }

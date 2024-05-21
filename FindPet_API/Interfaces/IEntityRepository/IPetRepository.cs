@@ -3,25 +3,19 @@ using System.Security.Cryptography.Xml;
 
 namespace Interfaces.IEntityRepository;
 
-public interface IPetRepository
+public interface IPetRepository : IBaseRepository<Pet>
 {
-    Task<IEnumerable<Pet>> GetPetsAsync();
+    Task<IEnumerable<Pet>> GetsAsync();
 
-    Task<Pet?> GetPetAsync(Guid petId);
+    Task<Pet?> GetAsync(Guid petId);
 
-    Task<IEnumerable<Ad>?> GetAdsByPet(Guid petId);
+    Task<bool> IsExistAsync(Guid petId);
 
-    Task<Finder> GetFinderByPet(Guid petId);
+    Task<bool> IsExistAsync(string petName);
 
-    Task<Owner> GetOwnerByPet(Guid petId);
+    Task DeleteAsync(Guid petId);
 
-    Task<bool> PetExistsAsync(Guid petId);
+    Task UpdateAsync(Pet pet);
 
-    Task<bool> PetExistsAsync(string petName);
-
-    Task DeletePetAsync(Guid petId);
-
-    Task UpdatePetAsync(Pet pet);
-
-    Task CreatePetAsync(Pet pet);
+    Task CreateAsync(Pet pet);
 }

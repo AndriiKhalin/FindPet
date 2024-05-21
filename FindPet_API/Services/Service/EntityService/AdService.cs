@@ -11,13 +11,13 @@ namespace Services.Service.EntityService;
 
 public class AdService : IAdService
 {
-    private readonly IUnitOfWorkRepository _unitOfWorkRep;
+    private readonly IUnitOfWork _unitOfWorkRep;
     private readonly IMapper _mapper;
-    private readonly IManageImage<Pet> _manageImage;
+    private readonly IManageImage<Ad> _manageImage;
     private readonly ILoggerManager _logger;
 
 
-    public AdService(IUnitOfWorkRepository unitOfWorkRep, IMapper mapper, IManageImage<Pet> manageImage, ILoggerManager logger)
+    public AdService(IUnitOfWork unitOfWorkRep, IMapper mapper, IManageImage<Ad> manageImage, ILoggerManager logger)
     {
         _unitOfWorkRep = unitOfWorkRep;
         _mapper = mapper;
@@ -25,9 +25,9 @@ public class AdService : IAdService
         _logger = logger;
     }
 
-    public async Task<IEnumerable<Ad>> GetAdsAsync()
+    public Task<IEnumerable<Ad>> GetAdsAsync()
     {
-        return await _unitOfWorkRep.Ad.GetAdsAsync();
+        return _unitOfWorkRep.Ad.GetsAsync();
     }
 
     public async Task<Ad?> GetAdAsync(Guid adId)
@@ -38,32 +38,32 @@ public class AdService : IAdService
             throw new ArgumentNullException("Invalid ad Id");
         }
 
-        return await _unitOfWorkRep.Ad.GetAdAsync(adId);
+        return await _unitOfWorkRep.Ad.GetAsync(adId);
     }
 
-    public async Task<Pet?> GetPetByAd(Guid adId)
-    {
-        if (!await AdExistsAsync(adId))
-        {
-            _logger.LogError($"Ad with id: {adId}, hasn't been found in db.");
-            throw new ArgumentNullException("Invalid ad Id");
-        }
-        return await _unitOfWorkRep.Ad.GetPetByAd(adId);
-    }
+    //public async Task<Pet?> GetPetByAd(Guid adId)
+    //{
+    //    if (!await AdExistsAsync(adId))
+    //    {
+    //        _logger.LogError($"Ad with id: {adId}, hasn't been found in db.");
+    //        throw new ArgumentNullException("Invalid ad Id");
+    //    }
+    //    return await _unitOfWorkRep.Ad.GetPetByAd(adId);
+    //}
 
-    public async Task<User> GetUserByAd(Guid adId)
-    {
-        if (!await AdExistsAsync(adId))
-        {
-            _logger.LogError($"Ad with id: {adId}, hasn't been found in db.");
-            throw new ArgumentNullException("Invalid ad Id");
-        }
-        return await _unitOfWorkRep.Ad.GetUserByAd(adId);
-    }
+    //public async Task<User> GetUserByAd(Guid adId)
+    //{
+    //    if (!await AdExistsAsync(adId))
+    //    {
+    //        _logger.LogError($"Ad with id: {adId}, hasn't been found in db.");
+    //        throw new ArgumentNullException("Invalid ad Id");
+    //    }
+    //    return await _unitOfWorkRep.Ad.GetAsync(adId);
+    //}
 
     public async Task<bool> AdExistsAsync(Guid adId)
     {
-        return await _unitOfWorkRep.Ad.AdExistsAsync(adId);
+        return await _unitOfWorkRep.Ad.IsExistAsync(adId);
     }
 
     public async Task DeleteAdAsync(Guid adId)
@@ -78,7 +78,7 @@ public class AdService : IAdService
 
         _manageImage.DeleteFile(adEntityForDelete.Photo);
 
-        await _unitOfWorkRep.Ad.DeleteAdAsync(adId);
+        await _unitOfWorkRep.Ad.DeleteAsync(adId);
 
         await _unitOfWorkRep.Save();
     }
@@ -113,14 +113,9 @@ public class AdService : IAdService
 
         _mapper.Map(ad, adEntity);
 
-        await _unitOfWorkRep.Ad.UpdateAdAsync(adEntity);
+        await _unitOfWorkRep.Ad.UpdateAsync(adEntity);
 
         await _unitOfWorkRep.Save();
-    }
-
-    public Task<Ad> CreateAdAsync(Guid petId, Guid userId, AdForCreateDto ad)
-    {
-        throw new NotImplementedException();
     }
 
     public async Task<Ad> CreateAdAsync(Guid petId, Guid userId, AdForCreateDto ad)
@@ -131,18 +126,19 @@ public class AdService : IAdService
             throw new ArgumentNullException("Invalid petId,userId or ad object.");
         }
 
-        var petEntity = await _unitOfWorkRep.Pet.GetPetAsync(petId);
-        var userEntity = await _unitOfWorkRep.User.Get(petId);
+        var petEntity = await _unitOfWorkRep.Pet.GetAsync(petId);
+        var userEntity = await _unitOfWorkRep.User.GetAsync(userId);
 
-        var transportMap = _mapper.Map<Transport>(transport);
-        transportMap.TransportCategoryId = categoryEntity.Id;
-        transportMap.ImgUrl = await _manageImage.UploadFileAsync(transport.ImgUrl); ;
-        transportMap.CreatedUpdatedAt = DateTime.UtcNow;
+        var adMap = _mapper.Map<Ad>(ad);
+        adMap.UserId = userEntity.Id;
+        adMap.PetId = petEntity.Id;
+        adMap.Photo = await _manageImage.UploadFileAsync(ad.Photo); ;
+        adMap.Date = DateTime.UtcNow;
 
-        await _unitOfWorkRep.Transport.CreateTransport(transportMap);
+        await _unitOfWorkRep.Ad.CreateAsync(adMap);
 
         await _unitOfWorkRep.Save();
 
-        return transportMap;
+        return adMap;
     }
 }

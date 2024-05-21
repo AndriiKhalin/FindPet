@@ -10,12 +10,12 @@ using System.Security.Cryptography.Xml;
 namespace Services.Service.EntityService;
 public class PetService : IPetService
 {
-    private readonly IUnitOfWorkRepository _unitOfWorkRep;
+    private readonly IUnitOfWork _unitOfWorkRep;
     private readonly IMapper _mapper;
     private readonly IManageImage<Pet> _manageImage;
     private readonly ILoggerManager _logger;
 
-    public PetService(IUnitOfWorkRepository unitOfWorkRep, IMapper mapper, IManageImage<Pet> manageImage, ILoggerManager logger)
+    public PetService(IUnitOfWork unitOfWorkRep, IMapper mapper, IManageImage<Pet> manageImage, ILoggerManager logger)
     {
         _unitOfWorkRep = unitOfWorkRep;
         _mapper = mapper;
@@ -23,9 +23,9 @@ public class PetService : IPetService
         _logger = logger;
     }
 
-    public async Task<IEnumerable<Pet>> GetPetsAsync()
+    public Task<IEnumerable<Pet>> GetPetsAsync()
     {
-        return await _unitOfWorkRep.Pet.GetPetsAsync();
+        return _unitOfWorkRep.Pet.GetsAsync();
     }
 
     public async Task<Pet?> GetPetAsync(Guid petId)
@@ -36,50 +36,50 @@ public class PetService : IPetService
             throw new ArgumentNullException("Invalid pet Id");
         }
 
-        return await _unitOfWorkRep.Pet.GetPetAsync(petId);
+        return await _unitOfWorkRep.Pet.GetAsync(petId);
     }
 
-    public async Task<IEnumerable<Ad>?> GetAdsByPetAsync(Guid petId)
-    {
-        if (!await PetExistsAsync(petId))
-        {
-            _logger.LogError($"Pet with id: {petId}, hasn't been found in db.");
-            throw new ArgumentNullException("Invalid pet Id");
-        }
+    //public async Task<IEnumerable<Ad>?> GetAdsByPetAsync(Guid petId)
+    //{
+    //    if (!await PetExistsAsync(petId))
+    //    {
+    //        _logger.LogError($"Pet with id: {petId}, hasn't been found in db.");
+    //        throw new ArgumentNullException("Invalid pet Id");
+    //    }
 
-        return await _unitOfWorkRep.Pet.GetAdsByPet(petId);
-    }
+    //    return await _unitOfWorkRep.Pet.GetAdsByPet(petId);
+    //}
 
-    public async Task<Finder> GetFinderByPetAsync(Guid petId)
-    {
-        if (!await PetExistsAsync(petId))
-        {
-            _logger.LogError($"Pet with id: {petId}, hasn't been found in db.");
-            throw new ArgumentNullException("Invalid pet Id");
-        }
+    //public async Task<Finder> GetFinderByPetAsync(Guid petId)
+    //{
+    //    if (!await PetExistsAsync(petId))
+    //    {
+    //        _logger.LogError($"Pet with id: {petId}, hasn't been found in db.");
+    //        throw new ArgumentNullException("Invalid pet Id");
+    //    }
 
-        return await _unitOfWorkRep.Pet.GetFinderByPet(petId);
-    }
+    //    return await _unitOfWorkRep.Pet.GetFinderByPet(petId);
+    //}
 
-    public async Task<Owner> GetOwnerByPetAsync(Guid petId)
-    {
-        if (!await PetExistsAsync(petId))
-        {
-            _logger.LogError($"Pet with id: {petId}, hasn't been found in db.");
-            throw new ArgumentNullException("Invalid pet Id");
-        }
+    //public async Task<Owner> GetOwnerByPetAsync(Guid petId)
+    //{
+    //    if (!await PetExistsAsync(petId))
+    //    {
+    //        _logger.LogError($"Pet with id: {petId}, hasn't been found in db.");
+    //        throw new ArgumentNullException("Invalid pet Id");
+    //    }
 
-        return await _unitOfWorkRep.Pet.GetOwnerByPet(petId);
-    }
+    //    return await _unitOfWorkRep.Pet.GetOwnerByPet(petId);
+    //}
 
     public async Task<bool> PetExistsAsync(Guid petId)
     {
-        return await _unitOfWorkRep.Pet.PetExistsAsync(petId);
+        return await _unitOfWorkRep.Pet.IsExistAsync(petId);
     }
 
     public async Task<bool> PetExistsAsync(string petName)
     {
-        return await _unitOfWorkRep.Pet.PetExistsAsync(petName);
+        return await _unitOfWorkRep.Pet.IsExistAsync(petName);
     }
 
     public async Task DeletePetAsync(Guid petId)
@@ -94,7 +94,7 @@ public class PetService : IPetService
 
         _manageImage.DeleteFile(petEntityForDelete.Photo);
 
-        await _unitOfWorkRep.Pet.DeletePetAsync(petId);
+        await _unitOfWorkRep.Pet.DeleteAsync(petId);
 
         await _unitOfWorkRep.Save();
     }
@@ -128,35 +128,32 @@ public class PetService : IPetService
 
         _mapper.Map(pet, petEntity);
 
-        await _unitOfWorkRep.Pet.UpdatePetAsync(petEntity);
+        await _unitOfWorkRep.Pet.UpdateAsync(petEntity);
 
         await _unitOfWorkRep.Save();
     }
 
-    public Task<Pet> CreatePetAsync(Guid ownerId, Guid finderId, PetForCreateDto pet)
+
+    public async Task<Pet> CreatePetAsync(Guid ownerId, Guid finderId, PetForCreateDto pet)
     {
-        throw new NotImplementedException();
+        if (ownerId == Guid.Empty || finderId == Guid.Empty || pet == null)
+        {
+            _logger.LogError("Error");
+            throw new ArgumentNullException("Invalid ownerId,finderId or pet object.");
+        }
+
+        var ownerEntity = await _unitOfWorkRep.Owner.GetAsync(ownerId);
+        var finderEntity = await _unitOfWorkRep.Finder.GetAsync(finderId);
+
+        var petMap = _mapper.Map<Pet>(pet);
+        petMap.OwnerId = ownerEntity.Id;
+        petMap.FinderId = finderEntity.Id;
+        petMap.Photo = await _manageImage.UploadFileAsync(pet.Photo); ;
+
+        await _unitOfWorkRep.Pet.CreateAsync(petMap);
+
+        await _unitOfWorkRep.Save();
+
+        return petMap;
     }
-
-    //public async Task<Pet> CreatePetAsync(Guid ownerId, Guid finderId, PetForCreateDto pet)
-    //{
-    //    if (ownerId == Guid.Empty || finderId == Guid.Empty || pet == null)
-    //    {
-    //        _logger.LogError("Error");
-    //        throw new ArgumentNullException("Invalid ownerId,finderId or pet object.");
-    //    }
-
-    //    var ownerEntity = await _unitOfWorkRep..GetCategory(categoryId);
-
-    //    var transportMap = _mapper.Map<Transport>(transport);
-    //    transportMap.TransportCategoryId = categoryEntity.Id;
-    //    transportMap.ImgUrl = await _manageImage.UploadFileAsync(transport.ImgUrl); ;
-    //    transportMap.CreatedUpdatedAt = DateTime.UtcNow;
-
-    //    await _unitOfWorkRep.Transport.CreateTransport(transportMap);
-
-    //    await _unitOfWorkRep.Save();
-
-    //    return transportMap;
-    //}
 }

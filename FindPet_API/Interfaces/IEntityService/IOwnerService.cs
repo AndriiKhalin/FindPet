@@ -10,9 +10,9 @@ public interface IOwnerService
 
     Task<Owner?> GetOwnerAsync(Guid ownerId);
 
-    Task<IEnumerable<Ad>?> GetAdsByOwnerAsync(Guid ownerId);
+    //Task<IEnumerable<Ad>?> GetAdsByOwnerAsync(Guid ownerId);
 
-    Task<IEnumerable<Pet>?> GetPetsByOwnerAsync(Guid ownerId);
+    //Task<IEnumerable<Pet>?> GetPetsByOwnerAsync(Guid ownerId);
 
     Task<bool> OwnerExistsAsync(Guid ownerId);
 
@@ -22,5 +22,5 @@ public interface IOwnerService
 
     Task UpdateOwnerAsync(Guid ownerId, OwnerForUpdateDto owner);
 
-    Task CreateOwnerAsync(OwnerForCreateDto owner);
+    Task<Owner> CreateOwnerAsync(OwnerForCreateDto owner);
 }

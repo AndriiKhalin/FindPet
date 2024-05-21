@@ -1,6 +1,6 @@
 ﻿namespace Models.Entities;
 
-public class Ad
+public class Ad : BaseEntity
 {
     public Guid Id { get; set; }
     public Guid? PetId { get; set; }

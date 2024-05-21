@@ -1,16 +1,18 @@
-﻿//using Interfaces.IEntityService;
-//using Interfaces.IRepository;
-//using Microsoft.Extensions.DependencyInjection;
-//using Repository;
-//using Services.Service.EntityService;
+﻿using Interfaces.IEntityService;
 
-//namespace Services.Extensions.ServiceExtensions;
+using Microsoft.Extensions.DependencyInjection;
+using Repository;
+using Services.Service.EntityService;
 
-//public static class ServiceExtensions
-//{
-//    public static void ConfigureServices(this IServiceCollection services)
-//    {
-//        services.AddScoped<ITransportService, TransportService>();
-//        services.AddScoped<IUserService, UserService>();
-//    }
-//}
+namespace Services.Extensions.ServiceExtensions;
+
+public static class ServiceExtensions
+{
+    public static void ConfigureServices(this IServiceCollection services)
+    {
+        services.AddScoped<IPetService, PetService>();
+        services.AddScoped<IOwnerService, OwnerService>();
+        services.AddScoped<IFinderService, FinderService>();
+        services.AddScoped<IAdService, AdService>();
+    }
+}

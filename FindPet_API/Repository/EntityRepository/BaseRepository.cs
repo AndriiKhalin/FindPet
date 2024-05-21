@@ -1,61 +1,46 @@
-﻿using System.Linq.Expressions;
-using Interfaces.IEntityRepository;
+﻿using Interfaces.IEntityRepository;
 using Microsoft.EntityFrameworkCore;
+using Models.Entities;
 using Models;
 
 namespace Repository.EntityRepository;
 
-public abstract class BaseRepository<T> : IBaseRepository<T> where T : class
+public class BaseRepository<T> : HelperBaseRepository<T>, IBaseRepository<T> where T : BaseEntity
 {
     private readonly FindPetDbContext _context;
 
-    public BaseRepository(FindPetDbContext context)
+    public BaseRepository(FindPetDbContext context) : base(context)
     {
         _context = context;
     }
 
-    public async Task CreateAsync(T entity)
+    public async Task<IEnumerable<T>> GetsAsync()
     {
-        await _context.Set<T>().AddAsync(entity);
+        return await GetAllAsync().Result.ToListAsync();
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task<T?> GetAsync(Guid userId)
     {
-        var result = _context.Set<T>().FindAsync(id);
-        _context.Set<T>().Remove(result.Result);
+        return await GetByConditionAsync(x => x.Id == userId).Result.FirstOrDefaultAsync();
     }
 
-    public async Task<IQueryable<T>> GetByConditionAsync(Expression<Func<T, bool>> expression)
+    public async Task<bool> IsExistAsync(Guid userId)
     {
-        return _context.Set<T>().Where(expression).AsNoTracking();
+        return await ExistsAsync(x => x.Id == userId);
     }
 
-    public async Task<IQueryable<T>> GetAllAsync()
+    public async Task DeleteAsync(Guid entityId)
     {
-        return _context.Set<T>().AsNoTracking();
+        await DeleteAsync(entityId);
     }
 
     public async Task UpdateAsync(T entity)
     {
-        _context.Set<T>().Attach(entity);
-        _context.Set<T>().Entry(entity).State = EntityState.Modified;
-        _context.Set<T>().Update(entity);
+        await UpdateAsync(entity);
     }
 
-    //public Task<bool> Exists(Guid id)
-    //{
-    //    //return await _context.Set<T>().AnyAsync(x => x.Id == id);
-    //    return Task.FromResult(true);
-    //}
-
-    //public async Task<bool> Exists(string name)
-    //{
-    //    var entities = await _context.Set<T>().ToListAsync();
-    //    return entities.Any(x => x.GetType().GetProperties().Any(p => p.PropertyType == typeof(string) && (string)p.GetValue(x) == name));
-    //}
-
-    public Task<bool> ExistsAsync(Expression<Func<T, bool>> expression)
+    public async Task CreateAsync(T entity)
     {
-        return _context.Set<T>().AnyAsync(expression);
+        await CreateAsync(entity);
     }
 }

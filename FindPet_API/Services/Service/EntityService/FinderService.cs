@@ -11,12 +11,12 @@ namespace Services.Service.EntityService;
 
 public class FinderService : IFinderService
 {
-    private readonly IUnitOfWorkRepository _unitOfWorkRep;
+    private readonly IUnitOfWork _unitOfWorkRep;
     private readonly IMapper _mapper;
     private readonly IManageImage<Finder> _manageImage;
     private readonly ILoggerManager _logger;
 
-    public FinderService(IUnitOfWorkRepository unitOfWorkRep, IMapper mapper, IManageImage<Finder> manageImage, ILoggerManager logger)
+    public FinderService(IUnitOfWork unitOfWorkRep, IMapper mapper, IManageImage<Finder> manageImage, ILoggerManager logger)
     {
         _unitOfWorkRep = unitOfWorkRep;
         _mapper = mapper;
@@ -24,9 +24,9 @@ public class FinderService : IFinderService
         _logger = logger;
     }
 
-    public async Task<IEnumerable<Finder>> GetFindersAsync()
+    public Task<IEnumerable<Finder>> GetFindersAsync()
     {
-        return await _unitOfWorkRep.Finder.GetFindersAsync();
+        return _unitOfWorkRep.Finder.GetsAsync();
     }
 
     public async Task<Finder?> GetFinderAsync(Guid finderId)
@@ -37,39 +37,39 @@ public class FinderService : IFinderService
             throw new ArgumentNullException("Invalid finder Id");
         }
 
-        return await _unitOfWorkRep.Finder.GetFinderAsync(finderId);
+        return await _unitOfWorkRep.Finder.GetAsync(finderId);
     }
 
-    public async Task<IEnumerable<Ad>?> GetAdsByFinderAsync(Guid finderId)
-    {
-        if (!await FinderExistsAsync(finderId))
-        {
-            _logger.LogError($"Finder with id: {finderId}, hasn't been found in db.");
-            throw new ArgumentNullException("Invalid finder Id");
-        }
+    //public async Task<IEnumerable<Ad>?> GetAdsByFinderAsync(Guid finderId)
+    //{
+    //    if (!await FinderExistsAsync(finderId))
+    //    {
+    //        _logger.LogError($"Finder with id: {finderId}, hasn't been found in db.");
+    //        throw new ArgumentNullException("Invalid finder Id");
+    //    }
 
-        return await _unitOfWorkRep.Finder.GetAdsByFinder(finderId);
-    }
+    //    return await _unitOfWorkRep.Finder.GetAdsByFinder(finderId);
+    //}
 
-    public async Task<IEnumerable<Pet>?> GetPetsByFinderAsync(Guid finderId)
-    {
-        if (!await FinderExistsAsync(finderId))
-        {
-            _logger.LogError($"Finder with id: {finderId}, hasn't been found in db.");
-            throw new ArgumentNullException("Invalid finder Id");
-        }
+    //public async Task<IEnumerable<Pet>?> GetPetsByFinderAsync(Guid finderId)
+    //{
+    //    if (!await FinderExistsAsync(finderId))
+    //    {
+    //        _logger.LogError($"Finder with id: {finderId}, hasn't been found in db.");
+    //        throw new ArgumentNullException("Invalid finder Id");
+    //    }
 
-        return await _unitOfWorkRep.Finder.GetPetsByFinder(finderId);
-    }
+    //    return await _unitOfWorkRep.Finder.GetPetsByFinder(finderId);
+    //}
 
     public async Task<bool> FinderExistsAsync(Guid finderId)
     {
-        return await _unitOfWorkRep.Finder.FinderExistsAsync(finderId);
+        return await _unitOfWorkRep.Finder.IsExistAsync(finderId);
     }
 
     public async Task<bool> FinderExistsAsync(string finderFirstName)
     {
-        return await _unitOfWorkRep.Finder.FinderExistsAsync(finderFirstName);
+        return await _unitOfWorkRep.Finder.IsExistAsync(finderFirstName);
     }
 
     public async Task DeleteFinderAsync(Guid finderId)
@@ -84,7 +84,7 @@ public class FinderService : IFinderService
 
         _manageImage.DeleteFile(finderEntityForDelete.Photo);
 
-        await _unitOfWorkRep.Finder.DeleteFinderAsync(finderId);
+        await _unitOfWorkRep.Finder.DeleteAsync(finderId);
 
         await _unitOfWorkRep.Save();
     }
@@ -118,35 +118,29 @@ public class FinderService : IFinderService
 
         _mapper.Map(finder, finderEntity);
 
-        await _unitOfWorkRep.Finder.UpdateFinderAsync(finderEntity);
+        await _unitOfWorkRep.Finder.UpdateAsync(finderEntity);
 
         await _unitOfWorkRep.Save();
     }
 
-    public Task<Finder> CreateFinderAsync(FinderForCreateDto finder)
+
+    public async Task<Finder> CreateFinderAsync(FinderForCreateDto finder)
     {
-        throw new NotImplementedException();
+        if (finder == null)
+        {
+            _logger.LogError("Error");
+            throw new ArgumentNullException("Invalid  finder object.");
+        }
+
+        var finderMap = _mapper.Map<Finder>(finder);
+
+        finderMap.Photo = await _manageImage.UploadFileAsync(finder.Photo);
+
+
+        await _unitOfWorkRep.Finder.CreateAsync(finderMap);
+
+        await _unitOfWorkRep.Save();
+
+        return finderMap;
     }
-
-    //public async Task<Finder> CreateFinderAsync(FinderForCreateDto finder)
-    //{
-    //    if (finder == null)
-    //    {
-    //        _logger.LogError("Error");
-    //        throw new ArgumentNullException("Invalid  finder object.");
-    //    }
-
-    //    var ownerEntity = await _unitOfWorkRep..GetCategory(categoryId);
-
-    //    var transportMap = _mapper.Map<Transport>(transport);
-    //    transportMap.TransportCategoryId = categoryEntity.Id;
-    //    transportMap.ImgUrl = await _manageImage.UploadFileAsync(transport.ImgUrl); ;
-    //    transportMap.CreatedUpdatedAt = DateTime.UtcNow;
-
-    //    await _unitOfWorkRep.Transport.CreateTransport(transportMap);
-
-    //    await _unitOfWorkRep.Save();
-
-    //    return transportMap;
-    //}
 }

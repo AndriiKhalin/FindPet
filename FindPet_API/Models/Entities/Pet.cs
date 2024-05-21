@@ -1,6 +1,6 @@
 ﻿namespace Models.Entities;
 
-public class Pet
+public class Pet : BaseEntity
 {
     public Guid Id { get; set; }
     public string? Type { get; set; }

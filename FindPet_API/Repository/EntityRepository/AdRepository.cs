@@ -11,44 +11,63 @@ public class AdRepository : BaseRepository<Ad>, IAdRepository
     {
     }
 
-    public async Task<IEnumerable<Ad>> GetAdsAsync()
+    //public async Task<IEnumerable<Ad>> GetsAsync()
+    //{
+    //    return await GetAllAsync().Result.ToListAsync();
+    //}
+
+    //public async Task<Ad?> GetAsync(Guid adId)
+    //{
+    //    return await GetByConditionAsync(x => x.Id == adId).Result.FirstOrDefaultAsync();
+    //}
+
+    ////public async Task<Pet?> GetPetByAd(Guid adId)
+    ////{
+    ////    return await GetByConditionAsync(x => x.Id == adId).Result.Include(x => x.Pet).Select(x => x.Pet).FirstOrDefaultAsync();
+    ////}
+
+    ////public async Task<User> GetUserByAd(Guid adId)
+    ////{
+    ////    return await GetByConditionAsync(x => x.Id == adId).Result.Include(x => x.User).Select(x => x.User).FirstOrDefaultAsync();
+    ////}
+
+    //public async Task<bool> IsExistAsync(Guid adId)
+    //{
+    //    return await ExistsAsync(x => x.Id == adId);
+    //}
+
+    //public async Task DeleteAsync(Guid adId)
+    //{
+    //    await DeleteAsync(adId);
+    //}
+
+    //public async Task UpdateAsync(Ad ad)
+    //{
+    //    await UpdateAsync(ad);
+    //}
+
+    //public async Task CreateAsync(Ad ad)
+    //{
+    //    await CreateAsync(ad);
+
+    //}
+    public async Task<IEnumerable<Pet>> GetsAsync()
     {
-        return await GetAllAsync().Result.ToListAsync();
+        throw new NotImplementedException();
     }
 
-    public async Task<Ad?> GetAdAsync(Guid adId)
+    public async Task<Pet?> GetAsync(Guid entityId)
     {
-        return await GetByConditionAsync(x => x.Id == adId).Result.FirstOrDefaultAsync();
+        throw new NotImplementedException();
     }
 
-    public async Task<Pet?> GetPetByAd(Guid adId)
+    public async Task UpdateAsync(Pet entity)
     {
-        return await GetByConditionAsync(x => x.Id == adId).Result.Include(x => x.Pet).Select(x => x.Pet).FirstOrDefaultAsync();
+        throw new NotImplementedException();
     }
 
-    public async Task<User> GetUserByAd(Guid adId)
+    public async Task CreateAsync(Pet entity)
     {
-        return await GetByConditionAsync(x => x.Id == adId).Result.Include(x => x.User).Select(x => x.User).FirstOrDefaultAsync();
-    }
-
-    public async Task<bool> AdExistsAsync(Guid adId)
-    {
-        return await ExistsAsync(x => x.Id == adId);
-    }
-
-    public async Task DeleteAdAsync(Guid adId)
-    {
-        await DeleteAsync(adId);
-    }
-
-    public async Task UpdateAdAsync(Ad ad)
-    {
-        await UpdateAsync(ad);
-    }
-
-    public async Task CreateAdAsync(Ad ad)
-    {
-        await CreateAsync(ad);
-
+        throw new NotImplementedException();
     }
 }

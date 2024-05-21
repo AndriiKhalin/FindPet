@@ -10,11 +10,11 @@ public interface IPetService
 
     Task<Pet?> GetPetAsync(Guid petId);
 
-    Task<IEnumerable<Ad>?> GetAdsByPetAsync(Guid petId);
+    //Task<IEnumerable<Ad>?> GetAdsByPetAsync(Guid petId);
 
-    Task<Finder> GetFinderByPetAsync(Guid petId);
+    //Task<Finder> GetFinderByPetAsync(Guid petId);
 
-    Task<Owner> GetOwnerByPetAsync(Guid petId);
+    //Task<Owner> GetOwnerByPetAsync(Guid petId);
 
     Task<bool> PetExistsAsync(Guid petId);
 

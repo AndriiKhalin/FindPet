@@ -5,7 +5,7 @@ using Models.Entities;
 
 namespace Repository.EntityRepository;
 
-public class FinderRepository : BaseRepository<Finder>, IFinderRepository
+public class FinderRepository : BaseRepository<Finder>, IUserRepository<Finder>
 {
     private readonly FindPetDbContext _context;
 
@@ -14,48 +14,62 @@ public class FinderRepository : BaseRepository<Finder>, IFinderRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Finder>> GetFindersAsync()
+    //public async Task<IEnumerable<Finder>> GetsAsync()
+    //{
+    //    return await GetAllAsync().Result.ToListAsync();
+    //}
+
+    //public async Task<Finder?> GetAsync(Guid userId)
+    //{
+    //    return await GetByConditionAsync(x => x.Id == userId).Result.FirstOrDefaultAsync();
+    //}
+
+    ////public async Task<IEnumerable<Ad>?> GetAdsByOwner(Guid ownerId)
+    ////{
+    ////    return await GetByConditionAsync(x => x.Id == ownerId).Result.Include(x => x.Ads).SelectMany(x => x.Ads).ToListAsync();
+    ////}
+
+    ////public async Task<IEnumerable<Pet>?> GetPetsByOwner(Guid ownerId)
+    ////{
+    ////    return await GetByConditionAsync(x => x.Id == ownerId).Result.Include(x => x.Pets).SelectMany(x => x.Pets).ToListAsync();
+    ////}
+
+    //public async Task<bool> IsExistAsync(Guid userId)
+    //{
+    //    return await ExistsAsync(x => x.Id == userId);
+    //}
+
+    //public async Task<bool> IsExistAsync(string userFirstName)
+    //{
+    //    return await ExistsAsync(x => x.FirstName == userFirstName);
+    //}
+
+    //public async Task DeleteAsync(Guid userId)
+    //{
+    //    await DeleteAsync(userId);
+    //}
+
+    //public async Task UpdateAsync(User user)
+    //{
+    //    await UpdateAsync(user);
+    //}
+
+    //public async Task CreateAsync(User user)
+    //{
+    //    await CreateAsync(user);
+    //}
+    public async Task<bool> IsExistAsync(string userFirstName)
     {
-        return await GetAllAsync().Result.ToListAsync();
+        throw new NotImplementedException();
     }
 
-    public async Task<Finder?> GetFinderAsync(Guid finderId)
+    public async Task UpdateAsync(User user)
     {
-        return await GetByConditionAsync(x => x.Id == finderId).Result.FirstOrDefaultAsync();
+        throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<Ad>?> GetAdsByFinder(Guid finderId)
+    public async Task CreateAsync(User user)
     {
-        return await GetByConditionAsync(x => x.Id == finderId).Result.Include(x => x.Ads).SelectMany(x => x.Ads).ToListAsync();
-    }
-
-    public async Task<IEnumerable<Pet>?> GetPetsByFinder(Guid finderId)
-    {
-        return await GetByConditionAsync(x => x.Id == finderId).Result.Include(x => x.Pets).SelectMany(x => x.Pets).ToListAsync();
-    }
-
-    public async Task<bool> FinderExistsAsync(Guid finderId)
-    {
-        return await ExistsAsync(x => x.Id == finderId);
-    }
-
-    public async Task<bool> FinderExistsAsync(string finderFirstName)
-    {
-        return await ExistsAsync(x => x.FirstName == finderFirstName);
-    }
-
-    public async Task DeleteFinderAsync(Guid finderId)
-    {
-        await DeleteAsync(finderId);
-    }
-
-    public async Task UpdateFinderAsync(Finder finder)
-    {
-        await UpdateAsync(finder);
-    }
-
-    public async Task CreateFinderAsync(Finder finder)
-    {
-        await CreateAsync(finder);
+        throw new NotImplementedException();
     }
 }

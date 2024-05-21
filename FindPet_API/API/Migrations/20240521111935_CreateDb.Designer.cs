@@ -12,7 +12,7 @@ using Models;
 namespace API.Migrations
 {
     [DbContext(typeof(FindPetDbContext))]
-    [Migration("20240518084129_CreateDb")]
+    [Migration("20240521111935_CreateDb")]
     partial class CreateDb
     {
         /// <inheritdoc />

@@ -1,6 +1,6 @@
 ﻿namespace Models.Entities;
 
-public abstract class User
+public abstract class User : BaseEntity
 {
     public Guid Id { get; set; }
     public string? FirstName { get; set; }

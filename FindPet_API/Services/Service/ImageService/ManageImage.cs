@@ -65,7 +65,7 @@ public class ManageImage<T> : IManageImage<T> where T : class
     {
         var currentDirectory = Directory.GetCurrentDirectory();
         var projectRoot = Path.GetFullPath(Path.Combine(currentDirectory, "..", ".."));
-        var pathToImages = Path.Combine(projectRoot, @"RentShop_UI\src\assets\");
+        var pathToImages = Path.Combine(projectRoot, @"FindPet_UI\src\assets\");
 
         return pathToImages;
     }

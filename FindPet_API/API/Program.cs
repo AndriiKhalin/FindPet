@@ -1,13 +1,26 @@
 using Models.SeedData;
 using NLog;
 using Services.Extensions.ServiceExtensions;
+using Services.Mapping;
 
 var builder = WebApplication.CreateBuilder(args);
 LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
 
 
 // Add services to the container.
+builder.Services.ConfigureLoggerService();
+builder.Services.ConfigureCors();
+builder.Services.ConfigureIISIntegration();
 builder.Services.ConfigureMySqlContext(builder.Configuration);
+builder.Services.ConfigureRepository();
+builder.Services.ConfigureServices();
+builder.Services.ConfigureManageImage();
+builder.Services.AddAutoMapper(typeof(Mapping));
+builder.Services.Configure_FileProvider();
+builder.Services.AddLogging(logging =>
+{
+    logging.AddConsole();
+});
 
 
 
@@ -27,12 +40,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+
 app.UseStaticFiles();
-//app.UseCustomStaticFiles();
+app.UseCustomStaticFiles();
 app.UseCors("CorsPolicy");
 
 app.UseAuthorization();
 
 app.MapControllers();
+
 app.Seed();
+app.OpenLogFile();
+
 app.Run();

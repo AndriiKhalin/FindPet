@@ -9,9 +9,9 @@ public interface IFinderService
 
     Task<Finder?> GetFinderAsync(Guid finderId);
 
-    Task<IEnumerable<Ad>?> GetAdsByFinderAsync(Guid finderId);
+    //Task<IEnumerable<Ad>?> GetAdsByFinderAsync(Guid finderId);
 
-    Task<IEnumerable<Pet>?> GetPetsByFinderAsync(Guid finderId);
+    //Task<IEnumerable<Pet>?> GetPetsByFinderAsync(Guid finderId);
 
     Task<bool> FinderExistsAsync(Guid finderId);
 

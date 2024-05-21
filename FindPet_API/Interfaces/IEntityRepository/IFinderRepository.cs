@@ -2,23 +2,23 @@
 
 namespace Interfaces.IEntityRepository;
 
-public interface IFinderRepository
-{
-    Task<IEnumerable<Finder>> GetFindersAsync();
+//public interface IFinderRepository
+//{
+//    Task<IEnumerable<Finder>> GetFindersAsync();
 
-    Task<Finder?> GetFinderAsync(Guid finderId);
+//    Task<Finder?> GetFinderAsync(Guid finderId);
 
-    Task<IEnumerable<Ad>?> GetAdsByFinder(Guid finderId);
+//    Task<IEnumerable<Ad>?> GetAdsByFinder(Guid finderId);
 
-    Task<IEnumerable<Pet>?> GetPetsByFinder(Guid finderId);
+//    Task<IEnumerable<Pet>?> GetPetsByFinder(Guid finderId);
 
-    Task<bool> FinderExistsAsync(Guid finderId);
+//    Task<bool> FinderExistsAsync(Guid finderId);
 
-    Task<bool> FinderExistsAsync(string finderFirstName);
+//    Task<bool> FinderExistsAsync(string finderFirstName);
 
-    Task DeleteFinderAsync(Guid finderId);
+//    Task DeleteFinderAsync(Guid finderId);
 
-    Task UpdateFinderAsync(Finder finder);
+//    Task UpdateFinderAsync(Finder finder);
 
-    Task CreateFinderAsync(Finder finder);
-}
+//    Task CreateFinderAsync(Finder finder);
+//}

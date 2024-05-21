@@ -11,12 +11,12 @@ namespace Services.Service.EntityService;
 
 public class OwnerService : IOwnerService
 {
-    private readonly IUnitOfWorkRepository _unitOfWorkRep;
+    private readonly IUnitOfWork _unitOfWorkRep;
     private readonly IMapper _mapper;
-    private readonly IManageImage<Finder> _manageImage;
+    private readonly IManageImage<Owner> _manageImage;
     private readonly ILoggerManager _logger;
 
-    public OwnerService(IUnitOfWorkRepository unitOfWorkRep, IMapper mapper, IManageImage<Finder> manageImage, ILoggerManager logger)
+    public OwnerService(IUnitOfWork unitOfWorkRep, IMapper mapper, IManageImage<Owner> manageImage, ILoggerManager logger)
     {
         _unitOfWorkRep = unitOfWorkRep;
         _mapper = mapper;
@@ -24,9 +24,9 @@ public class OwnerService : IOwnerService
         _logger = logger;
     }
 
-    public async Task<IEnumerable<Owner>> GetOwnersAsync()
+    public Task<IEnumerable<Owner>> GetOwnersAsync()
     {
-        return await _unitOfWorkRep.Owner.GetOwnersAsync();
+        return _unitOfWorkRep.Owner.GetsAsync();
     }
 
     public async Task<Owner?> GetOwnerAsync(Guid ownerId)
@@ -37,39 +37,39 @@ public class OwnerService : IOwnerService
             throw new ArgumentNullException("Invalid owner Id");
         }
 
-        return await _unitOfWorkRep.Owner.GetOwnerAsync(ownerId);
+        return await _unitOfWorkRep.Owner.GetAsync(ownerId);
     }
 
-    public async Task<IEnumerable<Ad>?> GetAdsByOwnerAsync(Guid ownerId)
-    {
-        if (!await OwnerExistsAsync(ownerId))
-        {
-            _logger.LogError($"Owner with id: {ownerId}, hasn't been found in db.");
-            throw new ArgumentNullException("Invalid owner Id");
-        }
+    //public async Task<IEnumerable<Ad>?> GetAdsByOwnerAsync(Guid ownerId)
+    //{
+    //    if (!await OwnerExistsAsync(ownerId))
+    //    {
+    //        _logger.LogError($"Owner with id: {ownerId}, hasn't been found in db.");
+    //        throw new ArgumentNullException("Invalid owner Id");
+    //    }
 
-        return await _unitOfWorkRep.Owner.GetAdsByOwner(ownerId);
-    }
+    //    return await _unitOfWorkRep.Owner.GetAdsByOwner(ownerId);
+    //}
 
-    public async Task<IEnumerable<Pet>?> GetPetsByOwnerAsync(Guid ownerId)
-    {
-        if (!await OwnerExistsAsync(ownerId))
-        {
-            _logger.LogError($"Owner with id: {ownerId}, hasn't been found in db.");
-            throw new ArgumentNullException("Invalid owner Id");
-        }
+    //public async Task<IEnumerable<Pet>?> GetPetsByOwnerAsync(Guid ownerId)
+    //{
+    //    if (!await OwnerExistsAsync(ownerId))
+    //    {
+    //        _logger.LogError($"Owner with id: {ownerId}, hasn't been found in db.");
+    //        throw new ArgumentNullException("Invalid owner Id");
+    //    }
 
-        return await _unitOfWorkRep.Owner.GetPetsByOwner(ownerId);
-    }
+    //    return await _unitOfWorkRep.Owner.GetPetsByOwner(ownerId);
+    //}
 
     public async Task<bool> OwnerExistsAsync(Guid ownerId)
     {
-        return await _unitOfWorkRep.Finder.FinderExistsAsync(ownerId);
+        return await _unitOfWorkRep.Owner.IsExistAsync(ownerId);
     }
 
     public async Task<bool> OwnerExistsAsync(string ownerFirstName)
     {
-        return await _unitOfWorkRep.Finder.FinderExistsAsync(ownerFirstName);
+        return await _unitOfWorkRep.Owner.IsExistAsync(ownerFirstName);
     }
 
     public async Task DeleteOwnerAsync(Guid ownerId)
@@ -84,7 +84,7 @@ public class OwnerService : IOwnerService
 
         _manageImage.DeleteFile(ownerEntityForDelete.Photo);
 
-        await _unitOfWorkRep.Owner.DeleteOwnerAsync(ownerId);
+        await _unitOfWorkRep.Owner.DeleteAsync(ownerId);
 
         await _unitOfWorkRep.Save();
     }
@@ -119,35 +119,30 @@ public class OwnerService : IOwnerService
 
         _mapper.Map(owner, ownerEntity);
 
-        await _unitOfWorkRep.Owner.UpdateOwnerAsync(ownerEntity);
+        await _unitOfWorkRep.Owner.UpdateAsync(ownerEntity);
 
         await _unitOfWorkRep.Save();
     }
 
-    public Task CreateOwnerAsync(OwnerForCreateDto owner)
+
+
+    public async Task<Owner> CreateOwnerAsync(OwnerForCreateDto owner)
     {
-        throw new NotImplementedException();
+        if (owner == null)
+        {
+            _logger.LogError("Error");
+            throw new ArgumentNullException("Invalid  owner object.");
+        }
+
+        var ownerMap = _mapper.Map<Owner>(owner);
+
+        ownerMap.Photo = await _manageImage.UploadFileAsync(owner.Photo);
+
+
+        await _unitOfWorkRep.Owner.CreateAsync(ownerMap);
+
+        await _unitOfWorkRep.Save();
+
+        return ownerMap;
     }
-
-    //public async Task CreateOwnerAsync(OwnerForCreateDto owner)
-    //{
-    //    if (owner == null)
-    //    {
-    //        _logger.LogError("Error");
-    //        throw new ArgumentNullException("Invalid  owner object.");
-    //    }
-
-    //    var ownerEntity = await _unitOfWorkRep..GetCategory(categoryId);
-
-    //    var transportMap = _mapper.Map<Transport>(transport);
-    //    transportMap.TransportCategoryId = categoryEntity.Id;
-    //    transportMap.ImgUrl = await _manageImage.UploadFileAsync(transport.ImgUrl); ;
-    //    transportMap.CreatedUpdatedAt = DateTime.UtcNow;
-
-    //    await _unitOfWorkRep.Transport.CreateTransport(transportMap);
-
-    //    await _unitOfWorkRep.Save();
-
-    //    return transportMap;
-    //}
 }

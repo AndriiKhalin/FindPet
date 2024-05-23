@@ -2,7 +2,7 @@
 
 namespace Models.Entities;
 
-//[Table("Finder")]
+[Table("Finders")]
 public class Finder : User
 {
     public DateTime? FindPet { get; set; }

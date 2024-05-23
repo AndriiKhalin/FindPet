@@ -45,10 +45,10 @@ public class PetRepository : BaseRepository<Pet>, IPetRepository
     //    return await ExistsAsync(x => x.Id == petId);
     //}
 
-    //public async Task<bool> IsExistAsync(string petName)
-    //{
-    //    return await ExistsAsync(x => x.Nickname == petName);
-    //}
+    public async Task<bool> IsExistAsync(string petName)
+    {
+        return await IsExistAsync(x => x.Nickname == petName);
+    }
 
     //public async Task DeleteAsync(Guid petId)
     //{
@@ -64,8 +64,4 @@ public class PetRepository : BaseRepository<Pet>, IPetRepository
     //{
     //    await CreateAsync(pet);
     //}
-    public Task<bool> IsExistAsync(string petName)
-    {
-        throw new NotImplementedException();
-    }
 }

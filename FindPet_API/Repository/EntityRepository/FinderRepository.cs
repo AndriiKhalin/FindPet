@@ -39,10 +39,10 @@ public class FinderRepository : BaseRepository<Finder>, IUserRepository<Finder>
     //    return await ExistsAsync(x => x.Id == userId);
     //}
 
-    //public async Task<bool> IsExistAsync(string userFirstName)
-    //{
-    //    return await ExistsAsync(x => x.FirstName == userFirstName);
-    //}
+    public async Task<bool> IsExistAsync(string userFirstName)
+    {
+        return await IsExistAsync(x => x.FirstName == userFirstName);
+    }
 
     //public async Task DeleteAsync(Guid userId)
     //{
@@ -58,18 +58,5 @@ public class FinderRepository : BaseRepository<Finder>, IUserRepository<Finder>
     //{
     //    await CreateAsync(user);
     //}
-    public async Task<bool> IsExistAsync(string userFirstName)
-    {
-        throw new NotImplementedException();
-    }
 
-    public async Task UpdateAsync(User user)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task CreateAsync(User user)
-    {
-        throw new NotImplementedException();
-    }
 }

@@ -11,7 +11,7 @@ public class ManageImage<T> : IManageImage<T> where T : class
     {
         ImgPath = GetPath();
     }
-    public void DeleteFile(string filePath)
+    public void DeletePhoto(string filePath)
     {
         if (File.Exists(filePath))
         {
@@ -35,7 +35,7 @@ public class ManageImage<T> : IManageImage<T> where T : class
         }
     }
 
-    public async Task<string> UploadFileAsync(IFormFile file)
+    public async Task<string> UploadPhotoAsync(IFormFile file, Guid id)
     {
 
         if (file == null || file.Length == 0)
@@ -44,7 +44,7 @@ public class ManageImage<T> : IManageImage<T> where T : class
         }
 
         var rootImg = $"\\Stuff\\Images\\Upload\\{typeof(T).Name}\\";
-        var fileName = GetUniqueFileName(file.FileName);
+        var fileName = GetUniqueFileName(file.FileName, id);
         var directoryPath = ImgPath + rootImg;
 
         if (!Directory.Exists(directoryPath))
@@ -69,11 +69,11 @@ public class ManageImage<T> : IManageImage<T> where T : class
 
         return pathToImages;
     }
-    public string GetUniqueFileName(string fileName)
+    public string GetUniqueFileName(string fileName, Guid id)
     {
         var extension = Path.GetExtension(fileName);
         var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
-        var newFileName = $"{fileNameWithoutExtension}({Guid.NewGuid()}){extension}";
+        var newFileName = $"{fileNameWithoutExtension}({id}){extension}";
         return newFileName;
     }
 

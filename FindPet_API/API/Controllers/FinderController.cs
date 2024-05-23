@@ -24,7 +24,7 @@ namespace API.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<FinderDto>))]
         public async Task<IActionResult> GetFinders()
         {
-            var finders = _mapper.Map<IEnumerable<FinderDto>>(await _finderService.GetFindersAsync());
+            var finders = _mapper.Map<IEnumerable<FinderDto>>(_finderService.GetFinders());
 
             return Ok(finders);
         }

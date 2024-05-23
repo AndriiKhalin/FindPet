@@ -12,7 +12,7 @@ using Models;
 namespace API.Migrations
 {
     [DbContext(typeof(FindPetDbContext))]
-    [Migration("20240521111935_CreateDb")]
+    [Migration("20240523111040_CreateDb")]
     partial class CreateDb
     {
         /// <inheritdoc />
@@ -31,7 +31,7 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("Date")
+                    b.Property<DateTime?>("DateCreateUpdate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -69,6 +69,9 @@ namespace API.Migrations
 
                     b.Property<string>("Color")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DateCreateUpdate")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("FinderId")
                         .HasColumnType("uniqueidentifier");
@@ -127,6 +130,9 @@ namespace API.Migrations
                     b.Property<DateTime?>("BirthDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("DateCreateUpdate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
@@ -147,9 +153,9 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable((string)null);
+                    b.ToTable("Users", (string)null);
 
-                    b.UseTpcMappingStrategy();
+                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("Models.Entities.Finder", b =>
@@ -159,20 +165,20 @@ namespace API.Migrations
                     b.Property<DateTime?>("FindPet")
                         .HasColumnType("datetime2");
 
-                    b.ToTable("Finders");
+                    b.ToTable("Finders", (string)null);
                 });
 
             modelBuilder.Entity("Models.Entities.Owner", b =>
                 {
                     b.HasBaseType("Models.Entities.User");
 
-                    b.Property<bool?>("FoundPet")
+                    b.Property<bool?>("IsPet")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("LostPet")
                         .HasColumnType("datetime2");
 
-                    b.ToTable("Owners");
+                    b.ToTable("Owners", (string)null);
                 });
 
             modelBuilder.Entity("Models.Entities.Ad", b =>
@@ -207,6 +213,24 @@ namespace API.Migrations
                     b.Navigation("Finder");
 
                     b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("Models.Entities.Finder", b =>
+                {
+                    b.HasOne("Models.Entities.User", null)
+                        .WithOne()
+                        .HasForeignKey("Models.Entities.Finder", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Models.Entities.Owner", b =>
+                {
+                    b.HasOne("Models.Entities.User", null)
+                        .WithOne()
+                        .HasForeignKey("Models.Entities.Owner", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Models.Entities.Pet", b =>

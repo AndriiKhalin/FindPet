@@ -6,7 +6,7 @@ namespace Interfaces.IEntityService;
 
 public interface IAdService
 {
-    Task<IEnumerable<Ad>> GetAdsAsync();
+    IEnumerable<Ad> GetAds();
 
     Task<Ad?> GetAdAsync(Guid adId);
 

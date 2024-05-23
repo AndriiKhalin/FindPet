@@ -23,7 +23,7 @@ namespace API.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<AdDto>))]
         public async Task<IActionResult> GetAds()
         {
-            var ads = _mapper.Map<IEnumerable<AdDto>>(await _adService.GetAdsAsync());
+            var ads = _mapper.Map<IEnumerable<AdDto>>(_adService.GetAds());
 
             return Ok(ads);
         }
@@ -61,10 +61,10 @@ namespace API.Controllers
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(AdDto))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> CreateAd([FromQuery] Guid ownerId, [FromQuery] Guid finderId, [FromForm] AdForCreateDto adCreate)
+        public async Task<IActionResult> CreateAd([FromQuery] Guid petId, [FromQuery] Guid userId, [FromForm] AdForCreateDto adCreate)
         {
 
-            var adMap = await _adService.CreateAdAsync(ownerId, finderId, adCreate);
+            var adMap = await _adService.CreateAdAsync(petId, userId, adCreate);
 
             var createdAd = _mapper.Map<AdDto>(adMap);
 

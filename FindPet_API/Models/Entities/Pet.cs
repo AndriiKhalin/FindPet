@@ -2,7 +2,6 @@
 
 public class Pet : BaseEntity
 {
-    public Guid Id { get; set; }
     public string? Type { get; set; }
     public string? Breed { get; set; }
     public string? Nickname { get; set; }
@@ -11,6 +10,8 @@ public class Pet : BaseEntity
     public string? Size { get; set; }
     public string? SpecialMarks { get; set; }
     public string? Photo { get; set; }
+
+    public DateTime? DateCreateUpdate { get; set; }
     public DateTime? LostDate { get; set; }
     public string? LostLocation { get; set; }
     public DateTime? FoundDate { get; set; }

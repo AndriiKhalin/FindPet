@@ -4,7 +4,7 @@ namespace Interfaces.IEntityRepository;
 
 //public interface IOwnerRepository
 //{
-//    Task<IEnumerable<Owner>> GetOwnersAsync();
+//    Task<IEnumerable<Owner>> GetOwners();
 
 //    Task<Owner?> GetOwnerAsync(Guid ownerId);
 

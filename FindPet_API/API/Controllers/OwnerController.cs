@@ -25,7 +25,7 @@ namespace API.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<OwnerDto>))]
         public async Task<IActionResult> GetOwners()
         {
-            var owners = _mapper.Map<IEnumerable<OwnerDto>>(await _ownerService.GetOwnersAsync());
+            var owners = _mapper.Map<IEnumerable<OwnerDto>>(_ownerService.GetOwners());
 
             return Ok(owners);
         }

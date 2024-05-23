@@ -4,7 +4,7 @@ namespace Interfaces.IEntityRepository;
 
 //public interface IFinderRepository
 //{
-//    Task<IEnumerable<Finder>> GetFindersAsync();
+//    Task<IEnumerable<Finder>> GetFinders();
 
 //    Task<Finder?> GetFinderAsync(Guid finderId);
 

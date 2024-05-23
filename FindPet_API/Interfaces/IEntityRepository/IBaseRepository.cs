@@ -4,7 +4,7 @@ namespace Interfaces.IEntityRepository;
 
 public interface IBaseRepository<T> where T : class
 {
-    Task<IEnumerable<T>> GetsAsync();
+    IEnumerable<T> Gets();
 
     Task<T?> GetAsync(Guid entityId);
 

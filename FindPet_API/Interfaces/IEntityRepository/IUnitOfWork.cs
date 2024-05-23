@@ -13,5 +13,5 @@ public interface IUnitOfWork
     IUserRepository<User> User { get; }
 
     IAdRepository Ad { get; }
-    Task Save();
+    Task SaveAsync();
 }

@@ -6,6 +6,7 @@ using Interfaces.ILoggerService;
 using Models.DTO.FinderDTO;
 using Models.Entities;
 using System.Security.Cryptography.Xml;
+using System.Security.Principal;
 
 namespace Services.Service.EntityService;
 
@@ -24,9 +25,9 @@ public class FinderService : IFinderService
         _logger = logger;
     }
 
-    public Task<IEnumerable<Finder>> GetFindersAsync()
+    public IEnumerable<Finder> GetFinders()
     {
-        return _unitOfWorkRep.Finder.GetsAsync();
+        return _unitOfWorkRep.Finder.Gets();
     }
 
     public async Task<Finder?> GetFinderAsync(Guid finderId)
@@ -82,11 +83,11 @@ public class FinderService : IFinderService
 
         var finderEntityForDelete = await GetFinderAsync(finderId);
 
-        _manageImage.DeleteFile(finderEntityForDelete.Photo);
+        _manageImage.DeletePhoto(finderEntityForDelete.Photo);
 
         await _unitOfWorkRep.Finder.DeleteAsync(finderId);
 
-        await _unitOfWorkRep.Save();
+        await _unitOfWorkRep.SaveAsync();
     }
 
     public async Task UpdateFinderAsync(Guid finderId, FinderForUpdateDto finder)
@@ -105,22 +106,25 @@ public class FinderService : IFinderService
 
         var finderEntity = await GetFinderAsync(finderId);
 
+
         if (finder.Photo is not null)
         {
-            await _manageImage.UploadFileAsync(finder.Photo);
-            _manageImage.DeleteFile(finderEntity.Photo);
+            _manageImage.DeletePhoto(finderEntity.Photo);
+            await _manageImage.UploadPhotoAsync(finder.Photo, finderId);
+
         }
-        else
-        {
-            _logger.LogError($"Photo is null");
-            throw new ArgumentException("Photo cannot be null.");
-        }
+        //else
+        //{
+        //    _logger.LogError($"Photo is null");
+        //    throw new ArgumentException("Photo cannot be null.");
+        //}
 
         _mapper.Map(finder, finderEntity);
 
+
         await _unitOfWorkRep.Finder.UpdateAsync(finderEntity);
 
-        await _unitOfWorkRep.Save();
+        await _unitOfWorkRep.SaveAsync();
     }
 
 
@@ -134,12 +138,13 @@ public class FinderService : IFinderService
 
         var finderMap = _mapper.Map<Finder>(finder);
 
-        finderMap.Photo = await _manageImage.UploadFileAsync(finder.Photo);
+        finderMap.DateCreateUpdate = DateTime.UtcNow;
+        finderMap.Photo = await _manageImage.UploadPhotoAsync(finder.Photo, finderMap.Id);
 
 
         await _unitOfWorkRep.Finder.CreateAsync(finderMap);
 
-        await _unitOfWorkRep.Save();
+        await _unitOfWorkRep.SaveAsync();
 
         return finderMap;
     }

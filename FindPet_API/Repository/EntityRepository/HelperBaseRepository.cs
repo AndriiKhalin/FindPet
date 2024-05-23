@@ -21,8 +21,8 @@ public abstract class HelperBaseRepository<T> : IHelperBaseRepository<T> where T
 
     public async Task DeleteAsync(Guid id)
     {
-        var result = _context.Set<T>().FindAsync(id);
-        _context.Set<T>().Remove(result.Result);
+        var result = await _context.Set<T>().FindAsync(id);
+        _context.Set<T>().Remove(result);
     }
 
     public async Task<IQueryable<T>> GetByConditionAsync(Expression<Func<T, bool>> expression)
@@ -30,7 +30,7 @@ public abstract class HelperBaseRepository<T> : IHelperBaseRepository<T> where T
         return _context.Set<T>().Where(expression).AsNoTracking();
     }
 
-    public async Task<IQueryable<T>> GetAllAsync()
+    public IQueryable<T> GetAll()
     {
         return _context.Set<T>().AsNoTracking();
     }
@@ -42,7 +42,7 @@ public abstract class HelperBaseRepository<T> : IHelperBaseRepository<T> where T
         _context.Set<T>().Update(entity);
     }
 
-    public Task<bool> ExistsAsync(Expression<Func<T, bool>> expression)
+    public Task<bool> IsExistAsync(Expression<Func<T, bool>> expression)
     {
         return _context.Set<T>().AnyAsync(expression);
     }

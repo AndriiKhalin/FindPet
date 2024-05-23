@@ -6,7 +6,7 @@ namespace Interfaces.IEntityService;
 
 public interface IPetService
 {
-    Task<IEnumerable<Pet>> GetPetsAsync();
+    IEnumerable<Pet> GetPets();
 
     Task<Pet?> GetPetAsync(Guid petId);
 

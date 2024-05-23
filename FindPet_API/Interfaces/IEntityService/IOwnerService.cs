@@ -6,7 +6,7 @@ namespace Interfaces.IEntityService;
 
 public interface IOwnerService
 {
-    Task<IEnumerable<Owner>> GetOwnersAsync();
+    IEnumerable<Owner> GetOwners();
 
     Task<Owner?> GetOwnerAsync(Guid ownerId);
 

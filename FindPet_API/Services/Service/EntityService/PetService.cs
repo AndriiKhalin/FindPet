@@ -6,6 +6,7 @@ using Interfaces.ILoggerService;
 using Models.DTO.PetDTO;
 using Models.Entities;
 using System.Security.Cryptography.Xml;
+using System.Security.Principal;
 
 namespace Services.Service.EntityService;
 public class PetService : IPetService
@@ -23,9 +24,9 @@ public class PetService : IPetService
         _logger = logger;
     }
 
-    public Task<IEnumerable<Pet>> GetPetsAsync()
+    public IEnumerable<Pet> GetPets()
     {
-        return _unitOfWorkRep.Pet.GetsAsync();
+        return _unitOfWorkRep.Pet.Gets();
     }
 
     public async Task<Pet?> GetPetAsync(Guid petId)
@@ -92,11 +93,11 @@ public class PetService : IPetService
 
         var petEntityForDelete = await GetPetAsync(petId);
 
-        _manageImage.DeleteFile(petEntityForDelete.Photo);
+        _manageImage.DeletePhoto(petEntityForDelete.Photo);
 
         await _unitOfWorkRep.Pet.DeleteAsync(petId);
 
-        await _unitOfWorkRep.Save();
+        await _unitOfWorkRep.SaveAsync();
     }
 
     public async Task UpdatePetAsync(Guid petId, PetForUpdateDto pet)
@@ -115,22 +116,25 @@ public class PetService : IPetService
 
         var petEntity = await GetPetAsync(petId);
 
+
         if (pet.Photo is not null)
         {
-            await _manageImage.UploadFileAsync(pet.Photo);
-            _manageImage.DeleteFile(petEntity.Photo);
+            _manageImage.DeletePhoto(petEntity.Photo);
+            await _manageImage.UploadPhotoAsync(pet.Photo, petId);
+
         }
-        else
-        {
-            _logger.LogError($"Photo is null");
-            throw new ArgumentException("Photo cannot be null.");
-        }
+        //else
+        //{
+        //    _logger.LogError($"Photo is null");
+        //    throw new ArgumentException("Photo cannot be null.");
+        //}
 
         _mapper.Map(pet, petEntity);
 
+
         await _unitOfWorkRep.Pet.UpdateAsync(petEntity);
 
-        await _unitOfWorkRep.Save();
+        await _unitOfWorkRep.SaveAsync();
     }
 
 
@@ -148,11 +152,12 @@ public class PetService : IPetService
         var petMap = _mapper.Map<Pet>(pet);
         petMap.OwnerId = ownerEntity.Id;
         petMap.FinderId = finderEntity.Id;
-        petMap.Photo = await _manageImage.UploadFileAsync(pet.Photo); ;
+        petMap.DateCreateUpdate = DateTime.UtcNow;
+        petMap.Photo = await _manageImage.UploadPhotoAsync(pet.Photo, petMap.Id); ;
 
         await _unitOfWorkRep.Pet.CreateAsync(petMap);
 
-        await _unitOfWorkRep.Save();
+        await _unitOfWorkRep.SaveAsync();
 
         return petMap;
     }

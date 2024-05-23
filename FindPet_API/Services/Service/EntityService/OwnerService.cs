@@ -6,6 +6,7 @@ using Interfaces.ILoggerService;
 using Models.DTO.OwnerDTO;
 using Models.Entities;
 using System.Security.Cryptography.Xml;
+using System.Security.Principal;
 
 namespace Services.Service.EntityService;
 
@@ -24,9 +25,9 @@ public class OwnerService : IOwnerService
         _logger = logger;
     }
 
-    public Task<IEnumerable<Owner>> GetOwnersAsync()
+    public IEnumerable<Owner> GetOwners()
     {
-        return _unitOfWorkRep.Owner.GetsAsync();
+        return _unitOfWorkRep.Owner.Gets();
     }
 
     public async Task<Owner?> GetOwnerAsync(Guid ownerId)
@@ -82,11 +83,11 @@ public class OwnerService : IOwnerService
 
         var ownerEntityForDelete = await GetOwnerAsync(ownerId);
 
-        _manageImage.DeleteFile(ownerEntityForDelete.Photo);
+        _manageImage.DeletePhoto(ownerEntityForDelete.Photo);
 
         await _unitOfWorkRep.Owner.DeleteAsync(ownerId);
 
-        await _unitOfWorkRep.Save();
+        await _unitOfWorkRep.SaveAsync();
     }
 
     public async Task UpdateOwnerAsync(Guid ownerId, OwnerForUpdateDto owner)
@@ -106,22 +107,25 @@ public class OwnerService : IOwnerService
 
         var ownerEntity = await GetOwnerAsync(ownerId);
 
+
         if (owner.Photo is not null)
         {
-            await _manageImage.UploadFileAsync(owner.Photo);
-            _manageImage.DeleteFile(ownerEntity.Photo);
+            _manageImage.DeletePhoto(ownerEntity.Photo);
+            await _manageImage.UploadPhotoAsync(owner.Photo, ownerId);
+
         }
-        else
-        {
-            _logger.LogError($"Photo is null");
-            throw new ArgumentException("Photo cannot be null.");
-        }
+        //else
+        //{
+        //    _logger.LogError($"Photo is null");
+        //    throw new ArgumentException("Photo cannot be null.");
+        //}
 
         _mapper.Map(owner, ownerEntity);
 
+
         await _unitOfWorkRep.Owner.UpdateAsync(ownerEntity);
 
-        await _unitOfWorkRep.Save();
+        await _unitOfWorkRep.SaveAsync();
     }
 
 
@@ -136,12 +140,13 @@ public class OwnerService : IOwnerService
 
         var ownerMap = _mapper.Map<Owner>(owner);
 
-        ownerMap.Photo = await _manageImage.UploadFileAsync(owner.Photo);
+        ownerMap.DateCreateUpdate = DateTime.UtcNow;
+        ownerMap.Photo = await _manageImage.UploadPhotoAsync(owner.Photo, ownerMap.Id);
 
 
         await _unitOfWorkRep.Owner.CreateAsync(ownerMap);
 
-        await _unitOfWorkRep.Save();
+        await _unitOfWorkRep.SaveAsync();
 
         return ownerMap;
     }

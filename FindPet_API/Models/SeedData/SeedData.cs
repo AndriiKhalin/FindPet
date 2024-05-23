@@ -127,7 +127,7 @@ public class SeedData
                 Description = "I saw a similar dog on the street. Shevchenko",
                 Location = "st. Shevchenko, 30",
                 Photo = "https://example.com/dog_sighting.jpg",
-                Date = new DateTime(2024, 04, 30)
+                DateCreateUpdate = new DateTime(2024, 04, 30)
             };
 
             Ad rabbitAd = new Ad()
@@ -138,7 +138,7 @@ public class SeedData
                 Description = "Found a cat in the entrance of house No. 5",
                 Location = "Mira St., 5",
                 Photo = "https://example.com/cat_sighting.jpg",
-                Date = new DateTime(2024, 05, 02)
+                DateCreateUpdate = new DateTime(2024, 05, 02)
             };
 
             Ad catAd = new Ad()
@@ -149,7 +149,7 @@ public class SeedData
                 Description = "Found a cat in the entrance of house No. 5",
                 Location = "Mira St., 5",
                 Photo = "https://example.com/cat_sighting.jpg",
-                Date = new DateTime(2024, 05, 02)
+                DateCreateUpdate = new DateTime(2024, 05, 02)
             };
 
             context.Ads.AddRange(dogAd, rabbitAd, catAd);

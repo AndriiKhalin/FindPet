@@ -14,33 +14,33 @@ public class BaseRepository<T> : HelperBaseRepository<T>, IBaseRepository<T> whe
         _context = context;
     }
 
-    public async Task<IEnumerable<T>> GetsAsync()
+    public IEnumerable<T> Gets()
     {
-        return await GetAllAsync().Result.ToListAsync();
+        return GetAll();
     }
 
-    public async Task<T?> GetAsync(Guid userId)
+    public async Task<T?> GetAsync(Guid Id)
     {
-        return await GetByConditionAsync(x => x.Id == userId).Result.FirstOrDefaultAsync();
+        return await GetByConditionAsync(x => x.Id == Id).Result.FirstOrDefaultAsync();
     }
 
-    public async Task<bool> IsExistAsync(Guid userId)
+    public async Task<bool> IsExistAsync(Guid Id)
     {
-        return await ExistsAsync(x => x.Id == userId);
+        return await IsExistAsync(x => x.Id == Id);
     }
 
-    public async Task DeleteAsync(Guid entityId)
+    public new async Task DeleteAsync(Guid entityId)
     {
-        await DeleteAsync(entityId);
+        await base.DeleteAsync(entityId);
     }
 
-    public async Task UpdateAsync(T entity)
+    public new async Task UpdateAsync(T entity)
     {
-        await UpdateAsync(entity);
+        await base.UpdateAsync(entity);
     }
 
-    public async Task CreateAsync(T entity)
+    public new async Task CreateAsync(T entity)
     {
-        await CreateAsync(entity);
+        await base.CreateAsync(entity);
     }
 }

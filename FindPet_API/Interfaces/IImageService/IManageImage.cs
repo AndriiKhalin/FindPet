@@ -5,8 +5,8 @@ namespace Interfaces.IImageService;
 public interface IManageImage<T> where T : class
 {
     string ImgPath { get; set; }
-    void DeleteFile(string filePath);
-    Task<string> UploadFileAsync(IFormFile file);
+    void DeletePhoto(string filePath);
+    Task<string> UploadPhotoAsync(IFormFile file, Guid id);
     string GetPath();
-    string GetUniqueFileName(string fileName);
+    string GetUniqueFileName(string fileName, Guid id);
 }

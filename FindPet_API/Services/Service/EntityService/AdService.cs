@@ -6,6 +6,7 @@ using Interfaces.ILoggerService;
 using Models.DTO.AdDTO;
 using Models.Entities;
 using System.Security.Cryptography.Xml;
+using Microsoft.AspNetCore.Identity;
 
 namespace Services.Service.EntityService;
 
@@ -25,9 +26,9 @@ public class AdService : IAdService
         _logger = logger;
     }
 
-    public Task<IEnumerable<Ad>> GetAdsAsync()
+    public IEnumerable<Ad> GetAds()
     {
-        return _unitOfWorkRep.Ad.GetsAsync();
+        return _unitOfWorkRep.Ad.Gets();
     }
 
     public async Task<Ad?> GetAdAsync(Guid adId)
@@ -76,11 +77,11 @@ public class AdService : IAdService
 
         var adEntityForDelete = await GetAdAsync(adId);
 
-        _manageImage.DeleteFile(adEntityForDelete.Photo);
+        _manageImage.DeletePhoto(adEntityForDelete.Photo);
 
         await _unitOfWorkRep.Ad.DeleteAsync(adId);
 
-        await _unitOfWorkRep.Save();
+        await _unitOfWorkRep.SaveAsync();
     }
 
     public async Task UpdateAdAsync(Guid adId, AdForUpdateDto ad)
@@ -102,20 +103,22 @@ public class AdService : IAdService
 
         if (ad.Photo is not null)
         {
-            await _manageImage.UploadFileAsync(ad.Photo);
-            _manageImage.DeleteFile(adEntity.Photo);
+            _manageImage.DeletePhoto(adEntity.Photo);
+            var photoPath = await _manageImage.UploadPhotoAsync(ad.Photo, adId);
         }
-        else
-        {
-            _logger.LogError($"Photo is null");
-            throw new ArgumentException("Photo cannot be null.");
-        }
+        //else
+        //{
+        //    _logger.LogError($"Photo is null");
+        //    throw new ArgumentException("Photo cannot be null.");
+        //}
 
         _mapper.Map(ad, adEntity);
 
+
+
         await _unitOfWorkRep.Ad.UpdateAsync(adEntity);
 
-        await _unitOfWorkRep.Save();
+        await _unitOfWorkRep.SaveAsync();
     }
 
     public async Task<Ad> CreateAdAsync(Guid petId, Guid userId, AdForCreateDto ad)
@@ -132,12 +135,12 @@ public class AdService : IAdService
         var adMap = _mapper.Map<Ad>(ad);
         adMap.UserId = userEntity.Id;
         adMap.PetId = petEntity.Id;
-        adMap.Photo = await _manageImage.UploadFileAsync(ad.Photo); ;
-        adMap.Date = DateTime.UtcNow;
+        adMap.Photo = await _manageImage.UploadPhotoAsync(ad.Photo, adMap.Id);
+        adMap.DateCreateUpdate = DateTime.UtcNow;
 
         await _unitOfWorkRep.Ad.CreateAsync(adMap);
 
-        await _unitOfWorkRep.Save();
+        await _unitOfWorkRep.SaveAsync();
 
         return adMap;
     }

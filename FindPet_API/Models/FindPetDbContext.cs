@@ -11,12 +11,19 @@ public class FindPetDbContext : DbContext
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>().UseTpcMappingStrategy();
+        //modelBuilder.Entity<User>().UseTpcMappingStrategy();
+
+        //modelBuilder.Entity<User>()
+        //    .HasDiscriminator<string>("UserType")
+        //    .HasValue<User>("User")
+        //    .HasValue<Finder>("Finder")
+        //    .HasValue<Owner>("Owner");
+
+        modelBuilder.Entity<User>().ToTable("Users");
+        modelBuilder.Entity<Finder>().ToTable("Finders");
+        modelBuilder.Entity<Owner>().ToTable("Owners");
+
         #region SetNullDeleteBehavior
-
-
-
-
 
         modelBuilder.Entity<Pet>()
                 .HasOne(x => x.Owner)
@@ -42,17 +49,13 @@ public class FindPetDbContext : DbContext
             .WithMany(y => y.Ads)
             .HasForeignKey(x => x.UserId)
             .OnDelete(DeleteBehavior.SetNull);
-
-
-
-
-
-        #endregion
+        #endregion 
+        base.OnModelCreating(modelBuilder);
 
     }
 
     public DbSet<Pet>? Pets { get; set; } = null!;
-    //public DbSet<User>? Users { get; set; } = null!;
+    public DbSet<User>? Users { get; set; } = null!;
 
     public DbSet<Ad>? Ads { get; set; } = null!;
 

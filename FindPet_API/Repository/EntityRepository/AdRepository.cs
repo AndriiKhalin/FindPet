@@ -11,9 +11,9 @@ public class AdRepository : BaseRepository<Ad>, IAdRepository
     {
     }
 
-    //public async Task<IEnumerable<Ad>> GetsAsync()
+    //public new IEnumerable<Ad> GetsAsync()
     //{
-    //    return await GetAllAsync().Result.ToListAsync();
+    //    return base.GetAllAsync();
     //}
 
     //public async Task<Ad?> GetAsync(Guid adId)
@@ -21,19 +21,19 @@ public class AdRepository : BaseRepository<Ad>, IAdRepository
     //    return await GetByConditionAsync(x => x.Id == adId).Result.FirstOrDefaultAsync();
     //}
 
-    ////public async Task<Pet?> GetPetByAd(Guid adId)
-    ////{
-    ////    return await GetByConditionAsync(x => x.Id == adId).Result.Include(x => x.Pet).Select(x => x.Pet).FirstOrDefaultAsync();
-    ////}
+    //public async Task<Pet?> GetPetByAd(Guid adId)
+    //{
+    //    return await GetByConditionAsync(x => x.Id == adId).Result.Include(x => x.Pet).Select(x => x.Pet).FirstOrDefaultAsync();
+    //}
 
-    ////public async Task<User> GetUserByAd(Guid adId)
-    ////{
-    ////    return await GetByConditionAsync(x => x.Id == adId).Result.Include(x => x.User).Select(x => x.User).FirstOrDefaultAsync();
-    ////}
+    //public async Task<User> GetUserByAd(Guid adId)
+    //{
+    //    return await GetByConditionAsync(x => x.Id == adId).Result.Include(x => x.User).Select(x => x.User).FirstOrDefaultAsync();
+    //}
 
     //public async Task<bool> IsExistAsync(Guid adId)
     //{
-    //    return await ExistsAsync(x => x.Id == adId);
+    //    return await IsExistAsync(x => x.Id == adId);
     //}
 
     //public async Task DeleteAsync(Guid adId)
@@ -51,23 +51,4 @@ public class AdRepository : BaseRepository<Ad>, IAdRepository
     //    await CreateAsync(ad);
 
     //}
-    public async Task<IEnumerable<Pet>> GetsAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Pet?> GetAsync(Guid entityId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task UpdateAsync(Pet entity)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task CreateAsync(Pet entity)
-    {
-        throw new NotImplementedException();
-    }
 }

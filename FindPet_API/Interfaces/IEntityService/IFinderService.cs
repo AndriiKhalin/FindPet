@@ -5,7 +5,7 @@ namespace Interfaces.IEntityService;
 
 public interface IFinderService
 {
-    Task<IEnumerable<Finder>> GetFindersAsync();
+    IEnumerable<Finder> GetFinders();
 
     Task<Finder?> GetFinderAsync(Guid finderId);
 

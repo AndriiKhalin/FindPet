@@ -26,7 +26,7 @@ namespace API.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<PetDto>))]
         public async Task<IActionResult> GetPets()
         {
-            var pets = _mapper.Map<IEnumerable<PetDto>>(await _petService.GetPetsAsync());
+            var pets = _mapper.Map<IEnumerable<PetDto>>(_petService.GetPets());
 
             return Ok(pets);
         }

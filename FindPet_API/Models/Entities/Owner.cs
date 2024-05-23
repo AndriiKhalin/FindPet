@@ -2,10 +2,10 @@
 
 namespace Models.Entities;
 
-//[Table("Owner")]
+[Table("Owners")]
 public class Owner : User
 {
     public DateTime? LostPet { get; set; }
-    public bool? FoundPet { get; set; }
+    public bool? IsPet { get; set; }
 
 }

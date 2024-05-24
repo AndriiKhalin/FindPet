@@ -13,15 +13,15 @@ public class FindPetDbContext : DbContext
     {
         //modelBuilder.Entity<User>().UseTpcMappingStrategy();
 
-        //modelBuilder.Entity<User>()
-        //    .HasDiscriminator<string>("UserType")
-        //    .HasValue<User>("User")
-        //    .HasValue<Finder>("Finder")
-        //    .HasValue<Owner>("Owner");
+        modelBuilder.Entity<User>()
+            .HasDiscriminator<string>("UserType")
+            .HasValue<User>("User")
+            .HasValue<Finder>("Finder")
+            .HasValue<Owner>("Owner");
 
-        modelBuilder.Entity<User>().ToTable("Users");
-        modelBuilder.Entity<Finder>().ToTable("Finders");
-        modelBuilder.Entity<Owner>().ToTable("Owners");
+        //modelBuilder.Entity<User>().ToTable("Users");
+        //modelBuilder.Entity<Finder>().ToTable("Finders");
+        //modelBuilder.Entity<Owner>().ToTable("Owners");
 
         #region SetNullDeleteBehavior
 

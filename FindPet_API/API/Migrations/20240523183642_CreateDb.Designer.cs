@@ -12,7 +12,7 @@ using Models;
 namespace API.Migrations
 {
     [DbContext(typeof(FindPetDbContext))]
-    [Migration("20240523111040_CreateDb")]
+    [Migration("20240523183642_CreateDb")]
     partial class CreateDb
     {
         /// <inheritdoc />
@@ -151,11 +151,18 @@ namespace API.Migrations
                     b.Property<string>("Photo")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserType")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
 
-                    b.UseTptMappingStrategy();
+                    b.HasDiscriminator<string>("UserType").HasValue("User");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Models.Entities.Finder", b =>
@@ -165,7 +172,7 @@ namespace API.Migrations
                     b.Property<DateTime?>("FindPet")
                         .HasColumnType("datetime2");
 
-                    b.ToTable("Finders", (string)null);
+                    b.HasDiscriminator().HasValue("Finder");
                 });
 
             modelBuilder.Entity("Models.Entities.Owner", b =>
@@ -178,7 +185,7 @@ namespace API.Migrations
                     b.Property<DateTime?>("LostPet")
                         .HasColumnType("datetime2");
 
-                    b.ToTable("Owners", (string)null);
+                    b.HasDiscriminator().HasValue("Owner");
                 });
 
             modelBuilder.Entity("Models.Entities.Ad", b =>
@@ -213,24 +220,6 @@ namespace API.Migrations
                     b.Navigation("Finder");
 
                     b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("Models.Entities.Finder", b =>
-                {
-                    b.HasOne("Models.Entities.User", null)
-                        .WithOne()
-                        .HasForeignKey("Models.Entities.Finder", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Models.Entities.Owner", b =>
-                {
-                    b.HasOne("Models.Entities.User", null)
-                        .WithOne()
-                        .HasForeignKey("Models.Entities.Owner", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Models.Entities.Pet", b =>

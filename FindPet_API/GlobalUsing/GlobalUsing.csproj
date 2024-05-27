@@ -7,4 +7,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FindPet.API\FindPet.API.csproj" />
+    <ProjectReference Include="..\FindPet.Core\FindPet.Core.csproj" />
+    <ProjectReference Include="..\FindPet.Domain\FindPet.Domain.csproj" />
+    <ProjectReference Include="..\FindPet.Infrastructure\FindPet.Infrastructure.csproj" />
+    <ProjectReference Include="..\FindPet.Tests\FindPet.Tests.csproj" />
+  </ItemGroup>
+
 </Project>

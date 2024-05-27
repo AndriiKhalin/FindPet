@@ -19,7 +19,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\FindPet.Domain\FindPet.Domain.csproj" />
 		<ProjectReference Include="..\FindPet.Infrastructure\FindPet.Infrastructure.csproj" />
 	</ItemGroup>
 

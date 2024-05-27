@@ -30,8 +30,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\FindPet.Core\FindPet.Core.csproj" />
-		<ProjectReference Include="..\FindPet.Domain\FindPet.Domain.csproj" />
-		<ProjectReference Include="..\FindPet.Infrastructure\FindPet.Infrastructure.csproj" />
 		<ProjectReference Include="..\FindPet.Tests\FindPet.Tests.csproj" />
 	</ItemGroup>
 

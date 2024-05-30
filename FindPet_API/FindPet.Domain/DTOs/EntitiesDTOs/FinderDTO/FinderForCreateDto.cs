@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace FindPet.Domain.DTOs.FinderDTO;
+namespace FindPet.Domain.DTOs.EntitiesDTOs.FinderDTO;
 
 public class FinderForCreateDto
 {

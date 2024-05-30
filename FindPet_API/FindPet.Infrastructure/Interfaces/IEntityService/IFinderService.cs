@@ -1,4 +1,4 @@
-﻿using FindPet.Domain.DTOs.FinderDTO;
+﻿using FindPet.Domain.DTOs.EntitiesDTOs.FinderDTO;
 using FindPet.Domain.Entities;
 
 namespace FindPet.Infrastructure.Interfaces.IEntityService;

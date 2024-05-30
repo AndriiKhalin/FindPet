@@ -1,4 +1,4 @@
-﻿namespace FindPet.Domain.DTOs.AdDTO;
+﻿namespace FindPet.Domain.DTOs.EntitiesDTOs.AdDTO;
 
 public class AdDto
 {

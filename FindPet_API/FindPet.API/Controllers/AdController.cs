@@ -1,10 +1,16 @@
 ﻿using AutoMapper;
-using FindPet.Domain.DTOs.AdDTO;
+using FindPet.Domain.DTOs.EntitiesDTOs.AdDTO;
+using FindPet.Domain.Entities;
+using FindPet.Domain.ValueObjects;
 using FindPet.Infrastructure.Interfaces.IEntityService;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace FindPet.API.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class AdController : ControllerBase

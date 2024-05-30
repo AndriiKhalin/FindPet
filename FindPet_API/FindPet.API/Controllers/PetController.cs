@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
-using FindPet.Domain.DTOs.PetDTO;
+using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
 using FindPet.Infrastructure.Interfaces.IEntityService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FindPet.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PetController : ControllerBase

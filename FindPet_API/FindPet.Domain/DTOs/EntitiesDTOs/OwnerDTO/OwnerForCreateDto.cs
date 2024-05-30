@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace FindPet.Domain.DTOs.OwnerDTO;
+namespace FindPet.Domain.DTOs.EntitiesDTOs.OwnerDTO;
 
-public class OwnerForUpdateDto
+public class OwnerForCreateDto
 {
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
@@ -13,6 +13,5 @@ public class OwnerForUpdateDto
     public IFormFile? Photo { get; set; }
 
     public DateTime? BirthDate { get; set; }
-
     public DateTime? LostPet { get; set; }
 }

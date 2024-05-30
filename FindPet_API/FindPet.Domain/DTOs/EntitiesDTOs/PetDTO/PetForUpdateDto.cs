@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace FindPet.Domain.DTOs.PetDTO;
+namespace FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
 
-public class PetForCreateDto
+public class PetForUpdateDto
 {
     public string? Type { get; set; }
     public string? Breed { get; set; }

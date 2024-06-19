@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FindPet.API.Migrations
 {
     [DbContext(typeof(FindPetDbContext))]
-    [Migration("20240619212734_CreateDb")]
+    [Migration("20240619231639_CreateDb")]
     partial class CreateDb
     {
         /// <inheritdoc />

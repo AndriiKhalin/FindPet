@@ -38,9 +38,9 @@ public class FinderRepository : BaseRepository<Finder>, IUserRepository<Finder>
     //    return await ExistsAsync(x => x.Id == userId);
     //}
 
-    public async Task<bool> IsExistAsync(string userFirstName)
+    public async Task<bool> IsExistAsync(string userName)
     {
-        return await IsExistAsync(x => x.FirstName == userFirstName);
+        return await IsExistAsync(x => x.Name == userName);
     }
 
     //public async Task DeleteAsync(Guid userId)

@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NLog;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
@@ -42,6 +43,8 @@ var JWT = builder.Configuration.GetSection("JWT");
 //});
 
 
+builder.Services.AddDbContext<FindPetDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AppDb")));
 
 // Add services to the container.
 builder.Services.ConfigureLoggerService();
@@ -59,7 +62,7 @@ builder.Services.AddLogging(logging =>
 });
 
 
-builder.Services.AddIdentity<AuthUser, IdentityRole>().AddEntityFrameworkStores<AuthDbContext>()
+builder.Services.AddIdentity<AuthUser, IdentityRole>().AddEntityFrameworkStores<FindPetDbContext>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(opt =>

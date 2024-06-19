@@ -37,8 +37,7 @@ export class RegisterComponent implements OnInit{
           "password": ['', [Validators.required]],
           "confirmPassword" : ["",[Validators.required]],
           "phoneNumber":[ "", [Validators.required]],
-          "roles": [''],
-          "photo":['',[Validators.required]]
+          "roles": ['']
       },
       {
         validator: this.passwordMatchValidator,
@@ -53,7 +52,7 @@ submit(){
   console.log(this.form);
 }
 
-ngOnInit() {
+ngOnInit(): void {
   const input = document.querySelector("#phone") as HTMLInputElement;
   intlTelInput(input, {
     utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.12/build/js/utils.js",

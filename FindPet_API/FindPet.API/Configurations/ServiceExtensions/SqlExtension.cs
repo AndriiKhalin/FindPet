@@ -10,6 +10,5 @@ public static class SqlExtension
         var connectionString = config["ConnectionStrings:AppDb"];
         services.AddDbContext<FindPetDbContext>(o => o.UseSqlServer(connectionString));
         //services.AddDbContext<AuthDbContext>(o => o.UseSqlServer(connectionString));
-
     }
 }

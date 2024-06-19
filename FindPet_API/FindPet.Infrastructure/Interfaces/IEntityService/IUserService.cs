@@ -5,7 +5,7 @@ namespace FindPet.Infrastructure.Interfaces.IEntityService;
 
 public interface IUserService
 {
-    Task<IEnumerable<User>> GetUsersAsync();
+    IEnumerable<User> GetUsers();
 
     Task<User?> GetUserAsync(Guid UserId);
 

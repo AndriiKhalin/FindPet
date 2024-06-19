@@ -23,9 +23,9 @@ public class UserService : IUserService
         _logger = logger;
     }
 
-    public async Task<IEnumerable<User>> GetUsersAsync()
+    public IEnumerable<User> GetUsers()
     {
-        return await _unitOfWorkRep.User.GetsAsync();
+        return _unitOfWorkRep.User.Gets();
     }
 
     public async Task<User?> GetUserAsync(Guid userId)

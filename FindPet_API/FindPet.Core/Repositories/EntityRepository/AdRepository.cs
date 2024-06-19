@@ -6,8 +6,11 @@ namespace FindPet.Core.Repositories.EntityRepository;
 
 public class AdRepository : BaseRepository<Ad>, IAdRepository
 {
+    private readonly FindPetDbContext _context;
+
     public AdRepository(FindPetDbContext context) : base(context)
     {
+        _context = context;
     }
 
     //public new IEnumerable<Ad> GetsAsync()

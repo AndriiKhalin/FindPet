@@ -1,5 +1,6 @@
 ﻿using FindPet.Domain.DTOs.AuthDTOs;
 using FindPet.Domain.ValueObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -47,10 +48,10 @@ namespace FindPet.API.Controllers
 
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetRoles()
         {
-
 
             // list of roles with total users in each role 
 
@@ -60,7 +61,6 @@ namespace FindPet.API.Controllers
                 Name = r.Name,
                 TotalUsers = _userManager.GetUsersInRoleAsync(r.Name!).Result.Count
             }).ToListAsync();
-
             return Ok(roles);
         }
 

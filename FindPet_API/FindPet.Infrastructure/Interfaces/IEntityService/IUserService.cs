@@ -1,21 +1,21 @@
-﻿using FindPet.Domain.DTOs.EntitiesDTOs.OwnerDTO;
+﻿using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
 using FindPet.Domain.Entities;
 
 namespace FindPet.Infrastructure.Interfaces.IEntityService;
 
 public interface IUserService
 {
-    IEnumerable<Owner> GetUsers();
+    Task<IEnumerable<User>> GetUsersAsync();
 
-    Task<Owner?> GetOwnerAsync(Guid ownerId);
+    Task<User?> GetUserAsync(Guid UserId);
 
-    Task<bool> OwnerExistsAsync(Guid ownerId);
+    Task<bool> UserExistsAsync(Guid UserId);
 
-    Task<bool> OwnerExistsAsync(string ownerFirstName);
+    Task<bool> UserExistsAsync(string UserFirstName);
 
-    Task DeleteOwnerAsync(Guid ownerId);
+    Task DeleteUserAsync(Guid UserId);
 
-    Task UpdateOwnerAsync(Guid ownerId, OwnerForUpdateDto owner);
+    Task UpdateUserAsync(Guid UserId, UserForUpdateDto User);
 
-    Task<Owner> CreateOwnerAsync(OwnerForCreateDto owner);
+    Task<User> CreateUserAsync(UserForCreateDto User);
 }

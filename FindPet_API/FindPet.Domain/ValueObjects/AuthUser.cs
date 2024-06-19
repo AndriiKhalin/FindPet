@@ -4,5 +4,5 @@ namespace FindPet.Domain.ValueObjects;
 
 public class AuthUser : IdentityUser
 {
-    public string? FullName { get; set; }
+    public string? Name { get; set; }
 }

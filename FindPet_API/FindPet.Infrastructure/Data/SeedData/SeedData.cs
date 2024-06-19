@@ -17,8 +17,7 @@ public class SeedData
             Finder andrew = new Finder()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Andrew",
-                LastName = "Khalin",
+                Name = "Andrew",
                 Email = "khalin2002@gmail.com",
                 Password = "10122002",
                 PhoneNumber = "+380737303288",
@@ -27,8 +26,7 @@ public class SeedData
             Finder vanya = new Finder()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Vanya",
-                LastName = "Khalin",
+                Name = "Vanya",
                 Email = "vanya2002@gmail.com",
                 Password = "10122002",
                 PhoneNumber = "+380737303288",
@@ -40,8 +38,7 @@ public class SeedData
             Owner vlad = new Owner()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Vlad",
-                LastName = "Shabaltas",
+                Name = "Vlad",
                 Email = "vlad2002@gmail.com",
                 Password = "10122002",
                 PhoneNumber = "+380737303288",
@@ -51,8 +48,7 @@ public class SeedData
             Owner dima = new Owner()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Dima",
-                LastName = "Strunov",
+                Name = "Dima",
                 Email = "dima2002@gmail.com",
                 Password = "10122002",
                 PhoneNumber = "+380737303288",

@@ -10,6 +10,9 @@ using System.Security.Claims;
 using System.Text;
 using FindPet.Domain.DTOs;
 using FindPet.Domain.DTOs.AuthDTOs;
+using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
+using FindPet.Infrastructure.Interfaces.IEntityRepository;
+using FindPet.Infrastructure.Interfaces.IEntityService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
@@ -143,23 +146,25 @@ namespace FindPet.API.Controllers
 
     //////////////////////////////////////////////////////////////////////
 
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class AccountController : ControllerBase
     {
         private readonly UserManager<AuthUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IUserService _userService;
         private readonly IConfiguration _configuration;
 
 
         public AccountController(UserManager<AuthUser> userManager,
-        RoleManager<IdentityRole> roleManager,
+        RoleManager<IdentityRole> roleManager, IUserService userService,
         IConfiguration configuration
         )
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _userService = userService;
             _configuration = configuration;
 
         }
@@ -168,7 +173,7 @@ namespace FindPet.API.Controllers
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<ActionResult<string>> Register(RegisterDto registerDto)
+        public async Task<ActionResult<string>> Register([FromForm] RegisterDto registerDto)
         {
             if (!ModelState.IsValid)
             {
@@ -178,9 +183,11 @@ namespace FindPet.API.Controllers
             var user = new AuthUser
             {
                 Email = registerDto.Email,
-                FullName = registerDto.FullName,
+                Name = registerDto.Name,
+                UserName = registerDto.Email,
                 PhoneNumber = registerDto.PhoneNumber
             };
+
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
 
@@ -205,6 +212,16 @@ namespace FindPet.API.Controllers
                     await _userManager.AddToRoleAsync(user, role);
                 }
             }
+
+            await _userService.CreateUserAsync(new UserForCreateDto()
+            {
+                Name = registerDto.Name,
+                Email = registerDto.Email,
+                BirthDate = registerDto.BirthDate,
+                Password = registerDto.Password,
+                PhoneNumber = registerDto.PhoneNumber,
+                Photo = registerDto.Photo
+            });
 
 
             return Ok(new AuthResponse()
@@ -273,7 +290,7 @@ namespace FindPet.API.Controllers
             List<Claim> claims =
             [
                 new (JwtRegisteredClaimNames.Email,user.Email??""),
-                new (JwtRegisteredClaimNames.Name,user.FullName??""),
+                new (JwtRegisteredClaimNames.Name,user.Name??""),
                 new (JwtRegisteredClaimNames.NameId,user.Id ??""),
                 new (JwtRegisteredClaimNames.Aud,
                 _configuration.GetSection("JWT").GetSection("ValidAudience").Value!),
@@ -326,7 +343,7 @@ namespace FindPet.API.Controllers
             {
                 Id = user.Id,
                 Email = user.Email,
-                FullName = user.FullName,
+                Name = user.Name,
                 Roles = [.. await _userManager.GetRolesAsync(user)],
                 PhoneNumber = user.PhoneNumber,
                 PhoneNumberConfirmed = user.PhoneNumberConfirmed,
@@ -344,7 +361,7 @@ namespace FindPet.API.Controllers
             {
                 Id = u.Id,
                 Email = u.Email,
-                FullName = u.FullName,
+                Name = u.Name,
                 Roles = _userManager.GetRolesAsync(u).Result.ToArray()
             }).ToListAsync();
 

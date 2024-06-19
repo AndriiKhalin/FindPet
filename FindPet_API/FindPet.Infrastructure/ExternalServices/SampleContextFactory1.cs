@@ -1,15 +1,15 @@
 ﻿using FindPet.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace FindPet.Infrastructure.ExternalServices;
 
-public class SampleContextFactory : IDesignTimeDbContextFactory<FindPetDbContext>
+public class SampleContextFactory1 : IDesignTimeDbContextFactory<AuthDbContext>
 {
-    public FindPetDbContext CreateDbContext(string[] args)
+    public AuthDbContext CreateDbContext(string[] args)
     {
-        var optionsBuilder = new DbContextOptionsBuilder<FindPetDbContext>();
+        var optionsBuilder = new DbContextOptionsBuilder<AuthDbContext>();
 
 
 
@@ -21,6 +21,6 @@ public class SampleContextFactory : IDesignTimeDbContextFactory<FindPetDbContext
         // получаем строку подключения из файла appsettings.json
         var connectionString = config.GetConnectionString("AppDb");
         optionsBuilder.UseSqlServer(connectionString, b => b.MigrationsAssembly("FindPet.API"));
-        return new FindPetDbContext(optionsBuilder.Options);
+        return new AuthDbContext(optionsBuilder.Options);
     }
 }

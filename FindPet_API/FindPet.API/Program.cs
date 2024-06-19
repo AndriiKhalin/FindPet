@@ -17,7 +17,49 @@ LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nl
 var JWT = builder.Configuration.GetSection("JWT");
 
 
-builder.Services.AddIdentity<AuthUser, IdentityRole>().AddEntityFrameworkStores<FindPetDbContext>()
+//builder.Services.AddIdentity<AuthUser, IdentityRole>().AddEntityFrameworkStores<AuthDbContext>()
+//    .AddDefaultTokenProviders();
+
+//builder.Services.AddAuthentication(opt =>
+//{
+//    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//    opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+//}).AddJwtBearer(opt =>
+//{
+//    opt.SaveToken = true;
+//    opt.RequireHttpsMetadata = false;
+//    opt.TokenValidationParameters = new TokenValidationParameters
+//    {
+//        ValidateIssuer = true,
+//        ValidateAudience = true,
+//        ValidateLifetime = true,
+//        ValidateIssuerSigningKey = true,
+//        ValidAudience = JWT["ValidAudience"],
+//        ValidIssuer = JWT["ValidIssuer"],
+//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JWT.GetSection("Secret").Value!))
+//    };
+//});
+
+
+
+// Add services to the container.
+builder.Services.ConfigureLoggerService();
+builder.Services.ConfigureCors();
+builder.Services.ConfigureIISIntegration();
+builder.Services.ConfigureMySqlContext(builder.Configuration);
+builder.Services.ConfigureRepository();
+builder.Services.ConfigureServices();
+builder.Services.ConfigureManageImage();
+builder.Services.AddAutoMapper(typeof(Mapping));
+builder.Services.Configure_FileProvider();
+builder.Services.AddLogging(logging =>
+{
+    logging.AddConsole();
+});
+
+
+builder.Services.AddIdentity<AuthUser, IdentityRole>().AddEntityFrameworkStores<AuthDbContext>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(opt =>
@@ -42,28 +84,13 @@ builder.Services.AddAuthentication(opt =>
 });
 
 
-
-// Add services to the container.
-builder.Services.ConfigureLoggerService();
-builder.Services.ConfigureCors();
-builder.Services.ConfigureIISIntegration();
-builder.Services.ConfigureMySqlContext(builder.Configuration);
-builder.Services.ConfigureRepository();
-builder.Services.ConfigureServices();
-builder.Services.ConfigureManageImage();
-builder.Services.AddAutoMapper(typeof(Mapping));
-builder.Services.Configure_FileProvider();
-builder.Services.AddLogging(logging =>
-{
-    logging.AddConsole();
-});
-
-
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
+
+
+
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -109,6 +136,14 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseCustomStaticFiles();
 app.UseCors("CorsPolicy");
+
+
+app.UseCors(options =>
+{
+    options.AllowAnyHeader();
+    options.AllowAnyMethod();
+    options.AllowAnyOrigin();
+});
 
 app.UseAuthentication();
 

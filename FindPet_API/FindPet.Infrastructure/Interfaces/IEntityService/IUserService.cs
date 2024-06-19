@@ -3,9 +3,9 @@ using FindPet.Domain.Entities;
 
 namespace FindPet.Infrastructure.Interfaces.IEntityService;
 
-public interface IOwnerService
+public interface IUserService
 {
-    IEnumerable<Owner> GetOwners();
+    IEnumerable<Owner> GetUsers();
 
     Task<Owner?> GetOwnerAsync(Guid ownerId);
 

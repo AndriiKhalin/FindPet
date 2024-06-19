@@ -143,7 +143,7 @@ namespace FindPet.API.Controllers
 
     //////////////////////////////////////////////////////////////////////
 
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class AccountController : ControllerBase
@@ -179,7 +179,7 @@ namespace FindPet.API.Controllers
             {
                 Email = registerDto.Email,
                 FullName = registerDto.FullName,
-                UserName = registerDto.Email
+                PhoneNumber = registerDto.PhoneNumber
             };
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
@@ -218,7 +218,6 @@ namespace FindPet.API.Controllers
         //api/account/login
         [AllowAnonymous]
         [HttpPost("login")]
-
         public async Task<ActionResult<AuthResponse>> Login(LoginDto loginDto)
         {
             if (!ModelState.IsValid)

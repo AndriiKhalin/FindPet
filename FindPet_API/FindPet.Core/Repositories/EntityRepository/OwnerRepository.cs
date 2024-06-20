@@ -6,8 +6,11 @@ namespace FindPet.Core.Repositories.EntityRepository;
 
 public class OwnerRepository : BaseRepository<Owner>, IUserRepository<Owner>
 {
+    private readonly FindPetDbContext _context;
+
     public OwnerRepository(FindPetDbContext context) : base(context)
     {
+        _context = context;
     }
 
 
@@ -36,9 +39,9 @@ public class OwnerRepository : BaseRepository<Owner>, IUserRepository<Owner>
     //    return await ExistsAsync(x => x.Id == userId);
     //}
 
-    public async Task<bool> IsExistAsync(string userFirstName)
+    public async Task<bool> IsExistAsync(string userName)
     {
-        return await IsExistAsync(x => x.FirstName == userFirstName);
+        return await IsExistAsync(x => x.Name == userName);
     }
 
     //public async Task DeleteAsync(Guid userId)

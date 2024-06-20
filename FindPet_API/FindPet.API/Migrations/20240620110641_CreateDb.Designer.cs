@@ -4,16 +4,19 @@ using FindPet.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace FindPet.API.Migrations.AuthDb
+namespace FindPet.API.Migrations
 {
-    [DbContext(typeof(AuthDbContext))]
-    partial class AuthDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(FindPetDbContext))]
+    [Migration("20240620110641_CreateDb")]
+    partial class CreateDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,131 @@ namespace FindPet.API.Migrations.AuthDb
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("FindPet.Domain.Entities.Ad", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DateCreateUpdate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("PetId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Photo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PetId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Ads");
+                });
+
+            modelBuilder.Entity("FindPet.Domain.Entities.Pet", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Breed")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DateCreateUpdate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("FinderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("FoundDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FoundLocation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LostDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LostLocation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Nickname")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("OwnerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Photo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Size")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SpecialMarks")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FinderId");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("Pets");
+                });
+
+            modelBuilder.Entity("FindPet.Domain.Entities.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserType")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+
+                    b.HasDiscriminator<string>("UserType").HasValue("User");
+
+                    b.UseTphMappingStrategy();
+                });
 
             modelBuilder.Entity("FindPet.Domain.ValueObjects.AuthUser", b =>
                 {
@@ -41,14 +169,14 @@ namespace FindPet.API.Migrations.AuthDb
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FullName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -223,6 +351,54 @@ namespace FindPet.API.Migrations.AuthDb
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("FindPet.Domain.Entities.Finder", b =>
+                {
+                    b.HasBaseType("FindPet.Domain.Entities.User");
+
+                    b.HasDiscriminator().HasValue("Finder");
+                });
+
+            modelBuilder.Entity("FindPet.Domain.Entities.Owner", b =>
+                {
+                    b.HasBaseType("FindPet.Domain.Entities.User");
+
+                    b.HasDiscriminator().HasValue("Owner");
+                });
+
+            modelBuilder.Entity("FindPet.Domain.Entities.Ad", b =>
+                {
+                    b.HasOne("FindPet.Domain.Entities.Pet", "Pet")
+                        .WithMany("Ads")
+                        .HasForeignKey("PetId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("FindPet.Domain.Entities.User", "User")
+                        .WithMany("Ads")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Pet");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("FindPet.Domain.Entities.Pet", b =>
+                {
+                    b.HasOne("FindPet.Domain.Entities.Finder", "Finder")
+                        .WithMany("Pets")
+                        .HasForeignKey("FinderId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("FindPet.Domain.Entities.Owner", "Owner")
+                        .WithMany("Pets")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Finder");
+
+                    b.Navigation("Owner");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -272,6 +448,26 @@ namespace FindPet.API.Migrations.AuthDb
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("FindPet.Domain.Entities.Pet", b =>
+                {
+                    b.Navigation("Ads");
+                });
+
+            modelBuilder.Entity("FindPet.Domain.Entities.User", b =>
+                {
+                    b.Navigation("Ads");
+                });
+
+            modelBuilder.Entity("FindPet.Domain.Entities.Finder", b =>
+                {
+                    b.Navigation("Pets");
+                });
+
+            modelBuilder.Entity("FindPet.Domain.Entities.Owner", b =>
+                {
+                    b.Navigation("Pets");
                 });
 #pragma warning restore 612, 618
         }

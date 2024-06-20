@@ -1,5 +1,6 @@
 ﻿using FindPet.Core.Services.EntityService;
 using FindPet.Infrastructure.Interfaces.IEntityService;
+using Microsoft.AspNetCore.Identity;
 
 namespace FindPet.API.Configurations.ServiceExtensions;
 
@@ -11,5 +12,8 @@ public static class ServiceExtensions
         services.AddScoped<IOwnerService, OwnerService>();
         services.AddScoped<IFinderService, FinderService>();
         services.AddScoped<IAdService, AdService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<RoleManager<IdentityRole>>();
+        services.AddControllers();
     }
 }

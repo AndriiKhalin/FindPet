@@ -1,11 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace FindPet.Domain.DTOs.AuthDTOs;
 
 public class RegisterDto
 {
     [Required]
-    public string FullName { get; set; } = string.Empty;
+    public string? Name { get; set; } = string.Empty;
 
     [Required]
     [EmailAddress]
@@ -14,13 +15,16 @@ public class RegisterDto
     [Required]
     public string Password { get; set; } = string.Empty;
 
-    [Required]
-    public DateTime? BirthDate { get; set; }
+    //[Required]
+    //public DateTime? BirthDate { get; set; }
 
-    [Required]
-    public string? PhoneNumber { get; set; }
+    //[Required]
+    //public string? PhoneNumber { get; set; }
 
-    public List<string>? Roles { get; set; }
+    //[Required]
+    //public IFormFile? Photo { get; set; }
+
+    public string? Role { get; set; }
 
     //[Required]
     //public string UserName { get; set; }

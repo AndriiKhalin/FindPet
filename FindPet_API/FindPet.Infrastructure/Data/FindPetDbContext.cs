@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FindPet.Infrastructure.Data;
 
-public class FindPetDbContext : DbContext
+public class FindPetDbContext : IdentityDbContext<AuthUser>
 {
     public FindPetDbContext(DbContextOptions<FindPetDbContext> options) : base(options)
     {

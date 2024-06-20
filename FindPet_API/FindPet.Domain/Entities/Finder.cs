@@ -3,6 +3,6 @@
 //[Table("Finders")]
 public class Finder : User
 {
-    public DateTime? FindPet { get; set; }
+    //public DateTime? FindPet { get; set; }
 
 }

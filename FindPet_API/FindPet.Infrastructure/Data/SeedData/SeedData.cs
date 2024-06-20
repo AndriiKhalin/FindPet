@@ -20,8 +20,8 @@ public class SeedData
                 Name = "Andrew",
                 Email = "khalin2002@gmail.com",
                 Password = "10122002",
-                PhoneNumber = "+380737303288",
-                BirthDate = new DateTime(2002, 12, 10)
+                //PhoneNumber = "+380737303288",
+                //BirthDate = new DateTime(2002, 12, 10)
             };
             Finder vanya = new Finder()
             {
@@ -29,8 +29,8 @@ public class SeedData
                 Name = "Vanya",
                 Email = "vanya2002@gmail.com",
                 Password = "10122002",
-                PhoneNumber = "+380737303288",
-                BirthDate = new DateTime(2002, 12, 10)
+                //PhoneNumber = "+380737303288",
+                //BirthDate = new DateTime(2002, 12, 10)
             };
 
             context.Finders.AddRange(andrew, vanya);
@@ -41,8 +41,8 @@ public class SeedData
                 Name = "Vlad",
                 Email = "vlad2002@gmail.com",
                 Password = "10122002",
-                PhoneNumber = "+380737303288",
-                BirthDate = new DateTime(2002, 12, 10)
+                //PhoneNumber = "+380737303288",
+                //BirthDate = new DateTime(2002, 12, 10)
             };
 
             Owner dima = new Owner()
@@ -51,8 +51,8 @@ public class SeedData
                 Name = "Dima",
                 Email = "dima2002@gmail.com",
                 Password = "10122002",
-                PhoneNumber = "+380737303288",
-                BirthDate = new DateTime(2002, 12, 10)
+                //PhoneNumber = "+380737303288",
+                //BirthDate = new DateTime(2002, 12, 10)
             };
 
             context.Owners.AddRange(vlad, dima);

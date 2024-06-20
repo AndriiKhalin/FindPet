@@ -81,7 +81,7 @@ public class UserService : IUserService
 
         var userEntityForDelete = await GetUserAsync(userId);
 
-        _manageImage.DeletePhoto(userEntityForDelete.Photo);
+        //_manageImage.DeletePhoto(userEntityForDelete.Photo);
 
         await _unitOfWorkRep.User.DeleteAsync(userId);
 
@@ -106,12 +106,12 @@ public class UserService : IUserService
         var userEntity = await GetUserAsync(userId);
 
 
-        if (user.Photo is not null)
-        {
-            _manageImage.DeletePhoto(userEntity.Photo);
-            await _manageImage.UploadPhotoAsync(user.Photo, userId);
+        //if (user.Photo is not null)
+        //{
+        //    _manageImage.DeletePhoto(userEntity.Photo);
+        //    await _manageImage.UploadPhotoAsync(user.Photo, userId);
 
-        }
+        //}
         //else
         //{
         //    _logger.LogError($"Photo is null");
@@ -136,8 +136,8 @@ public class UserService : IUserService
 
         var userMap = _mapper.Map<User>(user);
 
-        userMap.DateCreateUpdate = DateTime.UtcNow;
-        userMap.Photo = await _manageImage.UploadPhotoAsync(user.Photo, userMap.Id);
+        //userMap.DateCreateUpdate = DateTime.UtcNow;
+        //userMap.Photo = await _manageImage.UploadPhotoAsync(user.Photo, userMap.Id);
 
 
         await _unitOfWorkRep.User.CreateAsync(userMap);

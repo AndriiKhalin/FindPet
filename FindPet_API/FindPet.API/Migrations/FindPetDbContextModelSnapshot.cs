@@ -124,12 +124,6 @@ namespace FindPet.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("BirthDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateCreateUpdate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
@@ -137,12 +131,6 @@ namespace FindPet.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Photo")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserType")
@@ -364,21 +352,12 @@ namespace FindPet.API.Migrations
                 {
                     b.HasBaseType("FindPet.Domain.Entities.User");
 
-                    b.Property<DateTime?>("FindPet")
-                        .HasColumnType("datetime2");
-
                     b.HasDiscriminator().HasValue("Finder");
                 });
 
             modelBuilder.Entity("FindPet.Domain.Entities.Owner", b =>
                 {
                     b.HasBaseType("FindPet.Domain.Entities.User");
-
-                    b.Property<bool?>("IsPet")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LostPet")
-                        .HasColumnType("datetime2");
 
                     b.HasDiscriminator().HasValue("Owner");
                 });

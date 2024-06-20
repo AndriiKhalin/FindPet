@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using FindPet.Domain.DTOs.OwnerDTO;
+using FindPet.Domain.DTOs.EntitiesDTOs.OwnerDTO;
 using FindPet.Domain.Entities;
 using FindPet.Infrastructure.Interfaces.IEntityRepository;
 using FindPet.Infrastructure.Interfaces.IEntityService;
@@ -81,7 +81,7 @@ public class OwnerService : IOwnerService
 
         var ownerEntityForDelete = await GetOwnerAsync(ownerId);
 
-        _manageImage.DeletePhoto(ownerEntityForDelete.Photo);
+        //_manageImage.DeletePhoto(ownerEntityForDelete.Photo);
 
         await _unitOfWorkRep.Owner.DeleteAsync(ownerId);
 
@@ -106,12 +106,12 @@ public class OwnerService : IOwnerService
         var ownerEntity = await GetOwnerAsync(ownerId);
 
 
-        if (owner.Photo is not null)
-        {
-            _manageImage.DeletePhoto(ownerEntity.Photo);
-            await _manageImage.UploadPhotoAsync(owner.Photo, ownerId);
+        //if (owner.Photo is not null)
+        //{
+        //    _manageImage.DeletePhoto(ownerEntity.Photo);
+        //    await _manageImage.UploadPhotoAsync(owner.Photo, ownerId);
 
-        }
+        //}
         //else
         //{
         //    _logger.LogError($"Photo is null");
@@ -138,8 +138,8 @@ public class OwnerService : IOwnerService
 
         var ownerMap = _mapper.Map<Owner>(owner);
 
-        ownerMap.DateCreateUpdate = DateTime.UtcNow;
-        ownerMap.Photo = await _manageImage.UploadPhotoAsync(owner.Photo, ownerMap.Id);
+        //ownerMap.DateCreateUpdate = DateTime.UtcNow;
+        //ownerMap.Photo = await _manageImage.UploadPhotoAsync(owner.Photo, ownerMap.Id);
 
 
         await _unitOfWorkRep.Owner.CreateAsync(ownerMap);

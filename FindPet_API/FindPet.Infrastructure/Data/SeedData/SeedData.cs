@@ -17,22 +17,20 @@ public class SeedData
             Finder andrew = new Finder()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Andrew",
-                LastName = "Khalin",
+                Name = "Andrew",
                 Email = "khalin2002@gmail.com",
                 Password = "10122002",
-                PhoneNumber = "+380737303288",
-                BirthDate = new DateTime(2002, 12, 10)
+                //PhoneNumber = "+380737303288",
+                //BirthDate = new DateTime(2002, 12, 10)
             };
             Finder vanya = new Finder()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Vanya",
-                LastName = "Khalin",
+                Name = "Vanya",
                 Email = "vanya2002@gmail.com",
                 Password = "10122002",
-                PhoneNumber = "+380737303288",
-                BirthDate = new DateTime(2002, 12, 10)
+                //PhoneNumber = "+380737303288",
+                //BirthDate = new DateTime(2002, 12, 10)
             };
 
             context.Finders.AddRange(andrew, vanya);
@@ -40,23 +38,21 @@ public class SeedData
             Owner vlad = new Owner()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Vlad",
-                LastName = "Shabaltas",
+                Name = "Vlad",
                 Email = "vlad2002@gmail.com",
                 Password = "10122002",
-                PhoneNumber = "+380737303288",
-                BirthDate = new DateTime(2002, 12, 10)
+                //PhoneNumber = "+380737303288",
+                //BirthDate = new DateTime(2002, 12, 10)
             };
 
             Owner dima = new Owner()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Dima",
-                LastName = "Strunov",
+                Name = "Dima",
                 Email = "dima2002@gmail.com",
                 Password = "10122002",
-                PhoneNumber = "+380737303288",
-                BirthDate = new DateTime(2002, 12, 10)
+                //PhoneNumber = "+380737303288",
+                //BirthDate = new DateTime(2002, 12, 10)
             };
 
             context.Owners.AddRange(vlad, dima);

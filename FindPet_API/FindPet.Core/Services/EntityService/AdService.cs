@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using FindPet.Domain.DTOs.AdDTO;
+using FindPet.Domain.DTOs.EntitiesDTOs.AdDTO;
 using FindPet.Domain.Entities;
 using FindPet.Infrastructure.Interfaces.IEntityRepository;
 using FindPet.Infrastructure.Interfaces.IEntityService;

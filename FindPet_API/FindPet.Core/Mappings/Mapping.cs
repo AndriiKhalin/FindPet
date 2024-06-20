@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using FindPet.Domain.DTOs.AdDTO;
-using FindPet.Domain.DTOs.FinderDTO;
-using FindPet.Domain.DTOs.OwnerDTO;
-using FindPet.Domain.DTOs.PetDTO;
-using FindPet.Domain.DTOs.UserDTO;
+using FindPet.Domain.DTOs.EntitiesDTOs.AdDTO;
+using FindPet.Domain.DTOs.EntitiesDTOs.FinderDTO;
+using FindPet.Domain.DTOs.EntitiesDTOs.OwnerDTO;
+using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
+using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
 using FindPet.Domain.Entities;
 
 namespace FindPet.Core.Mappings;

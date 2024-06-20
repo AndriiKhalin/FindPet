@@ -14,8 +14,8 @@ public class UserRepository : BaseRepository<User>, IUserRepository<User>
         _context = context;
     }
 
-    public async Task<bool> IsExistAsync(string userFirstName)
+    public async Task<bool> IsExistAsync(string userName)
     {
-        return await IsExistAsync(x => x.FirstName == userFirstName);
+        return await IsExistAsync(x => x.Name == userName);
     }
 }

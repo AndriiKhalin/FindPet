@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using FindPet.Domain.DTOs.FinderDTO;
+using FindPet.Domain.DTOs.EntitiesDTOs.FinderDTO;
 using FindPet.Domain.Entities;
 using FindPet.Infrastructure.Interfaces.IEntityRepository;
 using FindPet.Infrastructure.Interfaces.IEntityService;
@@ -81,7 +81,7 @@ public class FinderService : IFinderService
 
         var finderEntityForDelete = await GetFinderAsync(finderId);
 
-        _manageImage.DeletePhoto(finderEntityForDelete.Photo);
+        //_manageImage.DeletePhoto(finderEntityForDelete.Photo);
 
         await _unitOfWorkRep.Finder.DeleteAsync(finderId);
 
@@ -105,12 +105,12 @@ public class FinderService : IFinderService
         var finderEntity = await GetFinderAsync(finderId);
 
 
-        if (finder.Photo is not null)
-        {
-            _manageImage.DeletePhoto(finderEntity.Photo);
-            await _manageImage.UploadPhotoAsync(finder.Photo, finderId);
+        //if (finder.Photo is not null)
+        //{
+        //    _manageImage.DeletePhoto(finderEntity.Photo);
+        //    await _manageImage.UploadPhotoAsync(finder.Photo, finderId);
 
-        }
+        //}
         //else
         //{
         //    _logger.LogError($"Photo is null");
@@ -136,8 +136,8 @@ public class FinderService : IFinderService
 
         var finderMap = _mapper.Map<Finder>(finder);
 
-        finderMap.DateCreateUpdate = DateTime.UtcNow;
-        finderMap.Photo = await _manageImage.UploadPhotoAsync(finder.Photo, finderMap.Id);
+        //finderMap.DateCreateUpdate = DateTime.UtcNow;
+        //finderMap.Photo = await _manageImage.UploadPhotoAsync(finder.Photo, finderMap.Id);
 
 
         await _unitOfWorkRep.Finder.CreateAsync(finderMap);

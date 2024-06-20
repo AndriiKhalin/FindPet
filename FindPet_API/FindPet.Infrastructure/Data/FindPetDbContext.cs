@@ -1,11 +1,13 @@
 ﻿using FindPet.Domain.Entities;
+using FindPet.Domain.ValueObjects;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace FindPet.Infrastructure.Data;
 
-public class FindPetDbContext : DbContext
+public class FindPetDbContext : IdentityDbContext<AuthUser>
 {
-    public FindPetDbContext(DbContextOptions opt) : base(opt)
+    public FindPetDbContext(DbContextOptions<FindPetDbContext> options) : base(options)
     {
 
     }

@@ -1,0 +1,102 @@
+<section class="vh-150 flex items-center justify-center">
+  <div class="container py-5 h-150">
+    <div class="row d-flex align-items-center justify-content-center h-150">
+      <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1 text-center">
+        <form [formGroup]="form" (ngSubmit)="register()">
+          <h3 class="mb-4 text-2xl font-semibold text-center">Sign Up</h3>
+          @for(error of errors; track error){
+            <div class="bg-red-100 border mb-2 flex flex-col gap-2 border-red-400 text-red-400 px4 py4 rounded-md relative">
+              <div class="text-xs p-2">{{error.description}}</div>
+            </div>
+            }
+
+          <div class="form-outline mb-4 w-72 mx-auto">
+            <input type="text" id="name" class="form-control form-control-lg placeholder:italic placeholder:text-slate-200" formControlName="name" placeholder="Name"/>
+            <div *ngIf="form.controls['name'].invalid && (form.controls['name'].touched || form.controls['name'].dirty)" class="text-red-500 text-sm absolute">
+              Name invalid
+            </div>
+          </div>
+
+          <div class="form-outline mb-4 w-72 mx-auto">
+            <input type="email" id="email" class="form-control form-control-lg placeholder:italic placeholder:text-slate-200" formControlName="email" placeholder="Email"/>
+            <div *ngIf="form.controls['email'].invalid && (form.controls['email'].touched || form.controls['email'].dirty)" class="text-red-500 text-sm absolute">
+              Email invalid
+            </div>
+          </div>
+
+          <div class="form-outline mb-4 w-72 mx-auto relative">
+            <input [type]="showPassword ? 'text' : 'password'" id="password" class="form-control form-control-lg placeholder:italic placeholder:text-slate-200" formControlName="password" placeholder="Password"/>
+            <span (click)="togglePassword()" class="absolute inset-y-0 right-1 pr-3 flex items-center cursor-pointer">
+              <i class="fas" [ngClass]="{'fa-eye-slash': !showPassword, 'fa-eye': showPassword}"></i>
+            </span>
+            <div *ngIf="form.controls['password'].invalid && (form.controls['password'].touched || form.controls['password'].dirty)" class="text-red-500 text-sm absolute">
+              Password invalid
+            </div>
+          </div>
+
+          <!-- <div class="form-outline mb-4 w-72 mx-auto relative">
+            <input [type]="showPassword ? 'text' : 'password'" id="confirmPassword" class="form-control form-control-lg placeholder:italic placeholder:text-slate-200" formControlName="confirmPassword" placeholder="Confirm Password"/>
+            <span (click)="togglePassword()" class="absolute inset-y-0 right-1 pr-3 flex items-center cursor-pointer">
+              <i class="fas" [ngClass]="{'fa-eye-slash': !showPassword, 'fa-eye': showPassword}"></i>
+            </span>
+            <div *ngIf="form.controls['confirmPassword'].invalid && (form.controls['confirmPassword'].touched || form.controls['confirmPassword'].dirty)" class="text-red-500 text-sm absolute">
+              Confirm Password invalid
+            </div>
+          </div> -->
+
+          <!-- <div class="form-outline mb-4 w-72 mx-auto">
+            <input type="date" id="birthDate" formControlName="birthDate" class="form-control form-control-lg placeholder:italic placeholder:text-slate-200"/>
+            <div *ngIf="form.controls['birthDate'].invalid && (form.controls['birthDate'].touched || form.controls['birthDate'].dirty)" class="text-red-500 text-sm absolute">
+              BirthDate invalid
+            </div>
+          </div>
+
+          <div class="form-outline w-72 mx-auto mb-4">
+            <input type="tel" id="phoneNumber" class="form-control form-control-lg  placeholder:italic placeholder:text-slate-200" formControlName="phoneNumber" placeholder="Phone"/>
+            <div *ngIf="form.controls['phoneNumber'].invalid && (form.controls['phoneNumber'].touched || form.controls['phoneNumber'].dirty)" class="text-red-500 text-sm absolute">
+              Phone invalid
+            </div>
+          </div>
+
+          <div class="form-outline w-72 mx-auto mb-4">
+            <input type="file" id="photo" class="form-control form-control-lg  placeholder:italic placeholder:text-slate-200" formControlName="photo" placeholder="Photo"/>
+            <div *ngIf="form.controls['photo'].invalid && (form.controls['photo'].touched || form.controls['photo'].dirty)" class="text-red-500 text-sm absolute">
+              Photo invalid
+            </div>
+          </div> -->
+
+          <div class="form-outline mb-4 w-72 mx-auto">
+
+             <select id="role"   formControlName="role" class="form-control form-control-lg h-12 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 italic text-slate-200 dark:focus:ring-blue-500 dark:focus:border-blue-500">
+             <!-- <option selected class="bg-gray-300" >Choose a role</option> -->
+             @for (item of roles$ | async; track item){
+
+             <option [value]="item.name">{{item.name}}</option>
+             }
+             </select>
+             <div *ngIf="form.controls['role'].invalid && (form.controls['role'].touched || form.controls['role'].dirty)" class="text-red-500 text-sm absolute">
+              Role invalid
+            </div>
+          </div>
+
+          <div class="flex justify-center items-center mb-4">
+            <div class="flex items-center">
+              <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"/>
+              <label for="remember-me" class="ml-2 text-sm">
+                I accept the <a href="javascript:void(0);" class="text-blue-600 font-semibold hover:underline">Terms and Conditions</a>
+              </label>
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center justify-content-center mb-4">
+            <button type="submit" class="btn btn-primary btn-lg btn-block w-30 hover:drop-shadow-xl mt-2" [disabled]="!form.valid">Create Account</button>
+          </div>
+
+          <p class="text-sm mt-6 text-center">Already have an account? <a routerLink="/login" class="text-blue-600 font-semibold hover:underline ml-1">Login here</a></p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+

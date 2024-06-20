@@ -20,7 +20,7 @@ public class SampleContextFactory : IDesignTimeDbContextFactory<FindPetDbContext
 
         // получаем строку подключения из файла appsettings.json
         var connectionString = config.GetConnectionString("AppDb");
-        optionsBuilder.UseSqlServer(connectionString, b => b.MigrationsAssembly("API"));
+        optionsBuilder.UseSqlServer(connectionString, b => b.MigrationsAssembly("FindPet.API"));
         return new FindPetDbContext(optionsBuilder.Options);
     }
 }

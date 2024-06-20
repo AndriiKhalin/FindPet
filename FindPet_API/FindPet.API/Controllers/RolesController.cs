@@ -52,16 +52,22 @@ namespace FindPet.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetRoles()
         {
+            var roles = await _roleManager.Roles.ToListAsync();
 
-            // list of roles with total users in each role 
+            var roleDtos = new List<RoleResponseDto>();
 
-            var roles = await _roleManager.Roles.Select(r => new RoleResponseDto
+            foreach (var role in roles)
             {
-                Id = r.Id,
-                Name = r.Name,
-                TotalUsers = _userManager.GetUsersInRoleAsync(r.Name!).Result.Count
-            }).ToListAsync();
-            return Ok(roles);
+                var usersInRole = await _userManager.GetUsersInRoleAsync(role.Name!);
+                roleDtos.Add(new RoleResponseDto
+                {
+                    Id = role.Id,
+                    Name = role.Name,
+                    TotalUsers = usersInRole.Count
+                });
+            }
+
+            return Ok(roleDtos);
         }
 
 

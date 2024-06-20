@@ -15,16 +15,16 @@ public class RegisterDto
     [Required]
     public string Password { get; set; } = string.Empty;
 
-    [Required]
-    public DateTime? BirthDate { get; set; }
+    //[Required]
+    //public DateTime? BirthDate { get; set; }
 
-    [Required]
-    public string? PhoneNumber { get; set; }
+    //[Required]
+    //public string? PhoneNumber { get; set; }
 
-    [Required]
-    public IFormFile? Photo { get; set; }
+    //[Required]
+    //public IFormFile? Photo { get; set; }
 
-    public List<string>? Roles { get; set; }
+    public string? Role { get; set; }
 
     //[Required]
     //public string UserName { get; set; }

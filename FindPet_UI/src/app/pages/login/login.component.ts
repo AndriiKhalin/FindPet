@@ -8,6 +8,7 @@ import { AuthService } from '../../services/auth.service';
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
+
 @Component({
   selector: 'app-login',
   standalone: true,

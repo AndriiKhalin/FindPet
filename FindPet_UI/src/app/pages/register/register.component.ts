@@ -13,10 +13,12 @@ import { Observable } from 'rxjs';
 import { ValidationError } from '../../interfaces/validation-error';
 import { HttpErrorResponse } from '@angular/common/http';
 
+
+
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [FormsModule,RouterOutlet,AsyncPipe, RouterLink,MatIconModule,MatInputModule,NgClass,ReactiveFormsModule,NgFor,NgIf],
+  imports: [FormsModule,RouterOutlet,AsyncPipe , RouterLink,MatIconModule,MatInputModule,NgClass,ReactiveFormsModule,NgFor,NgIf],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
@@ -26,24 +28,21 @@ export class RegisterComponent implements OnInit{
   matSnackbar = inject(MatSnackBar);
   roles$!: Observable<Role[]>;
   showPassword: boolean = false;
-  form : FormGroup;
+  form! : FormGroup;
   router = inject(Router);
   errors!: ValidationError[];
 
   constructor(private formBuilder: FormBuilder){
-      this.form = formBuilder.group({
-          "name": ["", [Validators.required]],
-          "email": ["", [ Validators.required, Validators.email]],
-          "password": ['', [Validators.required]],
-          "confirmPassword" : ["",[Validators.required]],
-          "phoneNumber":[ "", [Validators.required]],
-          "roles": ['']
-      },
-      {
-        validator: this.passwordMatchValidator,
-      }
-    );
-  }
+    this.form = formBuilder.group({
+        "name": ["", [Validators.required]],
+        "email": ["", [ Validators.required,Validators.email]],
+        "password": ['', [Validators.required]],
+        // "birthDate": ['', [Validators.required]],
+        // "phoneNumber":[ "", [Validators.required]],
+        // "photo" : ["",[Validators.required]],
+        "role": ['']
+    });
+}
 
 togglePassword(): void {
   this.showPassword =!this.showPassword;
@@ -53,16 +52,29 @@ submit(){
 }
 
 ngOnInit(): void {
-  const input = document.querySelector("#phone") as HTMLInputElement;
-  intlTelInput(input, {
-    utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.12/build/js/utils.js",
-    separateDialCode:true
-  });
+  // const input = document.querySelector("#phoneNumber") as HTMLInputElement;
+  // intlTelInput(input, {
+  //   utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.12/build/js/utils.js",
+  //   separateDialCode:true
+  // });
+
 
   this.roles$ = this.roleService.getRoles();
 }
 
 register() {
+
+  const roles = this.form.get('role')?.value || [];
+
+    const registrationData = {
+      ...this.form.value,
+      roles: roles,
+    };
+
+    console.log(this.form.value);
+    console.log(registrationData);
+    console.log(roles);
+
   this.authService.register(this.form.value).subscribe(
     {
       next: (response) => {
@@ -88,17 +100,17 @@ register() {
   );
   }
 
-private passwordMatchValidator(
-    control: AbstractControl
-  ): { [key: string]: boolean } | null {
-    const password = control.get('password')?.value;
-    const confirmPassword = control.get('confirmPassword')?.value;
+// private passwordMatchValidator(
+//     control: AbstractControl
+//   ): { [key: string]: boolean } | null {
+//     const password = control.get('password')?.value;
+//     const confirmPassword = control.get('confirmPassword')?.value;
 
-    if (password !== confirmPassword) {
-      return { passwordMismatch: true };
-    }
+//     if (password !== confirmPassword) {
+//       return { passwordMismatch: true };
+//     }
 
-    return null;
-  }
+//     return null;
+//   }
 
 }

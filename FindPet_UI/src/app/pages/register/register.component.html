@@ -1,66 +1,3 @@
-<!-- <section class="vh-100">
-  <div class="container py-5 h-100">
-    <div class="row d-flex align-items-center justify-content-center justify-center h-100">
-      <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1 text-center">
-        <form [formGroup]="form" (ngSubmit)="submit" >
-          <h3 class="mb-4">Sign Up</h3>
-
-          <div data-mdb-input-init class="form-outline mb-4">
-            <input type="text"  id="name" class="form-control form-control-lg placeholder:italic placeholder:text-slate-200 " formControlName="userName" placeholder="Name"/>
-            <div *ngIf="form.controls['userName'].invalid && (form.controls['userName'].touched || form.controls['userName'].dirty)" class="text-red-500 text-sm absolute">
-             Name invalid
-        </div>
-          </div>
-
-          <div data-mdb-input-init class="form-outline mb-4">
-            <input type="email" id="email" class="form-control form-control-lg placeholder:italic placeholder:text-slate-200" formControlName="userEmail" placeholder="Email"/>
-            <div *ngIf="form.controls['userEmail'].invalid && (form.controls['userEmail'].touched || form.controls['userEmail'].dirty)" class="text-red-500 text-sm absolute">
-              Email invalid
-         </div>
-          </div>
-
-           <div data-mdb-input-init class="form-outline mb-4 relative">
-            <input type="{{showPassword ? 'text' : 'password'}}" id="password" class="form-control form-control-lg placeholder:italic placeholder:text-slate-200" formControlName="password" placeholder="Password"/>
-            <span class="absolute inset-y-0 right-1 pr-3 flex items-center cursor-pointer" id="toggle-password">
-              <i class="fas fa-eye-slash text-gray-500" [ngClass]="{'fas fa-eye-slash': !showPassword,'fa-solid fa-eye': showPassword}" (click)="togglePassword()"></i>
-            </span>
-            <div *ngIf="form.controls['password'].invalid && (form.controls['password'].touched || form.controls['password'].dirty)" class="text-red-500 text-sm absolute">
-              Password invalid
-         </div>
-          </div>
-
-
-          <div data-mdb-input-init class="form-outline mb-4">
-            <input type="date" id="date" class="form-control form-control-lg placeholder:italic placeholder:text-slate-200"/>
-          </div>
-
-          <div data-mdb-input-init class="form-outline mb-4 align-items-sm-start justify-content-left justify-start">
-            <input type="tel" id="phone" class="form-control form-control-lg  placeholder:italic placeholder:text-slate-200 " formControlName="userPhone"/>
-            <div *ngIf="form.controls['userPhone'].invalid && (form.controls['userPhone'].touched || form.controls['userPhone'].dirty)" class="text-red-500 text-sm absolute">
-              Phone invalid
-         </div>
-          </div>
-
-
-          <div class="flex items-center">
-            <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 shrink-0 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
-            <label for="remember-me" class="ml-3 block text-sm">
-              I accept the <a href="javascript:void(0);" class="text-blue-600 font-semibold hover:underline ml-1">Terms and Conditions</a>
-            </label>
-          </div>
-
-           <div class="d-flex align-items-center justify-content-center">
-            <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg btn-block w-50 hover:drop-shadow-xl mt-4" [disabled]="!form.valid">Create Account</button>
-          </div>
-
-          <p class="text-sm mt-6 text-center">Already have an account? <a routerLink="/login" class="text-blue-600 font-semibold hover:underline ml-1">Login here</a></p>
-
-        </form>
-      </div>
-    </div>
-  </div>
-</section> -->
-
 <section class="vh-150 flex items-center justify-center">
   <div class="container py-5 h-150">
     <div class="row d-flex align-items-center justify-content-center h-150">
@@ -72,7 +9,7 @@
               <div class="text-xs p-2">{{error.description}}</div>
             </div>
             }
-          <!-- Adjust the width of the input fields by changing the class "w-75" to "w-50" -->
+
           <div class="form-outline mb-4 w-72 mx-auto">
             <input type="text" id="name" class="form-control form-control-lg placeholder:italic placeholder:text-slate-200" formControlName="name" placeholder="Name"/>
             <div *ngIf="form.controls['name'].invalid && (form.controls['name'].touched || form.controls['name'].dirty)" class="text-red-500 text-sm absolute">
@@ -97,38 +34,49 @@
             </div>
           </div>
 
-          <div class="form-outline mb-4 w-72 mx-auto relative">
-            <input [type]="showPassword ? 'text' : 'password'" id="password" class="form-control form-control-lg placeholder:italic placeholder:text-slate-200" formControlName="confirmPassword" placeholder="Confirm Password"/>
+          <!-- <div class="form-outline mb-4 w-72 mx-auto relative">
+            <input [type]="showPassword ? 'text' : 'password'" id="confirmPassword" class="form-control form-control-lg placeholder:italic placeholder:text-slate-200" formControlName="confirmPassword" placeholder="Confirm Password"/>
             <span (click)="togglePassword()" class="absolute inset-y-0 right-1 pr-3 flex items-center cursor-pointer">
               <i class="fas" [ngClass]="{'fa-eye-slash': !showPassword, 'fa-eye': showPassword}"></i>
             </span>
             <div *ngIf="form.controls['confirmPassword'].invalid && (form.controls['confirmPassword'].touched || form.controls['confirmPassword'].dirty)" class="text-red-500 text-sm absolute">
               Confirm Password invalid
             </div>
-          </div>
+          </div> -->
 
-          <div class="form-outline mb-4 w-72 mx-auto">
-            <input type="date" id="date" class="form-control form-control-lg placeholder:italic placeholder:text-slate-200"/>
+          <!-- <div class="form-outline mb-4 w-72 mx-auto">
+            <input type="date" id="birthDate" formControlName="birthDate" class="form-control form-control-lg placeholder:italic placeholder:text-slate-200"/>
+            <div *ngIf="form.controls['birthDate'].invalid && (form.controls['birthDate'].touched || form.controls['birthDate'].dirty)" class="text-red-500 text-sm absolute">
+              BirthDate invalid
+            </div>
           </div>
 
           <div class="form-outline w-72 mx-auto mb-4">
-            <input type="tel" id="phone" class="form-control form-control-lg  placeholder:italic placeholder:text-slate-200" formControlName="phoneNumber" placeholder="Phone"/>
+            <input type="tel" id="phoneNumber" class="form-control form-control-lg  placeholder:italic placeholder:text-slate-200" formControlName="phoneNumber" placeholder="Phone"/>
             <div *ngIf="form.controls['phoneNumber'].invalid && (form.controls['phoneNumber'].touched || form.controls['phoneNumber'].dirty)" class="text-red-500 text-sm absolute">
               Phone invalid
             </div>
           </div>
 
+          <div class="form-outline w-72 mx-auto mb-4">
+            <input type="file" id="photo" class="form-control form-control-lg  placeholder:italic placeholder:text-slate-200" formControlName="photo" placeholder="Photo"/>
+            <div *ngIf="form.controls['photo'].invalid && (form.controls['photo'].touched || form.controls['photo'].dirty)" class="text-red-500 text-sm absolute">
+              Photo invalid
+            </div>
+          </div> -->
+
           <div class="form-outline mb-4 w-72 mx-auto">
-            <!-- <label for="countries" class="block text-sm mb-1 font-medium italic text-slate-200  inset-y-0 right-1 pr-3 flex items-center">Select an option</label> -->
-             <select id="roles" formControlName="roles" class="h-12 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 italic text-slate-200 dark:focus:ring-blue-500 dark:focus:border-blue-500">
-             <option selected class="bg-gray-300" >Choose a role</option>
+
+             <select id="role"   formControlName="role" class="form-control form-control-lg h-12 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 italic text-slate-200 dark:focus:ring-blue-500 dark:focus:border-blue-500">
+             <!-- <option selected class="bg-gray-300" >Choose a role</option> -->
              @for (item of roles$ | async; track item){
-             <!-- <option value="Admin">Admin</option>
-             <option value="User">User</option> -->
+
              <option [value]="item.name">{{item.name}}</option>
              }
-
              </select>
+             <div *ngIf="form.controls['role'].invalid && (form.controls['role'].touched || form.controls['role'].dirty)" class="text-red-500 text-sm absolute">
+              Role invalid
+            </div>
           </div>
 
           <div class="flex justify-center items-center mb-4">
@@ -150,4 +98,5 @@
     </div>
   </div>
 </section>
+
 

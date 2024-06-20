@@ -58,15 +58,8 @@ namespace FindPet.API.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Photo = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DateCreateUpdate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UserType = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
-                    FindPet = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LostPet = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsPet = table.Column<bool>(type: "bit", nullable: true)
+                    UserType = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false)
                 },
                 constraints: table =>
                 {

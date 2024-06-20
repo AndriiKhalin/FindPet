@@ -39,6 +39,11 @@ public class UserService : IUserService
         return await _unitOfWorkRep.User.GetAsync(userId);
     }
 
+    public Task<User?> GetUserAsync(string userName)
+    {
+        throw new NotImplementedException();
+    }
+
     //public async Task<IEnumerable<Ad>?> GetAdsByUserAsync(Guid userId)
     //{
     //    if (!await UserExistsAsync(userId))

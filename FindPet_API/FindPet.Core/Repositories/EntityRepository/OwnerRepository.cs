@@ -1,6 +1,7 @@
 ﻿using FindPet.Domain.Entities;
 using FindPet.Infrastructure.Data;
 using FindPet.Infrastructure.Interfaces.IEntityRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace FindPet.Core.Repositories.EntityRepository;
 
@@ -39,10 +40,15 @@ public class OwnerRepository : BaseRepository<Owner>, IUserRepository<Owner>
     //    return await ExistsAsync(x => x.Id == userId);
     //}
 
+    public async Task<Owner?> GetUserAsync(string ownerName)
+    {
+        return await GetByConditionAsync(x => x.Name == ownerName).Result.FirstOrDefaultAsync();
+    }
     public async Task<bool> IsExistAsync(string userName)
     {
         return await IsExistAsync(x => x.Name == userName);
     }
+
 
     //public async Task DeleteAsync(Guid userId)
     //{

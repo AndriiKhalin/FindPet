@@ -1,6 +1,7 @@
 ﻿using FindPet.Domain.Entities;
 using FindPet.Infrastructure.Data;
 using FindPet.Infrastructure.Interfaces.IEntityRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace FindPet.Core.Repositories.EntityRepository;
 
@@ -41,6 +42,12 @@ public class FinderRepository : BaseRepository<Finder>, IUserRepository<Finder>
     public async Task<bool> IsExistAsync(string userName)
     {
         return await IsExistAsync(x => x.Name == userName);
+    }
+
+
+    public async Task<Finder?> GetUserAsync(string finderName)
+    {
+        return await GetByConditionAsync(x => x.Name == finderName).Result.FirstOrDefaultAsync();
     }
 
     //public async Task DeleteAsync(Guid userId)

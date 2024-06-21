@@ -56,7 +56,8 @@ namespace FindPet.API.Controllers
             {
                 Email = registerDto.Email,
                 Name = registerDto.Name,
-                UserName = registerDto.Email
+                UserName = registerDto.Email,
+                Photo = registerDto.Photo.FileName
             };
 
 

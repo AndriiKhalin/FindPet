@@ -23,5 +23,5 @@ public interface IPetService
 
     Task UpdatePetAsync(Guid petId, PetForUpdateDto pet);
 
-    Task<Pet> CreatePetAsync(Guid ownerId, Guid finderId, PetForCreateDto pet);
+    Task<Pet> CreatePetAsync(Guid userId, PetForCreateDto pet);
 }

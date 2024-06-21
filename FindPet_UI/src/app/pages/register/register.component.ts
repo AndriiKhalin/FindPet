@@ -37,9 +37,9 @@ export class RegisterComponent implements OnInit{
         "name": ["", [Validators.required]],
         "email": ["", [ Validators.required,Validators.email]],
         "password": ['', [Validators.required]],
-        // "birthDate": ['', [Validators.required]],
-        // "phoneNumber":[ "", [Validators.required]],
-        // "photo" : ["",[Validators.required]],
+        "birthDate": ['', [Validators.required]],
+        "phoneNumber":[ "", [Validators.required]],
+        "photo" : ["",[Validators.required]],
         "role": ['']
     });
 }
@@ -52,11 +52,11 @@ submit(){
 }
 
 ngOnInit(): void {
-  // const input = document.querySelector("#phoneNumber") as HTMLInputElement;
-  // intlTelInput(input, {
-  //   utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.12/build/js/utils.js",
-  //   separateDialCode:true
-  // });
+  const input = document.querySelector("#phoneNumber") as HTMLInputElement;
+  intlTelInput(input, {
+    utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.12/build/js/utils.js",
+    separateDialCode:true
+  });
 
 
   this.roles$ = this.roleService.getRoles();

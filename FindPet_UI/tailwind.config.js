@@ -4,7 +4,6 @@ module.exports = {
     "./src/**/*.{html,ts}",
   ],
   purge: ['./src/**/*.{html,ts}'],
-  darkMode: false,
   theme: {
     extend: {
       fontFamily: {

@@ -18,10 +18,13 @@ public class Pet : BaseEntity
     public string? FoundLocation { get; set; }
     public string? Status { get; set; }
 
-    public Guid? OwnerId { get; set; }
-    public Owner? Owner { get; set; }
+    //public Guid? OwnerId { get; set; }
+    //public Owner? Owner { get; set; }
 
-    public Guid? FinderId { get; set; }
-    public Finder? Finder { get; set; }
+    //public Guid? FinderId { get; set; }
+    //public Finder? Finder { get; set; }
+
+    public Guid? UserId { get; set; }
+    public User? User { get; set; }
     public List<Ad>? Ads { get; set; } = new();
 }

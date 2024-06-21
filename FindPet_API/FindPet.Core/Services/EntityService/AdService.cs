@@ -104,11 +104,11 @@ public class AdService : IAdService
             _manageImage.DeletePhoto(adEntity.Photo);
             var photoPath = await _manageImage.UploadPhotoAsync(ad.Photo, adId);
         }
-        //else
-        //{
-        //    _logger.LogError($"Photo is null");
-        //    throw new ArgumentException("Photo cannot be null.");
-        //}
+        else
+        {
+            _logger.LogError($"Photo is null");
+            throw new ArgumentException("Photo cannot be null.");
+        }
 
         _mapper.Map(ad, adEntity);
 

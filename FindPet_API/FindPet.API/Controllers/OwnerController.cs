@@ -1,98 +1,98 @@
-﻿using AutoMapper;
-using FindPet.Domain.DTOs.EntitiesDTOs.OwnerDTO;
-using FindPet.Infrastructure.Interfaces.IEntityService;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿//using AutoMapper;
+//using FindPet.Domain.DTOs.EntitiesDTOs.OwnerDTO;
+//using FindPet.Infrastructure.Interfaces.IEntityService;
+//using Microsoft.AspNetCore.Authorization;
+//using Microsoft.AspNetCore.Mvc;
 
-namespace FindPet.API.Controllers
-{
-    [Authorize]
-    [Route("api/[controller]")]
-    [ApiController]
-    public class OwnerController : ControllerBase
-    {
-        private readonly IOwnerService _ownerService;
-        private readonly IMapper _mapper;
+//namespace FindPet.API.Controllers
+//{
+//    [Authorize]
+//    [Route("api/[controller]")]
+//    [ApiController]
+//    public class OwnerController : ControllerBase
+//    {
+//        private readonly IOwnerService _ownerService;
+//        private readonly IMapper _mapper;
 
-        public OwnerController(IOwnerService ownerService, IMapper mapper)
-        {
-            _ownerService = ownerService;
-            _mapper = mapper;
-        }
+//        public OwnerController(IOwnerService ownerService, IMapper mapper)
+//        {
+//            _ownerService = ownerService;
+//            _mapper = mapper;
+//        }
 
-        [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<OwnerDto>))]
-        public async Task<IActionResult> GetOwners()
-        {
-            var owners = _mapper.Map<IEnumerable<OwnerDto>>(_ownerService.GetOwners());
+//        [HttpGet]
+//        [ProducesResponseType(200, Type = typeof(IEnumerable<OwnerDto>))]
+//        public async Task<IActionResult> GetOwners()
+//        {
+//            var owners = _mapper.Map<IEnumerable<OwnerDto>>(_ownerService.GetOwners());
 
-            return Ok(owners);
-        }
+//            return Ok(owners);
+//        }
 
-        [HttpGet("{ownerId}")]
-        [ProducesResponseType(200, Type = typeof(OwnerDto))]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> GetOwner(Guid ownerId)
-        {
-            var owner = _mapper.Map<OwnerDto>(await _ownerService.GetOwnerAsync(ownerId));
+//        [HttpGet("{ownerId}")]
+//        [ProducesResponseType(200, Type = typeof(OwnerDto))]
+//        [ProducesResponseType(400)]
+//        public async Task<IActionResult> GetOwner(Guid ownerId)
+//        {
+//            var owner = _mapper.Map<OwnerDto>(await _ownerService.GetOwnerAsync(ownerId));
 
-            return Ok(owner);
-        }
+//            return Ok(owner);
+//        }
 
-        //[HttpGet("{OwnerId}/orders")]
-        //[ProducesResponseType(200, Type = typeof(IEnumerable<OrderDto>))]
-        //[ProducesResponseType(400)]
-        //public async Task<IActionResult> GetOrdersByOwner(Guid OwnerId)
-        //{
-        //    var ordersByOwner = _mapper.Map<IEnumerable<OrderDto>>(await _OwnerService.GetOrdersByOwner(OwnerId));
-        //    return Ok(ordersByOwner);
-        //}
+//        //[HttpGet("{OwnerId}/orders")]
+//        //[ProducesResponseType(200, Type = typeof(IEnumerable<OrderDto>))]
+//        //[ProducesResponseType(400)]
+//        //public async Task<IActionResult> GetOrdersByOwner(Guid OwnerId)
+//        //{
+//        //    var ordersByOwner = _mapper.Map<IEnumerable<OrderDto>>(await _OwnerService.GetOrdersByOwner(OwnerId));
+//        //    return Ok(ordersByOwner);
+//        //}
 
-        //[HttpGet("categories/{OwnerId}")]
-        //[ProducesResponseType(200, Type = typeof(OwnerCategoryDto))]
-        //[ProducesResponseType(400)]
-        //public async Task<IActionResult> GetCategoryByOwner(Guid OwnerId)
-        //{
+//        //[HttpGet("categories/{OwnerId}")]
+//        //[ProducesResponseType(200, Type = typeof(OwnerCategoryDto))]
+//        //[ProducesResponseType(400)]
+//        //public async Task<IActionResult> GetCategoryByOwner(Guid OwnerId)
+//        //{
 
-        //    var categoryByOwner = _mapper.Map<OwnerCategoryDto>(await _OwnerService.GetCategoryByOwner(OwnerId));
+//        //    var categoryByOwner = _mapper.Map<OwnerCategoryDto>(await _OwnerService.GetCategoryByOwner(OwnerId));
 
-        //    return Ok(categoryByOwner);
-        //}
+//        //    return Ok(categoryByOwner);
+//        //}
 
-        [HttpPost]
-        [ProducesResponseType(201, Type = typeof(OwnerDto))]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> CreateOwner([FromForm] OwnerForCreateDto ownerCreate)
-        {
+//        [HttpPost]
+//        [ProducesResponseType(201, Type = typeof(OwnerDto))]
+//        [ProducesResponseType(400)]
+//        public async Task<IActionResult> CreateOwner([FromForm] OwnerForCreateDto ownerCreate)
+//        {
 
-            var ownerMap = await _ownerService.CreateOwnerAsync(ownerCreate);
+//            var ownerMap = await _ownerService.CreateOwnerAsync(ownerCreate);
 
-            var createdOwner = _mapper.Map<OwnerDto>(ownerMap);
+//            var createdOwner = _mapper.Map<OwnerDto>(ownerMap);
 
-            return CreatedAtAction(nameof(GetOwner), new { ownerId = createdOwner.Id }, createdOwner);
-        }
+//            return CreatedAtAction(nameof(GetOwner), new { ownerId = createdOwner.Id }, createdOwner);
+//        }
 
 
-        [HttpPut("{ownerId}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateOwner(Guid ownerId, [FromForm] OwnerForUpdateDto ownerUpdate)
-        {
+//        [HttpPut("{ownerId}")]
+//        [ProducesResponseType(204)]
+//        [ProducesResponseType(400)]
+//        [ProducesResponseType(404)]
+//        public async Task<IActionResult> UpdateOwner(Guid ownerId, [FromForm] OwnerForUpdateDto ownerUpdate)
+//        {
 
-            await _ownerService.UpdateOwnerAsync(ownerId, ownerUpdate);
+//            await _ownerService.UpdateOwnerAsync(ownerId, ownerUpdate);
 
-            return NoContent();
-        }
+//            return NoContent();
+//        }
 
-        [HttpDelete("{ownerId}")]
-        public async Task<IActionResult> DeleteOwner(Guid ownerId)
-        {
+//        [HttpDelete("{ownerId}")]
+//        public async Task<IActionResult> DeleteOwner(Guid ownerId)
+//        {
 
-            await _ownerService.DeleteOwnerAsync(ownerId);
+//            await _ownerService.DeleteOwnerAsync(ownerId);
 
-            return NoContent();
+//            return NoContent();
 
-        }
-    }
-}
+//        }
+//    }
+//}

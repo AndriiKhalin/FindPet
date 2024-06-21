@@ -11,10 +11,10 @@ public class SeedData
 
         //context.Database.EnsureCreated();
 
-        if (!context.Finders.Any())
+        if (!context.Users.Any())
         {
             //User
-            Finder andrew = new Finder()
+            User andrew = new User()
             {
                 Id = Guid.NewGuid(),
                 Name = "Andrew",
@@ -23,7 +23,7 @@ public class SeedData
                 //PhoneNumber = "+380737303288",
                 //BirthDate = new DateTime(2002, 12, 10)
             };
-            Finder vanya = new Finder()
+            User vanya = new User()
             {
                 Id = Guid.NewGuid(),
                 Name = "Vanya",
@@ -33,9 +33,7 @@ public class SeedData
                 //BirthDate = new DateTime(2002, 12, 10)
             };
 
-            context.Finders.AddRange(andrew, vanya);
-
-            Owner vlad = new Owner()
+            User vlad = new User()
             {
                 Id = Guid.NewGuid(),
                 Name = "Vlad",
@@ -45,7 +43,7 @@ public class SeedData
                 //BirthDate = new DateTime(2002, 12, 10)
             };
 
-            Owner dima = new Owner()
+            User dima = new User()
             {
                 Id = Guid.NewGuid(),
                 Name = "Dima",
@@ -55,7 +53,7 @@ public class SeedData
                 //BirthDate = new DateTime(2002, 12, 10)
             };
 
-            context.Owners.AddRange(vlad, dima);
+            context.Users.AddRange(vlad, dima, andrew, vanya);
 
             //Category
             Pet dog = new Pet()

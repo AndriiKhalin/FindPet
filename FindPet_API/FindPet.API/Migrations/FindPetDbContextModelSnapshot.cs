@@ -70,9 +70,6 @@ namespace FindPet.API.Migrations
                     b.Property<DateTime?>("DateCreateUpdate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("FinderId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime?>("FoundDate")
                         .HasColumnType("datetime2");
 
@@ -91,9 +88,6 @@ namespace FindPet.API.Migrations
                     b.Property<string>("Nickname")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("OwnerId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Photo")
                         .HasColumnType("nvarchar(max)");
 
@@ -109,11 +103,12 @@ namespace FindPet.API.Migrations
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("FinderId");
-
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Pets");
                 });
@@ -145,18 +140,9 @@ namespace FindPet.API.Migrations
                     b.Property<string>("Photo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserType")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-
-                    b.HasDiscriminator<string>("UserType").HasValue("User");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("FindPet.Domain.ValueObjects.AuthUser", b =>
@@ -366,29 +352,6 @@ namespace FindPet.API.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("FindPet.Domain.Entities.Finder", b =>
-                {
-                    b.HasBaseType("FindPet.Domain.Entities.User");
-
-                    b.Property<DateTime?>("FindPet")
-                        .HasColumnType("datetime2");
-
-                    b.HasDiscriminator().HasValue("Finder");
-                });
-
-            modelBuilder.Entity("FindPet.Domain.Entities.Owner", b =>
-                {
-                    b.HasBaseType("FindPet.Domain.Entities.User");
-
-                    b.Property<bool?>("IsPet")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LostPet")
-                        .HasColumnType("datetime2");
-
-                    b.HasDiscriminator().HasValue("Owner");
-                });
-
             modelBuilder.Entity("FindPet.Domain.Entities.Ad", b =>
                 {
                     b.HasOne("FindPet.Domain.Entities.Pet", "Pet")
@@ -408,19 +371,12 @@ namespace FindPet.API.Migrations
 
             modelBuilder.Entity("FindPet.Domain.Entities.Pet", b =>
                 {
-                    b.HasOne("FindPet.Domain.Entities.Finder", "Finder")
+                    b.HasOne("FindPet.Domain.Entities.User", "User")
                         .WithMany("Pets")
-                        .HasForeignKey("FinderId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("FindPet.Domain.Entities.Owner", "Owner")
-                        .WithMany("Pets")
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Finder");
-
-                    b.Navigation("Owner");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -482,15 +438,7 @@ namespace FindPet.API.Migrations
             modelBuilder.Entity("FindPet.Domain.Entities.User", b =>
                 {
                     b.Navigation("Ads");
-                });
 
-            modelBuilder.Entity("FindPet.Domain.Entities.Finder", b =>
-                {
-                    b.Navigation("Pets");
-                });
-
-            modelBuilder.Entity("FindPet.Domain.Entities.Owner", b =>
-                {
                     b.Navigation("Pets");
                 });
 #pragma warning restore 612, 618

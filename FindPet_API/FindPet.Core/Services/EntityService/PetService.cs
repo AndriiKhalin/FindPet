@@ -121,11 +121,11 @@ public class PetService : IPetService
             await _manageImage.UploadPhotoAsync(pet.Photo, petId);
 
         }
-        //else
-        //{
-        //    _logger.LogError($"Photo is null");
-        //    throw new ArgumentException("Photo cannot be null.");
-        //}
+        else
+        {
+            _logger.LogError($"Photo is null");
+            throw new ArgumentException("Photo cannot be null.");
+        }
 
         _mapper.Map(pet, petEntity);
 
@@ -136,20 +136,22 @@ public class PetService : IPetService
     }
 
 
-    public async Task<Pet> CreatePetAsync(Guid ownerId, Guid finderId, PetForCreateDto pet)
+    public async Task<Pet> CreatePetAsync(Guid userId, PetForCreateDto pet)
     {
-        if (ownerId == Guid.Empty || finderId == Guid.Empty || pet == null)
+        if (userId == Guid.Empty || pet == null)
         {
             _logger.LogError("Error");
-            throw new ArgumentNullException("Invalid ownerId,finderId or pet object.");
+            throw new ArgumentNullException("Invalid userId or pet object.");
         }
 
-        var ownerEntity = await _unitOfWorkRep.Owner.GetAsync(ownerId);
-        var finderEntity = await _unitOfWorkRep.Finder.GetAsync(finderId);
+        //var ownerEntity = await _unitOfWorkRep.Owner.GetAsync(ownerId);
+        //var finderEntity = await _unitOfWorkRep.Finder.GetAsync(finderId);
+        var userEntity = await _unitOfWorkRep.User.GetAsync(userId);
 
         var petMap = _mapper.Map<Pet>(pet);
-        petMap.OwnerId = ownerEntity.Id;
-        petMap.FinderId = finderEntity.Id;
+        //petMap.OwnerId = ownerEntity.Id;
+        //petMap.FinderId = finderEntity.Id;
+        petMap.UserId = userEntity.Id;
         petMap.DateCreateUpdate = DateTime.UtcNow;
         petMap.Photo = await _manageImage.UploadPhotoAsync(pet.Photo, petMap.Id); ;
 

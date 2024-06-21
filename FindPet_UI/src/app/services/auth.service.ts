@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { jwtDecode } from 'jwt-decode';
 import { RegisterRequest } from '../interfaces/register-request';
 import { UserDetail } from '../interfaces/user-detail';
+import { LocalStorageService } from './local-storage.service';
 
 
 @Injectable({
@@ -16,7 +17,7 @@ export class AuthService {
   apiUrl: string = environment.apiUrl;
   private tokenKey = 'token';
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient,private localStorageService: LocalStorageService) { }
 
   login(data: LoginRequest): Observable<AuthResponse> {
     return this.http
@@ -24,7 +25,7 @@ export class AuthService {
       .pipe(
         map((response) => {
           if (response.isSuccess) {
-            localStorage.setItem(this.tokenKey, response.token);
+            this.localStorageService.setItem(this.tokenKey, response.token);
           }
           return response;
         })
@@ -68,10 +69,10 @@ export class AuthService {
   }
 
   logout = (): void => {
-    localStorage.removeItem(this.tokenKey);
+    this.localStorageService.removeItem(this.tokenKey);
   };
 
   getToken = (): string | null =>
-    localStorage.getItem(this.tokenKey) || '';
+    this.localStorageService.getItem(this.tokenKey) || '';
 
 }

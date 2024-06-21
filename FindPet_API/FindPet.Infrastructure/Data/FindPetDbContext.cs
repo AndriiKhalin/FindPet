@@ -21,11 +21,11 @@ public class FindPetDbContext : IdentityDbContext<AuthUser>
     {
         //modelBuilder.Entity<User>().UseTpcMappingStrategy();
 
-        modelBuilder.Entity<User>()
-            .HasDiscriminator<string>("UserType")
-            .HasValue<User>("User")
-            .HasValue<Finder>("Finder")
-            .HasValue<Owner>("Owner");
+        //modelBuilder.Entity<User>()
+        //    .HasDiscriminator<string>("UserType")
+        //    .HasValue<User>("User")
+        //    .HasValue<Finder>("Finder")
+        //    .HasValue<Owner>("Owner");
 
         //modelBuilder.Entity<User>().ToTable("Users");
         //modelBuilder.Entity<Finder>().ToTable("Finders");
@@ -34,16 +34,16 @@ public class FindPetDbContext : IdentityDbContext<AuthUser>
         #region SetNullDeleteBehavior
 
         modelBuilder.Entity<Pet>()
-                .HasOne(x => x.Owner)
+                .HasOne(x => x.User)
                 .WithMany(y => y.Pets)
-                .HasForeignKey(x => x.OwnerId)
+                .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Restrict); // Замените DeleteBehavior.Restrict на DeleteBehavior.SetNull
 
-        modelBuilder.Entity<Pet>()
-            .HasOne(x => x.Finder)
-            .WithMany(y => y.Pets)
-            .HasForeignKey(x => x.FinderId)
-            .OnDelete(DeleteBehavior.Restrict);
+        //modelBuilder.Entity<Pet>()
+        //    .HasOne(x => x.Finder)
+        //    .WithMany(y => y.Pets)
+        //    .HasForeignKey(x => x.FinderId)
+        //    .OnDelete(DeleteBehavior.Restrict);
 
 
         modelBuilder.Entity<Ad>()
@@ -67,6 +67,6 @@ public class FindPetDbContext : IdentityDbContext<AuthUser>
 
     public DbSet<Ad>? Ads { get; set; } = null!;
 
-    public DbSet<Finder>? Finders { get; set; } = null!;
-    public DbSet<Owner>? Owners { get; set; } = null!;
+    //public DbSet<Finder>? Finders { get; set; } = null!;
+    //public DbSet<Owner>? Owners { get; set; } = null!;
 }

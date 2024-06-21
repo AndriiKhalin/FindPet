@@ -1,8 +1,8 @@
-﻿namespace FindPet.Domain.Entities;
+﻿//namespace FindPet.Domain.Entities;
 
-//[Table("Finders")]
-public class Finder : User
-{
-    public DateTime? FindPet { get; set; }
+////[Table("Finders")]
+//public class Finder : User
+//{
+//    public DateTime? FindPet { get; set; }
 
-}
+//}

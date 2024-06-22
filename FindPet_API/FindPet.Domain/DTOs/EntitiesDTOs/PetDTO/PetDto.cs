@@ -17,6 +17,4 @@ public class PetDto
     public DateTime? FoundDate { get; set; }
     public string? FoundLocation { get; set; }
     public string? Status { get; set; }
-    public Guid? OwnerId { get; set; }
-    public Guid? FinderId { get; set; }
 }

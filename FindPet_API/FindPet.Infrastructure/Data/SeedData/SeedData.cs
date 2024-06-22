@@ -1,18 +1,29 @@
 ﻿using FindPet.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace FindPet.Infrastructure.Data.SeedData;
 
 public class SeedData
 {
-    public static void SeedDates(FindPetDbContext context)
+    public static async Task SeedDatesAsync(FindPetDbContext context, RoleManager<IdentityRole> roleManager)
     {
 
         //context.Database.EnsureDeleted();
 
         //context.Database.EnsureCreated();
+        if (!await roleManager.RoleExistsAsync("Admin"))
+        {
+            await roleManager.CreateAsync(new IdentityRole("Admin"));
+        }
+
+        if (!await roleManager.RoleExistsAsync("User"))
+        {
+            await roleManager.CreateAsync(new IdentityRole("User"));
+        }
 
         if (!context.Users.Any())
         {
+
             ////User
             //User andrew = new User()
             //{

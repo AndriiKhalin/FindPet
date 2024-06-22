@@ -1,16 +1,16 @@
-<div class="container"><br>
+<!-- <div class="container"><br>
 
   <br><br>
   <div class="row" *ngIf="existingProduct">
       <h3>Edit Product</h3><br>
       <div class="col-md-8">
           <form [formGroup]="form" (ngSubmit)="onSubmit()">
-              <app-display-errors [errors]="errors"></app-display-errors>
+
               <div class="form-group">
                   <label for="name">Name</label>
                   <input type="text" formControlName="name" class="form-control" placeholder="Enter Product Name"
                       [class.has-error]="control('name')?.errors">
-                  <app-label-error [control]="control('name')"></app-label-error>
+
               </div>
               <br>
               <div class="form-group">
@@ -20,7 +20,7 @@
                           formControlName="descriptions" class="form-control"
                           placeholder="Enter descriptions of the product">
                           </textarea>
-                      <app-label-error [control]="control('descriptions')"></app-label-error>
+
                   </div>
               </div><br>
               <div class="row">
@@ -30,7 +30,7 @@
                           <div class="form-line">
                               <input [class.has-error]="control('price')?.errors" formControlName="price"
                                   class="form-control" placeholder="Enter price of the product">
-                              <app-label-error [control]="control('price')"></app-label-error>
+
                           </div>
                       </div>
                   </div>
@@ -42,7 +42,7 @@
                               <option value="-1">Select</option>
                               <option *ngFor="let item of categories" [value]="item.id">{{item.name}}</option>
                           </select>
-                          <app-label-error [control]="control('categoryId')"></app-label-error>
+
                       </div>
                   </div>
                   <div class="col-md-4">
@@ -50,7 +50,7 @@
                           <label for="isActive">Available since</label>
                           <input type="date" class="form-control" formControlName="availableSince"
                               [class.has-error]="control('availableSince')?.errors">
-                          <app-label-error [control]="control('availableSince')"></app-label-error>
+
                       </div>
                   </div>
               </div>
@@ -60,7 +60,7 @@
                   <button class="btn btn-success btn-block" type="submit">Save Product</button>
               </div>
           </form>
-          <app-spinner *ngIf="showSpinner"></app-spinner><br><br>
+          <br><br>
       </div>
       <div class="col-md-4">
           <h5>Product images</h5>
@@ -90,4 +90,4 @@
           <a class="nav-link" [routerLink]="['/admin/products/manage']">GO BACK</a>
       </div>
   </div>
-</div>
+</div> -->

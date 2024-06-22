@@ -1,14 +1,17 @@
 ﻿using FindPet.Infrastructure.Interfaces.IImageService;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 
 namespace FindPet.Core.Services.ImageService;
 
 public class ManageImage<T> : IManageImage<T> where T : class
 {
+    private readonly IWebHostEnvironment _env;
     public string ImgPath { get; set; }
 
-    public ManageImage()
+    public ManageImage(IWebHostEnvironment env)
     {
+        _env = env;
         ImgPath = GetPath();
     }
     public void DeletePhoto(string filePath)
@@ -111,10 +114,10 @@ public class ManageImage<T> : IManageImage<T> where T : class
 
     public string GetPath()
     {
-        var currentDirectory = Directory.GetCurrentDirectory();
-        var pathToImages = Path.Combine(currentDirectory, @"wwwroot");
+        var currentDirectory = _env.WebRootPath;
+        //var pathToImages = Path.Combine(currentDirectory, @"wwwroot");
 
-        return pathToImages;
+        return currentDirectory;
     }
     public string GetUniqueFileName(string fileName, Guid id)
     {

@@ -55,7 +55,7 @@ builder.Services.ConfigureRepository();
 builder.Services.ConfigureServices();
 builder.Services.ConfigureManageImage();
 builder.Services.AddAutoMapper(typeof(Mapping));
-builder.Services.Configure_FileProvider();
+//builder.Services.Configure_FileProvider();
 builder.Services.AddLogging(logging =>
 {
     logging.AddConsole();
@@ -138,7 +138,7 @@ app.UseHttpsRedirection();
 
 
 app.UseStaticFiles();
-app.UseCustomStaticFiles();
+//app.UseCustomStaticFiles();
 app.UseCors("CorsPolicy");
 
 
@@ -155,7 +155,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Seed();
+await app.SeedAsync();
 app.OpenLogFile();
 
 app.Run();

@@ -5,6 +5,7 @@ using FindPet.Infrastructure.Interfaces.IEntityRepository;
 using FindPet.Infrastructure.Interfaces.IEntityService;
 using FindPet.Infrastructure.Interfaces.IImageService;
 using FindPet.Infrastructure.Interfaces.ILoggerService;
+using FindPet.Infrastructure.Interfaces.IMLService;
 
 namespace FindPet.Core.Services.EntityService;
 public class PetService : IPetService
@@ -12,13 +13,15 @@ public class PetService : IPetService
     private readonly IUnitOfWork _unitOfWorkRep;
     private readonly IMapper _mapper;
     private readonly IManageImage<Pet> _manageImage;
+    private readonly IMLService _mlService;
     private readonly ILoggerManager _logger;
 
-    public PetService(IUnitOfWork unitOfWorkRep, IMapper mapper, IManageImage<Pet> manageImage, ILoggerManager logger)
+    public PetService(IUnitOfWork unitOfWorkRep, IMapper mapper, IManageImage<Pet> manageImage, IMLService mlService, ILoggerManager logger)
     {
         _unitOfWorkRep = unitOfWorkRep;
         _mapper = mapper;
         _manageImage = manageImage;
+        _mlService = mlService;
         _logger = logger;
     }
 
@@ -153,8 +156,8 @@ public class PetService : IPetService
         //petMap.FinderId = finderEntity.Id;
         petMap.UserId = userEntity.Id;
         petMap.DateCreateUpdate = DateTime.UtcNow;
-        petMap.Photo = await _manageImage.UploadPhotoAsync(pet.Photo, petMap.Id); ;
-
+        petMap.Photo = await _manageImage.UploadPhotoAsync(pet.Photo, petMap.Id);
+        petMap.Type = await _mlService.PredictAsync(petMap.Photo);
         await _unitOfWorkRep.Pet.CreateAsync(petMap);
 
         await _unitOfWorkRep.SaveAsync();

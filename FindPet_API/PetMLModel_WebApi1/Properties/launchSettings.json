@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "PetMLModel_WebApi1": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:54673;http://localhost:54674"
+    }
+  }
+}

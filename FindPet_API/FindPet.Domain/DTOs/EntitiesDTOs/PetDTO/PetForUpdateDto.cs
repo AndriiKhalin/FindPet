@@ -4,7 +4,7 @@ namespace FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
 
 public class PetForUpdateDto
 {
-    public string? Type { get; set; }
+    //public string? Type { get; set; }
     public string? Breed { get; set; }
     public string? Nickname { get; set; }
     public string? Gender { get; set; }

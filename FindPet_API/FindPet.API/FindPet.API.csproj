@@ -21,7 +21,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.ML" Version="3.0.1" />
     <PackageReference Include="Microsoft.ML" Version="3.0.1" />
+    <PackageReference Include="Microsoft.ML.AutoML" Version="0.21.1" />
+    <PackageReference Include="Microsoft.ML.DataView" Version="3.0.1" />
+    <PackageReference Include="Microsoft.ML.FastTree" Version="3.0.1" />
+    <PackageReference Include="Microsoft.ML.TensorFlow" Version="3.0.1" />
     <PackageReference Include="Microsoft.ML.Vision" Version="3.0.1" />
     <PackageReference Include="NLog.Extensions.Logging" Version="5.3.11" />
     <PackageReference Include="SciSharp.TensorFlow.Redist" Version="2.3.1" />
@@ -34,8 +39,8 @@
     <ProjectReference Include="..\FindPet.Core\FindPet.Core.csproj" />
     <ProjectReference Include="..\FindPet.Tests\FindPet.Tests.csproj" />
   </ItemGroup>
-  <ItemGroup Label="PetMLModel">
-    <None Include="PetMLModel.mlnet">
+  <ItemGroup>
+    <None Update="PetMLModel.mlnet">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

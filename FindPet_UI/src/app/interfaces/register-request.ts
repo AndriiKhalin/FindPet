@@ -2,8 +2,8 @@ export interface RegisterRequest {
   name: string;
   email: string;
   password: string;
-  birthDate: string;
+  birthDate: Date;
   phoneNumber: string;
-  photo: string;
-  roles: string;
+  photo: File | null;
+  role: string;
 }

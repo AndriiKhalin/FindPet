@@ -52,12 +52,24 @@ namespace FindPet.API.Controllers
                 return BadRequest(ModelState);
             }
 
+            await _userService.CreateUserAsync(new UserForCreateDto()
+            {
+                Name = registerDto.Name,
+                Email = registerDto.Email,
+                Password = registerDto.Password,
+                PhoneNumber = registerDto.PhoneNumber,
+                BirthDate = registerDto.BirthDate,
+                Photo = registerDto.Photo
+            });
+
             var user = new AuthUser
             {
                 Email = registerDto.Email,
                 Name = registerDto.Name,
                 UserName = registerDto.Email,
-                Photo = registerDto.Photo.FileName
+                PhoneNumber = registerDto.PhoneNumber,
+                BirthDate = registerDto.BirthDate,
+                Photo = (await _userService.GetUserAsync(registerDto.Name)).Photo
             };
 
 
@@ -86,12 +98,15 @@ namespace FindPet.API.Controllers
                 //}
             }
 
-            await _userService.CreateUserAsync(new UserForCreateDto()
-            {
-                Name = registerDto.Name,
-                Email = registerDto.Email,
-                Password = registerDto.Password
-            });
+            //await _userService.CreateUserAsync(new UserForCreateDto()
+            //{
+            //    Name = registerDto.Name,
+            //    Email = registerDto.Email,
+            //    Password = registerDto.Password,
+            //    PhoneNumber = registerDto.PhoneNumber,
+            //    BirthDate = registerDto.BirthDate,
+            //    Photo = registerDto.Photo
+            //});
 
 
             return Ok(new AuthResponse()

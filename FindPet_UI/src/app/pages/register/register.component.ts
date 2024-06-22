@@ -12,6 +12,7 @@ import { Role } from '../../interfaces/role';
 import { Observable } from 'rxjs';
 import { ValidationError } from '../../interfaces/validation-error';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RegisterRequest } from '../../interfaces/register-request';
 
 
 
@@ -31,6 +32,7 @@ export class RegisterComponent implements OnInit{
   form! : FormGroup;
   router = inject(Router);
   errors!: ValidationError[];
+  selectedFile: File | null = null;
 
   constructor(private formBuilder: FormBuilder){
     this.form = formBuilder.group({
@@ -62,17 +64,40 @@ ngOnInit(): void {
   this.roles$ = this.roleService.getRoles();
 }
 
+onFileSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files.length > 0) {
+    this.selectedFile = input.files[0];
+  }
+}
+
 register() {
+  // const formData = new FormData();
+  // formData.append('name', this.form.get('name')?.value);
+  // formData.append('email', this.form.get('email')?.value);
+  // formData.append('password', this.form.get('password')?.value);
+  // formData.append('birthDate', this.form.get('birthDate')?.value);
+  // formData.append('phoneNumber', this.form.get('phoneNumber')?.value);
+  // if (this.selectedFile) {
+  //   formData.append('photo', this.selectedFile);
+  // }
+  // formData.append('role', this.form.get('role')?.value);
+
 
   const roles = this.form.get('role')?.value || [];
 
-    const registrationData = {
-      ...this.form.value,
-      roles: roles,
-    };
+  // const registrationData: RegisterRequest = {
+  //   name: this.form.get('name')?.value,
+  //   email: this.form.get('email')?.value,
+  //   password: this.form.get('password')?.value,
+  //   birthDate: this.form.get('birthDate')?.value,
+  //   phoneNumber: this.form.get('phoneNumber')?.value,
+  //   photo: this.selectedFile,
+  //   role: this.form.get('role')?.value,
+  // };
 
     console.log(this.form.value);
-    console.log(registrationData);
+    // console.log(registrationData);
     console.log(roles);
 
   this.authService.register(this.form.value).subscribe(

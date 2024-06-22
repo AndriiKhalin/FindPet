@@ -39,9 +39,15 @@ public class UserService : IUserService
         return await _unitOfWorkRep.User.GetAsync(userId);
     }
 
-    public Task<User?> GetUserAsync(string userName)
+    public async Task<User?> GetUserAsync(string userName)
     {
-        throw new NotImplementedException();
+        if (!await UserExistsAsync(userName))
+        {
+            _logger.LogError($"User with name: {userName}, hasn't been found in db.");
+            throw new ArgumentNullException("Invalid user Name");
+        }
+
+        return await _unitOfWorkRep.User.GetUserAsync(userName);
     }
 
     //public async Task<IEnumerable<Ad>?> GetAdsByUserAsync(Guid userId)

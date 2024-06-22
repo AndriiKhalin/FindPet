@@ -26,5 +26,7 @@ export class AccountComponent implements OnInit {
       }
     });
   }
-
+  createImgPath = (serverPath: string) => {
+    return this.authService.createImgPath(serverPath);
+  }
 }

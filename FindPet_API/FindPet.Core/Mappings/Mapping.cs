@@ -5,6 +5,7 @@ using FindPet.Domain.DTOs.EntitiesDTOs.AdDTO;
 using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
 using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
 using FindPet.Domain.Entities;
+using FindPet_API.Helpers.UrlResolver;
 
 namespace FindPet.Core.Mappings;
 
@@ -12,7 +13,7 @@ public class Mapping : Profile
 {
     public Mapping()
     {
-        CreateMap<User, UserDto>().ReverseMap();
+        CreateMap<User, UserDto>().ForMember(d => d.Photo, o => o.MapFrom<UserResolver>()).ReverseMap();
         CreateMap<User, UserForCreateDto>().ReverseMap();
         CreateMap<User, UserForUpdateDto>().ReverseMap();
 

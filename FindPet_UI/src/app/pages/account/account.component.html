@@ -5,7 +5,7 @@
     </h1>
     <div *ngIf="accountDetail$ | async as user">
       <div class="text-center">
-        <img *ngIf="user.photo" [src]="this.authService.createImgPath(user.photo)" alt="User Photo" class="w-full h-auto">
+        <img *ngIf="user.photo" [src]="createImgPath(user.photo)" alt="User Photo" class="w-32 h-32 rounded-full  mx-auto">
           <div *ngIf="!user.photo" class="bg-blue-500 text-4xl text-white flex items-center justify-center font-bold">
             {{user.name[0] | uppercase}}
           </div>
@@ -19,15 +19,11 @@
         <div class="text-gray-800 font-medium">{{user.email}}</div>
 
         <div class="text-gray-600 font-bold">
-          Roles
+          Role
         </div>
 
         <div>
-          <ul class="flex gap-1 text-xl">
-            <li  class="bg-green-700 text-white rounded-md py-1 px-1">
-              {{user.role}}
-            </li>
-          </ul>
+          <span class="bg-green-700 text-white rounded-md  px-2">{{user.role}}</span>
         </div>
         <div class="text-gray-600 font-bold">
           Phone

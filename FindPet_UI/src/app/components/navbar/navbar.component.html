@@ -10,18 +10,18 @@
           <a routerLink="/searchAnimals" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-bold no-underline">Search Animals</a>
 
         </div>
-        <div *ngIf="authService.getUserDetail() as userDetail">
+        <div *ngIf="accountDetail$ | async as user">
           <div class="flex gap-5 items-center">
             <a [matMenuTriggerFor]="menu" class="flex gap2 cursor-pointer items-center">
-              <div class="bg-red-400 text-white font-bold shadow-md rounded-full w-2 h-2 p-4 mr-2 flex justify-center items-center ">
-                {{userDetail!.fullName[0].toUpperCase()}}
-              </div>
+
+                <img *ngIf="user.photo" [src]="createImgPath(user.photo)" alt="User Photo" class="w-16 h-16 rounded-full    p-2 mr-2 flex justify-center items-center   mx-auto">
+
               <div class="text-white flex flex-col">
                 <h1 class="p-0 m-0 font-medium text-xl">
-                  {{userDetail?.fullName}}
+                  {{user?.name}}
                 </h1>
                 <p class="p-0 m-0 font-medium text-xs">
-                  {{userDetail?.roles}}
+                  {{user?.name}}
                 </p>
               </div>
             </a>

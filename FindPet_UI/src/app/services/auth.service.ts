@@ -49,7 +49,7 @@ export class AuthService {
       id: decodedToken.nameid,
       fullName: decodedToken.name,
       email: decodedToken.email,
-      roles: decodedToken.role || [],
+      roles: decodedToken.role || []
     };
     return userDetail;
   };
@@ -79,10 +79,10 @@ export class AuthService {
   getToken = (): string | null =>
     this.localStorageService.getItem(this.tokenKey) || '';
 
-  public createImgPath = (serverPath: string) => {
-    return `${this.apiUrl}${serverPath}`;
+  public createImgPath(serverPath: string): string {
+    return `https://localhost:7163/${serverPath}`;
   }
-  getUserPhoto(photoPath: string): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}photo/${photoPath}`, { responseType: 'blob' });
-}
+//   getUserPhoto(photoPath: string): Observable<Blob> {
+//     return this.http.get(`${this.apiUrl}photo/${photoPath}`, { responseType: 'blob' });
+// }
 }

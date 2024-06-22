@@ -9,7 +9,6 @@
 
 	<ItemGroup>
 		<Folder Include="Exceptions\" />
-		<Folder Include="Helpers\UrlResolver\" />
 		<Folder Include="Services\MLService\" />
 		<Folder Include="Utilts\" />
 	</ItemGroup>

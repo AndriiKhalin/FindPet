@@ -147,13 +147,10 @@ public class PetService : IPetService
             throw new ArgumentNullException("Invalid userId or pet object.");
         }
 
-        //var ownerEntity = await _unitOfWorkRep.Owner.GetAsync(ownerId);
-        //var finderEntity = await _unitOfWorkRep.Finder.GetAsync(finderId);
         var userEntity = await _unitOfWorkRep.User.GetAsync(userId);
 
         var petMap = _mapper.Map<Pet>(pet);
-        //petMap.OwnerId = ownerEntity.Id;
-        //petMap.FinderId = finderEntity.Id;
+
         petMap.UserId = userEntity.Id;
         petMap.DateCreateUpdate = DateTime.UtcNow;
         petMap.Photo = pet.Photo;

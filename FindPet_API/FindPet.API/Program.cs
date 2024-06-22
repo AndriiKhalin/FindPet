@@ -60,6 +60,7 @@ builder.Services.AddLogging(logging =>
 {
     logging.AddConsole();
 });
+builder.Services.ConfigureForm();
 
 
 builder.Services.AddIdentity<AuthUser, IdentityRole>().AddEntityFrameworkStores<FindPetDbContext>()

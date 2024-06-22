@@ -37,6 +37,10 @@ export class AuthService {
     .post<AuthResponse>(`${this.apiUrl}Account/register`, data);
   }
 
+  upload(data:FormData):Observable<string>{
+    return this.http.post<string>(`${this.apiUrl}UploadImage`,data);
+  }
+
   getUserDetail = () => {
     const token = this.getToken();
     if (!token) return null;

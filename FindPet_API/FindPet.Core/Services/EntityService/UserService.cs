@@ -148,7 +148,7 @@ public class UserService : IUserService
         var userMap = _mapper.Map<User>(user);
 
         userMap.DateCreateUpdate = DateTime.UtcNow;
-        userMap.Photo = await _manageImage.UploadPhotoAsync(user.Photo, userMap.Id);
+        userMap.Photo = user.Photo;
 
 
         await _unitOfWorkRep.User.CreateAsync(userMap);

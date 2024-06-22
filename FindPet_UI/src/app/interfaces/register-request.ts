@@ -4,6 +4,6 @@ export interface RegisterRequest {
   password: string;
   birthDate: Date;
   phoneNumber: string;
-  photo: File | null;
+  photo: string;
   role: string;
 }

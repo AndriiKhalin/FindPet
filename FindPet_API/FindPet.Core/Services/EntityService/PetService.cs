@@ -156,7 +156,7 @@ public class PetService : IPetService
         //petMap.FinderId = finderEntity.Id;
         petMap.UserId = userEntity.Id;
         petMap.DateCreateUpdate = DateTime.UtcNow;
-        petMap.Photo = await _manageImage.UploadPhotoAsync(pet.Photo, petMap.Id);
+        petMap.Photo = pet.Photo;
         petMap.Type = await _mlService.PredictAsync(petMap.Photo);
         await _unitOfWorkRep.Pet.CreateAsync(petMap);
 

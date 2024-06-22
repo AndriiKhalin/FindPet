@@ -9,5 +9,5 @@ public class UserForUpdateDto
     public string? PhoneNumber { get; set; }
     public string? Password { get; set; }
     public DateTime? BirthDate { get; set; }
-    public IFormFile? Photo { get; set; }
+    public string? Photo { get; set; }
 }

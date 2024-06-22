@@ -22,7 +22,7 @@ public class RegisterDto
     public string? PhoneNumber { get; set; }
 
     [Required]
-    public IFormFile? Photo { get; set; }
+    public string? Photo { get; set; }
 
     public string? Role { get; set; }
 

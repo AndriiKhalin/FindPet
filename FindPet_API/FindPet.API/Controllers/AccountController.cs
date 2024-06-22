@@ -52,16 +52,6 @@ namespace FindPet.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _userService.CreateUserAsync(new UserForCreateDto()
-            {
-                Name = registerDto.Name,
-                Email = registerDto.Email,
-                Password = registerDto.Password,
-                PhoneNumber = registerDto.PhoneNumber,
-                BirthDate = registerDto.BirthDate,
-                Photo = registerDto.Photo
-            });
-
             var user = new AuthUser
             {
                 Email = registerDto.Email,
@@ -69,7 +59,7 @@ namespace FindPet.API.Controllers
                 UserName = registerDto.Email,
                 PhoneNumber = registerDto.PhoneNumber,
                 BirthDate = registerDto.BirthDate,
-                Photo = (await _userService.GetUserAsync(registerDto.Name)).Photo
+                Photo = registerDto.Photo
             };
 
 
@@ -98,15 +88,15 @@ namespace FindPet.API.Controllers
                 //}
             }
 
-            //await _userService.CreateUserAsync(new UserForCreateDto()
-            //{
-            //    Name = registerDto.Name,
-            //    Email = registerDto.Email,
-            //    Password = registerDto.Password,
-            //    PhoneNumber = registerDto.PhoneNumber,
-            //    BirthDate = registerDto.BirthDate,
-            //    Photo = registerDto.Photo
-            //});
+            await _userService.CreateUserAsync(new UserForCreateDto()
+            {
+                Name = registerDto.Name,
+                Email = registerDto.Email,
+                Password = registerDto.Password,
+                PhoneNumber = registerDto.PhoneNumber,
+                BirthDate = registerDto.BirthDate,
+                Photo = registerDto.Photo
+            });
 
 
             return Ok(new AuthResponse()
@@ -229,6 +219,8 @@ namespace FindPet.API.Controllers
                 Id = user.Id,
                 Email = user.Email,
                 Name = user.Name,
+                Photo = user.Photo,
+                BirthDate = user.BirthDate,
                 Roles = [.. await _userManager.GetRolesAsync(user)],
                 PhoneNumber = user.PhoneNumber,
                 PhoneNumberConfirmed = user.PhoneNumberConfirmed,

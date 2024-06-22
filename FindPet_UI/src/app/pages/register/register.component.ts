@@ -13,15 +13,16 @@ import { Observable } from 'rxjs';
 import { ValidationError } from '../../interfaces/validation-error';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RegisterRequest } from '../../interfaces/register-request';
+import { UploadComponent } from "../../components/upload/upload.component";
 
 
 
 @Component({
-  selector: 'app-register',
-  standalone: true,
-  imports: [FormsModule,RouterOutlet,AsyncPipe , RouterLink,MatIconModule,MatInputModule,NgClass,ReactiveFormsModule,NgFor,NgIf],
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+    selector: 'app-register',
+    standalone: true,
+    templateUrl: './register.component.html',
+    styleUrl: './register.component.scss',
+    imports: [FormsModule, RouterOutlet, AsyncPipe, RouterLink, MatIconModule, MatInputModule, NgClass, ReactiveFormsModule, NgFor, NgIf, UploadComponent]
 })
 export class RegisterComponent implements OnInit{
   roleService = inject(RoleService);
@@ -33,6 +34,7 @@ export class RegisterComponent implements OnInit{
   router = inject(Router);
   errors!: ValidationError[];
   selectedFile: File | null = null;
+  response: { filePath: string } = { filePath: '' };
 
   constructor(private formBuilder: FormBuilder){
     this.form = formBuilder.group({
@@ -41,7 +43,7 @@ export class RegisterComponent implements OnInit{
         "password": ['', [Validators.required]],
         "birthDate": ['', [Validators.required]],
         "phoneNumber":[ "", [Validators.required]],
-        "photo" : ["",[Validators.required]],
+        "photo" : [""],
         "role": ['']
     });
 }
@@ -51,6 +53,10 @@ togglePassword(): void {
 }
 submit(){
   console.log(this.form);
+}
+
+uploadFinished = (event: { filePath: string }) => {
+  this.response = event;
 }
 
 ngOnInit(): void {
@@ -64,12 +70,12 @@ ngOnInit(): void {
   this.roles$ = this.roleService.getRoles();
 }
 
-onFileSelected(event: Event): void {
-  const input = event.target as HTMLInputElement;
-  if (input.files && input.files.length > 0) {
-    this.selectedFile = input.files[0];
-  }
-}
+// onFileSelected(event: Event): void {
+//   const input = event.target as HTMLInputElement;
+//   if (input.files && input.files.length > 0) {
+//     this.selectedFile = input.files[0];
+//   }
+// }
 
 register() {
   // const formData = new FormData();
@@ -86,21 +92,24 @@ register() {
 
   const roles = this.form.get('role')?.value || [];
 
-  // const registrationData: RegisterRequest = {
-  //   name: this.form.get('name')?.value,
-  //   email: this.form.get('email')?.value,
-  //   password: this.form.get('password')?.value,
-  //   birthDate: this.form.get('birthDate')?.value,
-  //   phoneNumber: this.form.get('phoneNumber')?.value,
-  //   photo: this.selectedFile,
-  //   role: this.form.get('role')?.value,
-  // };
+  console.log(this.response);
+  console.log(this.response.filePath);
 
-    console.log(this.form.value);
+  const registrationData: RegisterRequest = {
+    name: this.form.get('name')?.value,
+    email: this.form.get('email')?.value,
+    password: this.form.get('password')?.value,
+    birthDate: this.form.get('birthDate')?.value,
+    phoneNumber: this.form.get('phoneNumber')?.value,
+    photo: this.response.filePath.replace(/\\/g, '/'),
+    role: this.form.get('role')?.value,
+  };
+
+    console.log(registrationData);
     // console.log(registrationData);
     console.log(roles);
 
-  this.authService.register(this.form.value).subscribe(
+  this.authService.register(registrationData).subscribe(
     {
       next: (response) => {
         console.log(response);

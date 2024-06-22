@@ -52,14 +52,15 @@
           </div>
 
           <div class="form-outline w-72 mx-auto mb-4">
-            <input type="tel" id="phoneNumber" class="form-control form-control-lg  placeholder:italic placeholder:text-slate-200" formControlName="phoneNumber" placeholder="Phone" (change)="onFileSelected($event)"/>
+            <input type="tel" id="phoneNumber" class="form-control form-control-lg  placeholder:italic placeholder:text-slate-200" formControlName="phoneNumber" placeholder="Phone" />
             <div *ngIf="form.controls['phoneNumber'].invalid && (form.controls['phoneNumber'].touched || form.controls['phoneNumber'].dirty)" class="text-red-500 text-sm absolute">
               Phone invalid
             </div>
           </div>
 
           <div class="form-outline w-72 mx-auto mb-4">
-            <input type="file" id="photo" class="form-control form-control-lg  placeholder:italic placeholder:text-slate-200" formControlName="photo" placeholder="Photo"/>
+            <!-- <input type="file" id="photo" class="form-control form-control-lg  placeholder:italic placeholder:text-slate-200" formControlName="photo" placeholder="Photo"/> -->
+             <app-upload id="photo" formControlName="photo" (onUploadFinished)="uploadFinished($event)"></app-upload>
             <div *ngIf="form.controls['photo'].invalid && (form.controls['photo'].touched || form.controls['photo'].dirty)" class="text-red-500 text-sm absolute">
               Photo invalid
             </div>

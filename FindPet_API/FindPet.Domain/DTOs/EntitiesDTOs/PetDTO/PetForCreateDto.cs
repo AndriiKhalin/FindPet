@@ -11,7 +11,7 @@ public class PetForCreateDto
     public string? Color { get; set; }
     public string? Size { get; set; }
     public string? SpecialMarks { get; set; }
-    public IFormFile? Photo { get; set; }
+    public string? Photo { get; set; }
     public DateTime? LostDate { get; set; }
     public string? LostLocation { get; set; }
     public DateTime? FoundDate { get; set; }

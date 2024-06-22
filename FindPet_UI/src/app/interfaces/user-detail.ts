@@ -1,10 +1,12 @@
 export interface UserDetail {
   id: string;
-  fullName: string;
+  name: string;
   email: string;
-  roles: string[];
+  photo: string;
+  birthDate:Date;
+  role: string[];
   phoneNumber: string;
-  twoFacotrEnabled: true;
-  phoneNumberConfirmed: true;
+  twoFacotrEnabled: boolean;
+  phoneNumberConfirmed: boolean;
   accessFailedCount: 0;
 }

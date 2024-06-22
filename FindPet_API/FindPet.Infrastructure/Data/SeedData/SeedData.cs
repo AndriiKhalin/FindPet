@@ -13,47 +13,47 @@ public class SeedData
 
         if (!context.Users.Any())
         {
-            //User
-            User andrew = new User()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Andrew",
-                Email = "khalin2002@gmail.com",
-                Password = "10122002",
-                //PhoneNumber = "+380737303288",
-                //BirthDate = new DateTime(2002, 12, 10)
-            };
-            User vanya = new User()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Vanya",
-                Email = "vanya2002@gmail.com",
-                Password = "10122002",
-                //PhoneNumber = "+380737303288",
-                //BirthDate = new DateTime(2002, 12, 10)
-            };
+            ////User
+            //User andrew = new User()
+            //{
+            //    Id = Guid.NewGuid(),
+            //    Name = "Andrew",
+            //    Email = "khalin2002@gmail.com",
+            //    Password = "10122002",
+            //    //PhoneNumber = "+380737303288",
+            //    //BirthDate = new DateTime(2002, 12, 10)
+            //};
+            //User vanya = new User()
+            //{
+            //    Id = Guid.NewGuid(),
+            //    Name = "Vanya",
+            //    Email = "vanya2002@gmail.com",
+            //    Password = "10122002",
+            //    //PhoneNumber = "+380737303288",
+            //    //BirthDate = new DateTime(2002, 12, 10)
+            //};
 
-            User vlad = new User()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Vlad",
-                Email = "vlad2002@gmail.com",
-                Password = "10122002",
-                //PhoneNumber = "+380737303288",
-                //BirthDate = new DateTime(2002, 12, 10)
-            };
+            //User vlad = new User()
+            //{
+            //    Id = Guid.NewGuid(),
+            //    Name = "Vlad",
+            //    Email = "vlad2002@gmail.com",
+            //    Password = "10122002",
+            //    //PhoneNumber = "+380737303288",
+            //    //BirthDate = new DateTime(2002, 12, 10)
+            //};
 
-            User dima = new User()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Dima",
-                Email = "dima2002@gmail.com",
-                Password = "10122002",
-                //PhoneNumber = "+380737303288",
-                //BirthDate = new DateTime(2002, 12, 10)
-            };
+            //User dima = new User()
+            //{
+            //    Id = Guid.NewGuid(),
+            //    Name = "Dima",
+            //    Email = "dima2002@gmail.com",
+            //    Password = "10122002",
+            //    //PhoneNumber = "+380737303288",
+            //    //BirthDate = new DateTime(2002, 12, 10)
+            //};
 
-            context.Users.AddRange(vlad, dima, andrew, vanya);
+            //context.Users.AddRange(vlad, dima, andrew, vanya);
 
             //Category
             Pet dog = new Pet()
@@ -115,7 +115,7 @@ public class SeedData
             {
                 Id = Guid.NewGuid(),
                 PetId = dog.Id,
-                UserId = vanya.Id,
+                //UserId = vanya.Id,
                 Description = "I saw a similar dog on the street. Shevchenko",
                 Location = "st. Shevchenko, 30",
                 Photo = "https://example.com/dog_sighting.jpg",
@@ -126,7 +126,7 @@ public class SeedData
             {
                 Id = Guid.NewGuid(),
                 PetId = rabbit.Id,
-                UserId = andrew.Id,
+                //UserId = andrew.Id,
                 Description = "Found a cat in the entrance of house No. 5",
                 Location = "Mira St., 5",
                 Photo = "https://example.com/cat_sighting.jpg",
@@ -137,7 +137,7 @@ public class SeedData
             {
                 Id = Guid.NewGuid(),
                 PetId = cat.Id,
-                UserId = vlad.Id,
+                //UserId = vlad.Id,
                 Description = "Found a cat in the entrance of house No. 5",
                 Location = "Mira St., 5",
                 Photo = "https://example.com/cat_sighting.jpg",

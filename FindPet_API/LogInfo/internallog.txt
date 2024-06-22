@@ -35287,3 +35287,1485 @@
 2024-06-22 13:26:42.7275 Trace FileTarget(Name=htmlFile) has 3 layouts
 2024-06-22 13:26:42.7275 Trace FileTarget(Name=htmlFile): Using appenderFactory: NLog.Internal.FileAppenders.CountingSingleProcessFileAppender+Factory
 2024-06-22 13:26:42.7275 Info Configuration initialized.
+2024-06-22 14:03:55.7303 Info AppDomain Shutting down. LogFactory closing...
+2024-06-22 14:03:55.7303 Debug Stop watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:03:55.7303 Trace Flushing all 1 targets...
+2024-06-22 14:03:55.7303 Trace ForEachItemInParallel() 1 items
+2024-06-22 14:03:55.7303 Trace FileTarget(Name=htmlFile): FlushAsync
+2024-06-22 14:03:55.7303 Trace Continuation invoked: 
+2024-06-22 14:03:55.7303 Trace Parallel task completed. 0 items remaining
+2024-06-22 14:03:55.7303 Debug Flush completed
+2024-06-22 14:03:55.7303 Trace FileTarget(Name=htmlFile): FlushAsync Done
+2024-06-22 14:03:55.7303 Debug Closing logging configuration...
+2024-06-22 14:03:55.7303 Trace Closing FileTarget(Name=htmlFile)
+2024-06-22 14:03:55.7303 Debug FileTarget(Name=htmlFile): Closing...
+2024-06-22 14:03:55.7303 Debug FileTarget(Name=htmlFile): Closed.
+2024-06-22 14:03:55.7303 Trace Closing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:03:55.7303 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:03:55.7303 Trace Closing Layout Renderer: ${shortdate}
+2024-06-22 14:03:55.7303 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:03:55.7303 Trace Closing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:03:55.7303 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:03:55.7303 Trace Closing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:03:55.7303 Trace Closing Layout Renderer: ${message}
+2024-06-22 14:03:55.7303 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:03:55.7303 Trace Closing Layout Renderer: ${exception}
+2024-06-22 14:03:55.7303 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:03:55.7303 Debug Finished closing logging configuration.
+2024-06-22 14:03:55.7303 Info LogFactory has been closed.
+2024-06-22 14:04:05.3600 Debug Message Template Auto Format enabled
+2024-06-22 14:04:05.3922 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:04:05.3922 Trace Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:04:05.3922 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:04:05.3922 Trace Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:04:05.3990 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:04:05.3990 Trace Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:04:05.3990 Trace  Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:04:05.3990 Warn Error has been raised. Exception: NLog.NLogConfigurationException: 'FileTarget' cannot assign unknown property 'includeAllProperties'='true'
+   at NLog.Config.LoggingConfigurationParser.SetPropertyValueFromString[T](T targetObject, String propertyName, String propertyValue, ValidatedConfigurationElement element)
+2024-06-22 14:04:05.3990 Debug Adding target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:04:05.3990 Info Registered target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:04:05.3990 Trace ParseRulesElement
+2024-06-22 14:04:05.4174 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.2.2526. Product version: 5.3.2+8d52d4f3fcdbd84beae3442e1fdc8125598ed81f. GlobalAssemblyCache: False
+2024-06-22 14:04:05.4174 Debug Start watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:04:05.4174 Debug --- NLog configuration dump ---
+2024-06-22 14:04:05.4174 Debug Targets:
+2024-06-22 14:04:05.4174 Debug FileTarget(Name=htmlFile)
+2024-06-22 14:04:05.4174 Debug Rules:
+2024-06-22 14:04:05.4174 Debug logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]
+2024-06-22 14:04:05.4174 Debug --- End of NLog configuration dump ---
+2024-06-22 14:04:05.4174 Trace FindReachableObject<System.Object>:
+2024-06-22 14:04:05.4174 Trace Scanning LoggingRule 'logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]'
+2024-06-22 14:04:05.4174 Trace  Scanning Property Targets 'System.Collections.Generic.List`1[NLog.Targets.Target]' System.Collections.Generic.IList`1[NLog.Targets.Target]
+2024-06-22 14:04:05.4174 Trace  Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:04:05.4174 Trace   Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:04:05.4174 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:04:05.4174 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:04:05.4174 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:04:05.4174 Trace    Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:04:05.4174 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:04:05.4174 Trace   Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:04:05.4174 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:04:05.4174 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:04:05.4174 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:04:05.4174 Trace   Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:04:05.4174 Trace   Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:04:05.4174 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:04:05.4174 Trace    Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:04:05.4174 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:04:05.4174 Trace    Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:04:05.4174 Trace     Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:04:05.4174 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:04:05.4174 Trace  Scanning Property ChildRules 'System.Collections.Generic.List`1[NLog.Config.LoggingRule]' System.Collections.Generic.IList`1[NLog.Config.LoggingRule]
+2024-06-22 14:04:05.4174 Trace  Scanning Property Filters 'System.Collections.Generic.List`1[NLog.Filters.Filter]' System.Collections.Generic.IList`1[NLog.Filters.Filter]
+2024-06-22 14:04:05.4174 Info Validating config: TargetNames=htmlFile, ConfigItems=13, FilePath=D:\IT\FindPet\FindPet_API\FindPet.API\nlog.config
+2024-06-22 14:04:05.4174 Debug Unused target checking is started... Rule Count: 1, Target Count: 1
+2024-06-22 14:04:05.4174 Debug Unused target checking is completed. Total Rule Count: 1, Total Target Count: 1, Unused Target Count: 0
+2024-06-22 14:04:05.4312 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:04:05.4312 Trace Initializing Layout Renderer: ${exception}
+2024-06-22 14:04:05.4312 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:04:05.4312 Trace Initializing Layout Renderer: ${message}
+2024-06-22 14:04:05.4312 Trace Initializing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:04:05.4312 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:04:05.4312 Trace Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:04:05.4312 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:04:05.4312 Trace  Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:04:05.4312 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:04:05.4312 Trace  Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:04:05.4312 Trace   Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:04:05.4312 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:04:05.4312 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:04:05.4312 Trace Initializing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:04:05.4312 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:04:05.4312 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:04:05.4312 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:04:05.4312 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:04:05.4312 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:04:05.4312 Trace Initializing Layout Renderer: ${shortdate}
+2024-06-22 14:04:05.4312 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:04:05.4312 Trace Initializing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:04:05.4312 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:04:05.4312 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:04:05.4312 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:04:05.4312 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:04:05.4312 Trace  Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:04:05.4312 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:04:05.4312 Trace Initializing FileTarget(Name=htmlFile)
+2024-06-22 14:04:05.4312 Trace FindReachableObject<NLog.Layouts.Layout>:
+2024-06-22 14:04:05.4312 Trace Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:04:05.4312 Trace  Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:04:05.4312 Trace  Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:04:05.4312 Trace  Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:04:05.4312 Trace FileTarget(Name=htmlFile) has 3 layouts
+2024-06-22 14:04:05.4312 Trace FileTarget(Name=htmlFile): Using appenderFactory: NLog.Internal.FileAppenders.CountingSingleProcessFileAppender+Factory
+2024-06-22 14:04:05.4312 Info Configuration initialized.
+2024-06-22 14:12:51.9855 Info AppDomain Shutting down. LogFactory closing...
+2024-06-22 14:12:51.9855 Debug Stop watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:12:51.9855 Trace Flushing all 1 targets...
+2024-06-22 14:12:51.9855 Trace ForEachItemInParallel() 1 items
+2024-06-22 14:12:51.9855 Trace FileTarget(Name=htmlFile): FlushAsync
+2024-06-22 14:12:51.9855 Trace Continuation invoked: 
+2024-06-22 14:12:51.9855 Trace Parallel task completed. 0 items remaining
+2024-06-22 14:12:51.9926 Debug Flush completed
+2024-06-22 14:12:51.9926 Trace FileTarget(Name=htmlFile): FlushAsync Done
+2024-06-22 14:12:51.9926 Debug Closing logging configuration...
+2024-06-22 14:12:51.9926 Trace Closing FileTarget(Name=htmlFile)
+2024-06-22 14:12:51.9926 Debug FileTarget(Name=htmlFile): Closing...
+2024-06-22 14:12:51.9926 Debug FileTarget(Name=htmlFile): Closed.
+2024-06-22 14:12:51.9926 Trace Closing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:12:51.9926 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:12:51.9926 Trace Closing Layout Renderer: ${shortdate}
+2024-06-22 14:12:51.9926 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:12:51.9926 Trace Closing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:12:51.9926 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:12:51.9926 Trace Closing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:12:51.9926 Trace Closing Layout Renderer: ${message}
+2024-06-22 14:12:51.9926 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:12:51.9926 Trace Closing Layout Renderer: ${exception}
+2024-06-22 14:12:51.9926 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:12:51.9926 Debug Finished closing logging configuration.
+2024-06-22 14:12:51.9926 Info LogFactory has been closed.
+2024-06-22 14:13:05.0911 Debug Message Template Auto Format enabled
+2024-06-22 14:13:05.1258 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:13:05.1258 Trace Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:13:05.1258 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:13:05.1258 Trace Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:13:05.1258 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:13:05.1258 Trace Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:13:05.1339 Trace  Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:13:05.1339 Warn Error has been raised. Exception: NLog.NLogConfigurationException: 'FileTarget' cannot assign unknown property 'includeAllProperties'='true'
+   at NLog.Config.LoggingConfigurationParser.SetPropertyValueFromString[T](T targetObject, String propertyName, String propertyValue, ValidatedConfigurationElement element)
+2024-06-22 14:13:05.1339 Debug Adding target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:13:05.1339 Info Registered target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:13:05.1339 Trace ParseRulesElement
+2024-06-22 14:13:05.1526 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.2.2526. Product version: 5.3.2+8d52d4f3fcdbd84beae3442e1fdc8125598ed81f. GlobalAssemblyCache: False
+2024-06-22 14:13:05.1526 Debug Start watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:13:05.1526 Debug --- NLog configuration dump ---
+2024-06-22 14:13:05.1526 Debug Targets:
+2024-06-22 14:13:05.1526 Debug FileTarget(Name=htmlFile)
+2024-06-22 14:13:05.1526 Debug Rules:
+2024-06-22 14:13:05.1526 Debug logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]
+2024-06-22 14:13:05.1526 Debug --- End of NLog configuration dump ---
+2024-06-22 14:13:05.1526 Trace FindReachableObject<System.Object>:
+2024-06-22 14:13:05.1526 Trace Scanning LoggingRule 'logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]'
+2024-06-22 14:13:05.1526 Trace  Scanning Property Targets 'System.Collections.Generic.List`1[NLog.Targets.Target]' System.Collections.Generic.IList`1[NLog.Targets.Target]
+2024-06-22 14:13:05.1526 Trace  Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:13:05.1526 Trace   Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:13:05.1526 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:13:05.1526 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:13:05.1526 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:13:05.1526 Trace    Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:13:05.1526 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:13:05.1526 Trace   Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:13:05.1526 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:13:05.1526 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:13:05.1526 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:13:05.1526 Trace   Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:13:05.1526 Trace   Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:13:05.1526 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:13:05.1526 Trace    Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:13:05.1526 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:13:05.1526 Trace    Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:13:05.1526 Trace     Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:13:05.1526 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:13:05.1526 Trace  Scanning Property ChildRules 'System.Collections.Generic.List`1[NLog.Config.LoggingRule]' System.Collections.Generic.IList`1[NLog.Config.LoggingRule]
+2024-06-22 14:13:05.1526 Trace  Scanning Property Filters 'System.Collections.Generic.List`1[NLog.Filters.Filter]' System.Collections.Generic.IList`1[NLog.Filters.Filter]
+2024-06-22 14:13:05.1526 Info Validating config: TargetNames=htmlFile, ConfigItems=13, FilePath=D:\IT\FindPet\FindPet_API\FindPet.API\nlog.config
+2024-06-22 14:13:05.1645 Debug Unused target checking is started... Rule Count: 1, Target Count: 1
+2024-06-22 14:13:05.1645 Debug Unused target checking is completed. Total Rule Count: 1, Total Target Count: 1, Unused Target Count: 0
+2024-06-22 14:13:05.1645 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:13:05.1645 Trace Initializing Layout Renderer: ${exception}
+2024-06-22 14:13:05.1645 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:13:05.1645 Trace Initializing Layout Renderer: ${message}
+2024-06-22 14:13:05.1645 Trace Initializing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:13:05.1645 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:13:05.1645 Trace Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:13:05.1645 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:13:05.1645 Trace  Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:13:05.1645 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:13:05.1645 Trace  Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:13:05.1645 Trace   Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:13:05.1645 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:13:05.1645 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:13:05.1645 Trace Initializing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:13:05.1645 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:13:05.1645 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:13:05.1645 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:13:05.1645 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:13:05.1645 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:13:05.1645 Trace Initializing Layout Renderer: ${shortdate}
+2024-06-22 14:13:05.1645 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:13:05.1645 Trace Initializing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:13:05.1645 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:13:05.1645 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:13:05.1645 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:13:05.1645 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:13:05.1645 Trace  Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:13:05.1645 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:13:05.1645 Trace Initializing FileTarget(Name=htmlFile)
+2024-06-22 14:13:05.1645 Trace FindReachableObject<NLog.Layouts.Layout>:
+2024-06-22 14:13:05.1645 Trace Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:13:05.1645 Trace  Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:13:05.1645 Trace  Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:13:05.1645 Trace  Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:13:05.1645 Trace FileTarget(Name=htmlFile) has 3 layouts
+2024-06-22 14:13:05.1645 Trace FileTarget(Name=htmlFile): Using appenderFactory: NLog.Internal.FileAppenders.CountingSingleProcessFileAppender+Factory
+2024-06-22 14:13:05.1645 Info Configuration initialized.
+2024-06-22 14:21:24.6412 Info AppDomain Shutting down. LogFactory closing...
+2024-06-22 14:21:24.6412 Debug Stop watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:21:24.6412 Trace Flushing all 1 targets...
+2024-06-22 14:21:24.6412 Trace ForEachItemInParallel() 1 items
+2024-06-22 14:21:24.6412 Trace FileTarget(Name=htmlFile): FlushAsync
+2024-06-22 14:21:24.6412 Trace Continuation invoked: 
+2024-06-22 14:21:24.6412 Trace Parallel task completed. 0 items remaining
+2024-06-22 14:21:24.6412 Debug Flush completed
+2024-06-22 14:21:24.6412 Trace FileTarget(Name=htmlFile): FlushAsync Done
+2024-06-22 14:21:24.6412 Debug Closing logging configuration...
+2024-06-22 14:21:24.6412 Trace Closing FileTarget(Name=htmlFile)
+2024-06-22 14:21:24.6494 Debug FileTarget(Name=htmlFile): Closing...
+2024-06-22 14:21:24.6494 Debug FileTarget(Name=htmlFile): Closed.
+2024-06-22 14:21:24.6494 Trace Closing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:21:24.6494 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:21:24.6494 Trace Closing Layout Renderer: ${shortdate}
+2024-06-22 14:21:24.6494 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:21:24.6494 Trace Closing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:21:24.6494 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:21:24.6494 Trace Closing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:21:24.6494 Trace Closing Layout Renderer: ${message}
+2024-06-22 14:21:24.6494 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:21:24.6494 Trace Closing Layout Renderer: ${exception}
+2024-06-22 14:21:24.6494 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:21:24.6494 Debug Finished closing logging configuration.
+2024-06-22 14:21:24.6494 Info LogFactory has been closed.
+2024-06-22 14:22:08.1845 Debug Message Template Auto Format enabled
+2024-06-22 14:22:08.2198 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:22:08.2198 Trace Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:22:08.2198 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:22:08.2198 Trace Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:22:08.2277 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:22:08.2277 Trace Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:22:08.2277 Trace  Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:22:08.2277 Warn Error has been raised. Exception: NLog.NLogConfigurationException: 'FileTarget' cannot assign unknown property 'includeAllProperties'='true'
+   at NLog.Config.LoggingConfigurationParser.SetPropertyValueFromString[T](T targetObject, String propertyName, String propertyValue, ValidatedConfigurationElement element)
+2024-06-22 14:22:08.2277 Debug Adding target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:22:08.2277 Info Registered target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:22:08.2277 Trace ParseRulesElement
+2024-06-22 14:22:08.2453 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.2.2526. Product version: 5.3.2+8d52d4f3fcdbd84beae3442e1fdc8125598ed81f. GlobalAssemblyCache: False
+2024-06-22 14:22:08.2453 Debug Start watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:22:08.2453 Debug --- NLog configuration dump ---
+2024-06-22 14:22:08.2453 Debug Targets:
+2024-06-22 14:22:08.2453 Debug FileTarget(Name=htmlFile)
+2024-06-22 14:22:08.2453 Debug Rules:
+2024-06-22 14:22:08.2453 Debug logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]
+2024-06-22 14:22:08.2453 Debug --- End of NLog configuration dump ---
+2024-06-22 14:22:08.2453 Trace FindReachableObject<System.Object>:
+2024-06-22 14:22:08.2453 Trace Scanning LoggingRule 'logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]'
+2024-06-22 14:22:08.2453 Trace  Scanning Property Targets 'System.Collections.Generic.List`1[NLog.Targets.Target]' System.Collections.Generic.IList`1[NLog.Targets.Target]
+2024-06-22 14:22:08.2453 Trace  Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:22:08.2453 Trace   Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:22:08.2453 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:22:08.2453 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:22:08.2453 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:22:08.2453 Trace    Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:22:08.2453 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:22:08.2453 Trace   Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:22:08.2453 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:22:08.2453 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:22:08.2453 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:22:08.2453 Trace   Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:22:08.2453 Trace   Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:22:08.2453 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:22:08.2453 Trace    Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:22:08.2453 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:22:08.2453 Trace    Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:22:08.2453 Trace     Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:22:08.2453 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:22:08.2453 Trace  Scanning Property ChildRules 'System.Collections.Generic.List`1[NLog.Config.LoggingRule]' System.Collections.Generic.IList`1[NLog.Config.LoggingRule]
+2024-06-22 14:22:08.2453 Trace  Scanning Property Filters 'System.Collections.Generic.List`1[NLog.Filters.Filter]' System.Collections.Generic.IList`1[NLog.Filters.Filter]
+2024-06-22 14:22:08.2453 Info Validating config: TargetNames=htmlFile, ConfigItems=13, FilePath=D:\IT\FindPet\FindPet_API\FindPet.API\nlog.config
+2024-06-22 14:22:08.2453 Debug Unused target checking is started... Rule Count: 1, Target Count: 1
+2024-06-22 14:22:08.2593 Debug Unused target checking is completed. Total Rule Count: 1, Total Target Count: 1, Unused Target Count: 0
+2024-06-22 14:22:08.2593 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:22:08.2593 Trace Initializing Layout Renderer: ${exception}
+2024-06-22 14:22:08.2593 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:22:08.2593 Trace Initializing Layout Renderer: ${message}
+2024-06-22 14:22:08.2593 Trace Initializing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:22:08.2593 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:22:08.2593 Trace Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:22:08.2593 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:22:08.2593 Trace  Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:22:08.2593 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:22:08.2593 Trace  Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:22:08.2593 Trace   Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:22:08.2593 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:22:08.2593 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:22:08.2593 Trace Initializing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:22:08.2593 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:22:08.2593 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:22:08.2593 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:22:08.2593 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:22:08.2593 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:22:08.2593 Trace Initializing Layout Renderer: ${shortdate}
+2024-06-22 14:22:08.2593 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:22:08.2593 Trace Initializing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:22:08.2593 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:22:08.2593 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:22:08.2593 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:22:08.2593 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:22:08.2593 Trace  Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:22:08.2593 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:22:08.2593 Trace Initializing FileTarget(Name=htmlFile)
+2024-06-22 14:22:08.2593 Trace FindReachableObject<NLog.Layouts.Layout>:
+2024-06-22 14:22:08.2593 Trace Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:22:08.2593 Trace  Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:22:08.2593 Trace  Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:22:08.2593 Trace  Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:22:08.2593 Trace FileTarget(Name=htmlFile) has 3 layouts
+2024-06-22 14:22:08.2593 Trace FileTarget(Name=htmlFile): Using appenderFactory: NLog.Internal.FileAppenders.CountingSingleProcessFileAppender+Factory
+2024-06-22 14:22:08.2593 Info Configuration initialized.
+2024-06-22 14:26:49.3901 Info AppDomain Shutting down. LogFactory closing...
+2024-06-22 14:26:49.3901 Debug Stop watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:26:49.3901 Trace Flushing all 1 targets...
+2024-06-22 14:26:49.3901 Trace ForEachItemInParallel() 1 items
+2024-06-22 14:26:49.3901 Trace FileTarget(Name=htmlFile): FlushAsync
+2024-06-22 14:26:49.3901 Trace Continuation invoked: 
+2024-06-22 14:26:49.3901 Trace Parallel task completed. 0 items remaining
+2024-06-22 14:26:49.3901 Debug Flush completed
+2024-06-22 14:26:49.3901 Trace FileTarget(Name=htmlFile): FlushAsync Done
+2024-06-22 14:26:49.3901 Debug Closing logging configuration...
+2024-06-22 14:26:49.3901 Trace Closing FileTarget(Name=htmlFile)
+2024-06-22 14:26:49.3901 Debug FileTarget(Name=htmlFile): Closing...
+2024-06-22 14:26:49.3997 Debug FileTarget(Name=htmlFile): Closed.
+2024-06-22 14:26:49.3997 Trace Closing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:26:49.3997 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:26:49.3997 Trace Closing Layout Renderer: ${shortdate}
+2024-06-22 14:26:49.3997 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:26:49.3997 Trace Closing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:26:49.3997 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:26:49.3997 Trace Closing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:26:49.3997 Trace Closing Layout Renderer: ${message}
+2024-06-22 14:26:49.3997 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:26:49.3997 Trace Closing Layout Renderer: ${exception}
+2024-06-22 14:26:49.3997 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:26:49.3997 Debug Finished closing logging configuration.
+2024-06-22 14:26:49.3997 Info LogFactory has been closed.
+2024-06-22 14:32:52.8800 Debug Message Template Auto Format enabled
+2024-06-22 14:32:52.9181 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:32:52.9181 Trace Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:32:52.9181 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:32:52.9181 Trace Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:32:52.9181 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:32:52.9181 Trace Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:32:52.9181 Trace  Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:32:52.9181 Warn Error has been raised. Exception: NLog.NLogConfigurationException: 'FileTarget' cannot assign unknown property 'includeAllProperties'='true'
+   at NLog.Config.LoggingConfigurationParser.SetPropertyValueFromString[T](T targetObject, String propertyName, String propertyValue, ValidatedConfigurationElement element)
+2024-06-22 14:32:52.9417 Debug Adding target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:32:52.9417 Info Registered target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:32:52.9417 Trace ParseRulesElement
+2024-06-22 14:32:52.9477 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.2.2526. Product version: 5.3.2+8d52d4f3fcdbd84beae3442e1fdc8125598ed81f. GlobalAssemblyCache: False
+2024-06-22 14:32:52.9477 Debug Start watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:32:52.9477 Debug --- NLog configuration dump ---
+2024-06-22 14:32:52.9477 Debug Targets:
+2024-06-22 14:32:52.9477 Debug FileTarget(Name=htmlFile)
+2024-06-22 14:32:52.9477 Debug Rules:
+2024-06-22 14:32:52.9477 Debug logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]
+2024-06-22 14:32:52.9477 Debug --- End of NLog configuration dump ---
+2024-06-22 14:32:52.9477 Trace FindReachableObject<System.Object>:
+2024-06-22 14:32:52.9477 Trace Scanning LoggingRule 'logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]'
+2024-06-22 14:32:52.9477 Trace  Scanning Property Targets 'System.Collections.Generic.List`1[NLog.Targets.Target]' System.Collections.Generic.IList`1[NLog.Targets.Target]
+2024-06-22 14:32:52.9477 Trace  Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:32:52.9477 Trace   Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:32:52.9477 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:32:52.9477 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:32:52.9477 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:32:52.9477 Trace    Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:32:52.9477 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:32:52.9477 Trace   Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:32:52.9477 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:32:52.9477 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:32:52.9477 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:32:52.9477 Trace   Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:32:52.9477 Trace   Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:32:52.9477 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:32:52.9477 Trace    Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:32:52.9477 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:32:52.9477 Trace    Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:32:52.9477 Trace     Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:32:52.9477 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:32:52.9477 Trace  Scanning Property ChildRules 'System.Collections.Generic.List`1[NLog.Config.LoggingRule]' System.Collections.Generic.IList`1[NLog.Config.LoggingRule]
+2024-06-22 14:32:52.9477 Trace  Scanning Property Filters 'System.Collections.Generic.List`1[NLog.Filters.Filter]' System.Collections.Generic.IList`1[NLog.Filters.Filter]
+2024-06-22 14:32:52.9477 Info Validating config: TargetNames=htmlFile, ConfigItems=13, FilePath=D:\IT\FindPet\FindPet_API\FindPet.API\nlog.config
+2024-06-22 14:32:52.9622 Debug Unused target checking is started... Rule Count: 1, Target Count: 1
+2024-06-22 14:32:52.9622 Debug Unused target checking is completed. Total Rule Count: 1, Total Target Count: 1, Unused Target Count: 0
+2024-06-22 14:32:52.9622 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:32:52.9622 Trace Initializing Layout Renderer: ${exception}
+2024-06-22 14:32:52.9622 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:32:52.9622 Trace Initializing Layout Renderer: ${message}
+2024-06-22 14:32:52.9622 Trace Initializing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:32:52.9622 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:32:52.9622 Trace Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:32:52.9622 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:32:52.9622 Trace  Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:32:52.9622 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:32:52.9622 Trace  Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:32:52.9622 Trace   Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:32:52.9622 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:32:52.9622 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:32:52.9622 Trace Initializing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:32:52.9622 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:32:52.9622 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:32:52.9622 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:32:52.9622 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:32:52.9622 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:32:52.9622 Trace Initializing Layout Renderer: ${shortdate}
+2024-06-22 14:32:52.9622 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:32:52.9622 Trace Initializing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:32:52.9622 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:32:52.9622 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:32:52.9622 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:32:52.9622 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:32:52.9622 Trace  Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:32:52.9622 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:32:52.9622 Trace Initializing FileTarget(Name=htmlFile)
+2024-06-22 14:32:52.9622 Trace FindReachableObject<NLog.Layouts.Layout>:
+2024-06-22 14:32:52.9622 Trace Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:32:52.9622 Trace  Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:32:52.9622 Trace  Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:32:52.9622 Trace  Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:32:52.9622 Trace FileTarget(Name=htmlFile) has 3 layouts
+2024-06-22 14:32:52.9783 Trace FileTarget(Name=htmlFile): Using appenderFactory: NLog.Internal.FileAppenders.CountingSingleProcessFileAppender+Factory
+2024-06-22 14:32:52.9783 Info Configuration initialized.
+2024-06-22 14:38:12.1627 Info AppDomain Shutting down. LogFactory closing...
+2024-06-22 14:38:12.1646 Debug Stop watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:38:12.1646 Trace Flushing all 1 targets...
+2024-06-22 14:38:12.1646 Trace ForEachItemInParallel() 1 items
+2024-06-22 14:38:12.1646 Trace FileTarget(Name=htmlFile): FlushAsync
+2024-06-22 14:38:12.1646 Trace Continuation invoked: 
+2024-06-22 14:38:12.1646 Trace Parallel task completed. 0 items remaining
+2024-06-22 14:38:12.1646 Debug Flush completed
+2024-06-22 14:38:12.1646 Trace FileTarget(Name=htmlFile): FlushAsync Done
+2024-06-22 14:38:12.1646 Debug Closing logging configuration...
+2024-06-22 14:38:12.1646 Trace Closing FileTarget(Name=htmlFile)
+2024-06-22 14:38:12.1646 Debug FileTarget(Name=htmlFile): Closing...
+2024-06-22 14:38:12.1646 Debug FileTarget(Name=htmlFile): Closed.
+2024-06-22 14:38:12.1646 Trace Closing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:38:12.1646 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:38:12.1646 Trace Closing Layout Renderer: ${shortdate}
+2024-06-22 14:38:12.1646 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:38:12.1646 Trace Closing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:38:12.1646 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:38:12.1646 Trace Closing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:38:12.1646 Trace Closing Layout Renderer: ${message}
+2024-06-22 14:38:12.1646 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:38:12.1646 Trace Closing Layout Renderer: ${exception}
+2024-06-22 14:38:12.1646 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:38:12.1646 Debug Finished closing logging configuration.
+2024-06-22 14:38:12.1646 Info LogFactory has been closed.
+2024-06-22 14:39:08.1659 Debug Message Template Auto Format enabled
+2024-06-22 14:39:08.1998 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:39:08.1998 Trace Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:39:08.1998 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:39:08.1998 Trace Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:39:08.1998 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:39:08.1998 Trace Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:39:08.1998 Trace  Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:39:08.1998 Warn Error has been raised. Exception: NLog.NLogConfigurationException: 'FileTarget' cannot assign unknown property 'includeAllProperties'='true'
+   at NLog.Config.LoggingConfigurationParser.SetPropertyValueFromString[T](T targetObject, String propertyName, String propertyValue, ValidatedConfigurationElement element)
+2024-06-22 14:39:08.2207 Debug Adding target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:39:08.2207 Info Registered target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:39:08.2207 Trace ParseRulesElement
+2024-06-22 14:39:08.2207 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.2.2526. Product version: 5.3.2+8d52d4f3fcdbd84beae3442e1fdc8125598ed81f. GlobalAssemblyCache: False
+2024-06-22 14:39:08.2289 Debug Start watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:39:08.2289 Debug --- NLog configuration dump ---
+2024-06-22 14:39:08.2289 Debug Targets:
+2024-06-22 14:39:08.2289 Debug FileTarget(Name=htmlFile)
+2024-06-22 14:39:08.2289 Debug Rules:
+2024-06-22 14:39:08.2289 Debug logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]
+2024-06-22 14:39:08.2289 Debug --- End of NLog configuration dump ---
+2024-06-22 14:39:08.2289 Trace FindReachableObject<System.Object>:
+2024-06-22 14:39:08.2289 Trace Scanning LoggingRule 'logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]'
+2024-06-22 14:39:08.2289 Trace  Scanning Property Targets 'System.Collections.Generic.List`1[NLog.Targets.Target]' System.Collections.Generic.IList`1[NLog.Targets.Target]
+2024-06-22 14:39:08.2289 Trace  Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:39:08.2289 Trace   Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:39:08.2289 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:39:08.2289 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:39:08.2289 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:39:08.2289 Trace    Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:39:08.2289 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:39:08.2289 Trace   Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:39:08.2289 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:39:08.2289 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:39:08.2289 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:39:08.2289 Trace   Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:39:08.2289 Trace   Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:39:08.2289 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:39:08.2289 Trace    Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:39:08.2289 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:39:08.2289 Trace    Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:39:08.2289 Trace     Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:39:08.2289 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:39:08.2289 Trace  Scanning Property ChildRules 'System.Collections.Generic.List`1[NLog.Config.LoggingRule]' System.Collections.Generic.IList`1[NLog.Config.LoggingRule]
+2024-06-22 14:39:08.2289 Trace  Scanning Property Filters 'System.Collections.Generic.List`1[NLog.Filters.Filter]' System.Collections.Generic.IList`1[NLog.Filters.Filter]
+2024-06-22 14:39:08.2289 Info Validating config: TargetNames=htmlFile, ConfigItems=13, FilePath=D:\IT\FindPet\FindPet_API\FindPet.API\nlog.config
+2024-06-22 14:39:08.2289 Debug Unused target checking is started... Rule Count: 1, Target Count: 1
+2024-06-22 14:39:08.2289 Debug Unused target checking is completed. Total Rule Count: 1, Total Target Count: 1, Unused Target Count: 0
+2024-06-22 14:39:08.2289 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:39:08.2289 Trace Initializing Layout Renderer: ${exception}
+2024-06-22 14:39:08.2289 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:39:08.2289 Trace Initializing Layout Renderer: ${message}
+2024-06-22 14:39:08.2289 Trace Initializing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:39:08.2289 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:39:08.2289 Trace Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:39:08.2289 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:39:08.2289 Trace  Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:39:08.2289 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:39:08.2289 Trace  Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:39:08.2289 Trace   Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:39:08.2289 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:39:08.2434 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:39:08.2434 Trace Initializing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:39:08.2434 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:39:08.2434 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:39:08.2434 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:39:08.2434 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:39:08.2434 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:39:08.2434 Trace Initializing Layout Renderer: ${shortdate}
+2024-06-22 14:39:08.2434 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:39:08.2434 Trace Initializing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:39:08.2434 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:39:08.2434 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:39:08.2434 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:39:08.2434 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:39:08.2434 Trace  Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:39:08.2434 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:39:08.2434 Trace Initializing FileTarget(Name=htmlFile)
+2024-06-22 14:39:08.2434 Trace FindReachableObject<NLog.Layouts.Layout>:
+2024-06-22 14:39:08.2434 Trace Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:39:08.2434 Trace  Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:39:08.2434 Trace  Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:39:08.2434 Trace  Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:39:08.2434 Trace FileTarget(Name=htmlFile) has 3 layouts
+2024-06-22 14:39:08.2434 Trace FileTarget(Name=htmlFile): Using appenderFactory: NLog.Internal.FileAppenders.CountingSingleProcessFileAppender+Factory
+2024-06-22 14:39:08.2434 Info Configuration initialized.
+2024-06-22 14:39:10.7403 Info AppDomain Shutting down. LogFactory closing...
+2024-06-22 14:39:10.7403 Debug Stop watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:39:10.7403 Trace Flushing all 1 targets...
+2024-06-22 14:39:10.7435 Trace ForEachItemInParallel() 1 items
+2024-06-22 14:39:10.7435 Trace FileTarget(Name=htmlFile): FlushAsync
+2024-06-22 14:39:10.7435 Trace Continuation invoked: 
+2024-06-22 14:39:10.7435 Trace Parallel task completed. 0 items remaining
+2024-06-22 14:39:10.7435 Debug Flush completed
+2024-06-22 14:39:10.7435 Trace FileTarget(Name=htmlFile): FlushAsync Done
+2024-06-22 14:39:10.7435 Debug Closing logging configuration...
+2024-06-22 14:39:10.7435 Trace Closing FileTarget(Name=htmlFile)
+2024-06-22 14:39:10.7435 Debug FileTarget(Name=htmlFile): Closing...
+2024-06-22 14:39:10.7435 Debug FileTarget(Name=htmlFile): Closed.
+2024-06-22 14:39:10.7435 Trace Closing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:39:10.7435 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:39:10.7435 Trace Closing Layout Renderer: ${shortdate}
+2024-06-22 14:39:10.7435 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:39:10.7435 Trace Closing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:39:10.7435 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:39:10.7435 Trace Closing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:39:10.7435 Trace Closing Layout Renderer: ${message}
+2024-06-22 14:39:10.7435 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:39:10.7435 Trace Closing Layout Renderer: ${exception}
+2024-06-22 14:39:10.7435 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:39:10.7435 Debug Finished closing logging configuration.
+2024-06-22 14:39:10.7435 Info LogFactory has been closed.
+2024-06-22 14:40:54.5093 Debug Message Template Auto Format enabled
+2024-06-22 14:40:54.5409 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:40:54.5409 Trace Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:40:54.5409 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:40:54.5409 Trace Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:40:54.5409 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:40:54.5409 Trace Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:40:54.5409 Trace  Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:40:54.5409 Warn Error has been raised. Exception: NLog.NLogConfigurationException: 'FileTarget' cannot assign unknown property 'includeAllProperties'='true'
+   at NLog.Config.LoggingConfigurationParser.SetPropertyValueFromString[T](T targetObject, String propertyName, String propertyValue, ValidatedConfigurationElement element)
+2024-06-22 14:40:54.5611 Debug Adding target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:40:54.5611 Info Registered target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:40:54.5611 Trace ParseRulesElement
+2024-06-22 14:40:54.5611 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.2.2526. Product version: 5.3.2+8d52d4f3fcdbd84beae3442e1fdc8125598ed81f. GlobalAssemblyCache: False
+2024-06-22 14:40:54.5611 Debug Start watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:40:54.5611 Debug --- NLog configuration dump ---
+2024-06-22 14:40:54.5611 Debug Targets:
+2024-06-22 14:40:54.5611 Debug FileTarget(Name=htmlFile)
+2024-06-22 14:40:54.5611 Debug Rules:
+2024-06-22 14:40:54.5713 Debug logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]
+2024-06-22 14:40:54.5713 Debug --- End of NLog configuration dump ---
+2024-06-22 14:40:54.5713 Trace FindReachableObject<System.Object>:
+2024-06-22 14:40:54.5713 Trace Scanning LoggingRule 'logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]'
+2024-06-22 14:40:54.5713 Trace  Scanning Property Targets 'System.Collections.Generic.List`1[NLog.Targets.Target]' System.Collections.Generic.IList`1[NLog.Targets.Target]
+2024-06-22 14:40:54.5713 Trace  Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:40:54.5713 Trace   Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:40:54.5713 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:40:54.5713 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:40:54.5713 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:40:54.5713 Trace    Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:40:54.5713 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:40:54.5713 Trace   Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:40:54.5713 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:40:54.5713 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:40:54.5713 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:40:54.5713 Trace   Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:40:54.5713 Trace   Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:40:54.5713 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:40:54.5713 Trace    Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:40:54.5713 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:40:54.5713 Trace    Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:40:54.5713 Trace     Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:40:54.5713 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:40:54.5713 Trace  Scanning Property ChildRules 'System.Collections.Generic.List`1[NLog.Config.LoggingRule]' System.Collections.Generic.IList`1[NLog.Config.LoggingRule]
+2024-06-22 14:40:54.5713 Trace  Scanning Property Filters 'System.Collections.Generic.List`1[NLog.Filters.Filter]' System.Collections.Generic.IList`1[NLog.Filters.Filter]
+2024-06-22 14:40:54.5713 Info Validating config: TargetNames=htmlFile, ConfigItems=13, FilePath=D:\IT\FindPet\FindPet_API\FindPet.API\nlog.config
+2024-06-22 14:40:54.5713 Debug Unused target checking is started... Rule Count: 1, Target Count: 1
+2024-06-22 14:40:54.5713 Debug Unused target checking is completed. Total Rule Count: 1, Total Target Count: 1, Unused Target Count: 0
+2024-06-22 14:40:54.5713 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:40:54.5713 Trace Initializing Layout Renderer: ${exception}
+2024-06-22 14:40:54.5713 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:40:54.5713 Trace Initializing Layout Renderer: ${message}
+2024-06-22 14:40:54.5713 Trace Initializing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:40:54.5713 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:40:54.5713 Trace Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:40:54.5713 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:40:54.5713 Trace  Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:40:54.5713 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:40:54.5713 Trace  Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:40:54.5713 Trace   Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:40:54.5713 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:40:54.5713 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:40:54.5713 Trace Initializing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:40:54.5713 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:40:54.5713 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:40:54.5864 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:40:54.5864 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:40:54.5864 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:40:54.5864 Trace Initializing Layout Renderer: ${shortdate}
+2024-06-22 14:40:54.5864 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:40:54.5864 Trace Initializing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:40:54.5864 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:40:54.5864 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:40:54.5864 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:40:54.5864 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:40:54.5864 Trace  Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:40:54.5864 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:40:54.5864 Trace Initializing FileTarget(Name=htmlFile)
+2024-06-22 14:40:54.5864 Trace FindReachableObject<NLog.Layouts.Layout>:
+2024-06-22 14:40:54.5864 Trace Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:40:54.5864 Trace  Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:40:54.5864 Trace  Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:40:54.5864 Trace  Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:40:54.5864 Trace FileTarget(Name=htmlFile) has 3 layouts
+2024-06-22 14:40:54.5864 Trace FileTarget(Name=htmlFile): Using appenderFactory: NLog.Internal.FileAppenders.CountingSingleProcessFileAppender+Factory
+2024-06-22 14:40:54.5864 Info Configuration initialized.
+2024-06-22 14:40:55.4165 Info AppDomain Shutting down. LogFactory closing...
+2024-06-22 14:40:55.4165 Debug Stop watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:40:55.4165 Trace Flushing all 1 targets...
+2024-06-22 14:40:55.4165 Trace ForEachItemInParallel() 1 items
+2024-06-22 14:40:55.4165 Trace FileTarget(Name=htmlFile): FlushAsync
+2024-06-22 14:40:55.4165 Trace Continuation invoked: 
+2024-06-22 14:40:55.4165 Trace Parallel task completed. 0 items remaining
+2024-06-22 14:40:55.4165 Debug Flush completed
+2024-06-22 14:40:55.4165 Trace FileTarget(Name=htmlFile): FlushAsync Done
+2024-06-22 14:40:55.4165 Debug Closing logging configuration...
+2024-06-22 14:40:55.4165 Trace Closing FileTarget(Name=htmlFile)
+2024-06-22 14:40:55.4165 Debug FileTarget(Name=htmlFile): Closing...
+2024-06-22 14:40:55.4165 Debug FileTarget(Name=htmlFile): Closed.
+2024-06-22 14:40:55.4165 Trace Closing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:40:55.4165 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:40:55.4165 Trace Closing Layout Renderer: ${shortdate}
+2024-06-22 14:40:55.4165 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:40:55.4165 Trace Closing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:40:55.4165 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:40:55.4165 Trace Closing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:40:55.4165 Trace Closing Layout Renderer: ${message}
+2024-06-22 14:40:55.4165 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:40:55.4165 Trace Closing Layout Renderer: ${exception}
+2024-06-22 14:40:55.4165 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:40:55.4165 Debug Finished closing logging configuration.
+2024-06-22 14:40:55.4165 Info LogFactory has been closed.
+2024-06-22 14:41:06.7039 Debug Message Template Auto Format enabled
+2024-06-22 14:41:06.7356 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:41:06.7356 Trace Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:41:06.7356 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:41:06.7356 Trace Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:41:06.7356 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:41:06.7356 Trace Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:41:06.7437 Trace  Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:41:06.7437 Warn Error has been raised. Exception: NLog.NLogConfigurationException: 'FileTarget' cannot assign unknown property 'includeAllProperties'='true'
+   at NLog.Config.LoggingConfigurationParser.SetPropertyValueFromString[T](T targetObject, String propertyName, String propertyValue, ValidatedConfigurationElement element)
+2024-06-22 14:41:06.7437 Debug Adding target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:41:06.7437 Info Registered target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:41:06.7437 Trace ParseRulesElement
+2024-06-22 14:41:06.7437 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.2.2526. Product version: 5.3.2+8d52d4f3fcdbd84beae3442e1fdc8125598ed81f. GlobalAssemblyCache: False
+2024-06-22 14:41:06.7611 Debug Start watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:41:06.7611 Debug --- NLog configuration dump ---
+2024-06-22 14:41:06.7611 Debug Targets:
+2024-06-22 14:41:06.7611 Debug FileTarget(Name=htmlFile)
+2024-06-22 14:41:06.7611 Debug Rules:
+2024-06-22 14:41:06.7611 Debug logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]
+2024-06-22 14:41:06.7611 Debug --- End of NLog configuration dump ---
+2024-06-22 14:41:06.7611 Trace FindReachableObject<System.Object>:
+2024-06-22 14:41:06.7611 Trace Scanning LoggingRule 'logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]'
+2024-06-22 14:41:06.7611 Trace  Scanning Property Targets 'System.Collections.Generic.List`1[NLog.Targets.Target]' System.Collections.Generic.IList`1[NLog.Targets.Target]
+2024-06-22 14:41:06.7611 Trace  Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:41:06.7611 Trace   Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:41:06.7611 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:41:06.7611 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:41:06.7611 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:41:06.7611 Trace    Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:41:06.7611 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:41:06.7611 Trace   Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:41:06.7611 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:41:06.7611 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:41:06.7611 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:41:06.7611 Trace   Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:41:06.7611 Trace   Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:41:06.7611 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:41:06.7611 Trace    Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:41:06.7611 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:41:06.7611 Trace    Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:41:06.7611 Trace     Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:41:06.7611 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:41:06.7611 Trace  Scanning Property ChildRules 'System.Collections.Generic.List`1[NLog.Config.LoggingRule]' System.Collections.Generic.IList`1[NLog.Config.LoggingRule]
+2024-06-22 14:41:06.7611 Trace  Scanning Property Filters 'System.Collections.Generic.List`1[NLog.Filters.Filter]' System.Collections.Generic.IList`1[NLog.Filters.Filter]
+2024-06-22 14:41:06.7611 Info Validating config: TargetNames=htmlFile, ConfigItems=13, FilePath=D:\IT\FindPet\FindPet_API\FindPet.API\nlog.config
+2024-06-22 14:41:06.7611 Debug Unused target checking is started... Rule Count: 1, Target Count: 1
+2024-06-22 14:41:06.7611 Debug Unused target checking is completed. Total Rule Count: 1, Total Target Count: 1, Unused Target Count: 0
+2024-06-22 14:41:06.7611 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:41:06.7611 Trace Initializing Layout Renderer: ${exception}
+2024-06-22 14:41:06.7747 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:41:06.7747 Trace Initializing Layout Renderer: ${message}
+2024-06-22 14:41:06.7747 Trace Initializing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:41:06.7747 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:41:06.7747 Trace Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:41:06.7747 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:41:06.7747 Trace  Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:41:06.7747 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:41:06.7747 Trace  Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:41:06.7747 Trace   Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:41:06.7747 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:41:06.7747 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:41:06.7747 Trace Initializing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:41:06.7747 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:41:06.7747 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:41:06.7747 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:41:06.7747 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:41:06.7747 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:41:06.7747 Trace Initializing Layout Renderer: ${shortdate}
+2024-06-22 14:41:06.7747 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:41:06.7747 Trace Initializing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:41:06.7747 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:41:06.7747 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:41:06.7747 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:41:06.7747 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:41:06.7747 Trace  Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:41:06.7747 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:41:06.7747 Trace Initializing FileTarget(Name=htmlFile)
+2024-06-22 14:41:06.7747 Trace FindReachableObject<NLog.Layouts.Layout>:
+2024-06-22 14:41:06.7747 Trace Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:41:06.7747 Trace  Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:41:06.7747 Trace  Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:41:06.7747 Trace  Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:41:06.7747 Trace FileTarget(Name=htmlFile) has 3 layouts
+2024-06-22 14:41:06.7747 Trace FileTarget(Name=htmlFile): Using appenderFactory: NLog.Internal.FileAppenders.CountingSingleProcessFileAppender+Factory
+2024-06-22 14:41:06.7747 Info Configuration initialized.
+2024-06-22 14:41:07.7247 Info AppDomain Shutting down. LogFactory closing...
+2024-06-22 14:41:07.7247 Debug Stop watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:41:07.7247 Trace Flushing all 1 targets...
+2024-06-22 14:41:07.7277 Trace ForEachItemInParallel() 1 items
+2024-06-22 14:41:07.7277 Trace FileTarget(Name=htmlFile): FlushAsync
+2024-06-22 14:41:07.7277 Trace Continuation invoked: 
+2024-06-22 14:41:07.7277 Trace Parallel task completed. 0 items remaining
+2024-06-22 14:41:07.7277 Debug Flush completed
+2024-06-22 14:41:07.7277 Trace FileTarget(Name=htmlFile): FlushAsync Done
+2024-06-22 14:41:07.7277 Debug Closing logging configuration...
+2024-06-22 14:41:07.7277 Trace Closing FileTarget(Name=htmlFile)
+2024-06-22 14:41:07.7277 Debug FileTarget(Name=htmlFile): Closing...
+2024-06-22 14:41:07.7277 Debug FileTarget(Name=htmlFile): Closed.
+2024-06-22 14:41:07.7277 Trace Closing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:41:07.7277 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:41:07.7277 Trace Closing Layout Renderer: ${shortdate}
+2024-06-22 14:41:07.7277 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:41:07.7277 Trace Closing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:41:07.7277 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:41:07.7277 Trace Closing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:41:07.7277 Trace Closing Layout Renderer: ${message}
+2024-06-22 14:41:07.7277 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:41:07.7277 Trace Closing Layout Renderer: ${exception}
+2024-06-22 14:41:07.7277 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:41:07.7277 Debug Finished closing logging configuration.
+2024-06-22 14:41:07.7277 Info LogFactory has been closed.
+2024-06-22 14:41:59.4012 Debug Message Template Auto Format enabled
+2024-06-22 14:41:59.4376 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:41:59.4376 Trace Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:41:59.4376 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:41:59.4376 Trace Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:41:59.4376 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:41:59.4376 Trace Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:41:59.4376 Trace  Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:41:59.4473 Warn Error has been raised. Exception: NLog.NLogConfigurationException: 'FileTarget' cannot assign unknown property 'includeAllProperties'='true'
+   at NLog.Config.LoggingConfigurationParser.SetPropertyValueFromString[T](T targetObject, String propertyName, String propertyValue, ValidatedConfigurationElement element)
+2024-06-22 14:41:59.4473 Debug Adding target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:41:59.4473 Info Registered target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:41:59.4473 Trace ParseRulesElement
+2024-06-22 14:41:59.4647 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.2.2526. Product version: 5.3.2+8d52d4f3fcdbd84beae3442e1fdc8125598ed81f. GlobalAssemblyCache: False
+2024-06-22 14:41:59.4647 Debug Start watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:41:59.4647 Debug --- NLog configuration dump ---
+2024-06-22 14:41:59.4647 Debug Targets:
+2024-06-22 14:41:59.4647 Debug FileTarget(Name=htmlFile)
+2024-06-22 14:41:59.4647 Debug Rules:
+2024-06-22 14:41:59.4647 Debug logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]
+2024-06-22 14:41:59.4647 Debug --- End of NLog configuration dump ---
+2024-06-22 14:41:59.4647 Trace FindReachableObject<System.Object>:
+2024-06-22 14:41:59.4647 Trace Scanning LoggingRule 'logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]'
+2024-06-22 14:41:59.4647 Trace  Scanning Property Targets 'System.Collections.Generic.List`1[NLog.Targets.Target]' System.Collections.Generic.IList`1[NLog.Targets.Target]
+2024-06-22 14:41:59.4647 Trace  Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:41:59.4647 Trace   Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:41:59.4647 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:41:59.4647 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:41:59.4647 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:41:59.4647 Trace    Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:41:59.4647 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:41:59.4647 Trace   Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:41:59.4647 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:41:59.4647 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:41:59.4647 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:41:59.4647 Trace   Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:41:59.4647 Trace   Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:41:59.4647 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:41:59.4647 Trace    Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:41:59.4647 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:41:59.4647 Trace    Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:41:59.4647 Trace     Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:41:59.4647 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:41:59.4647 Trace  Scanning Property ChildRules 'System.Collections.Generic.List`1[NLog.Config.LoggingRule]' System.Collections.Generic.IList`1[NLog.Config.LoggingRule]
+2024-06-22 14:41:59.4647 Trace  Scanning Property Filters 'System.Collections.Generic.List`1[NLog.Filters.Filter]' System.Collections.Generic.IList`1[NLog.Filters.Filter]
+2024-06-22 14:41:59.4647 Info Validating config: TargetNames=htmlFile, ConfigItems=13, FilePath=D:\IT\FindPet\FindPet_API\FindPet.API\nlog.config
+2024-06-22 14:41:59.4647 Debug Unused target checking is started... Rule Count: 1, Target Count: 1
+2024-06-22 14:41:59.4776 Debug Unused target checking is completed. Total Rule Count: 1, Total Target Count: 1, Unused Target Count: 0
+2024-06-22 14:41:59.4776 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:41:59.4776 Trace Initializing Layout Renderer: ${exception}
+2024-06-22 14:41:59.4776 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:41:59.4776 Trace Initializing Layout Renderer: ${message}
+2024-06-22 14:41:59.4776 Trace Initializing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:41:59.4776 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:41:59.4776 Trace Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:41:59.4776 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:41:59.4776 Trace  Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:41:59.4776 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:41:59.4776 Trace  Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:41:59.4776 Trace   Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:41:59.4776 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:41:59.4776 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:41:59.4776 Trace Initializing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:41:59.4776 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:41:59.4776 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:41:59.4776 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:41:59.4776 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:41:59.4776 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:41:59.4776 Trace Initializing Layout Renderer: ${shortdate}
+2024-06-22 14:41:59.4776 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:41:59.4776 Trace Initializing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:41:59.4776 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:41:59.4776 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:41:59.4776 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:41:59.4776 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:41:59.4776 Trace  Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:41:59.4776 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:41:59.4776 Trace Initializing FileTarget(Name=htmlFile)
+2024-06-22 14:41:59.4776 Trace FindReachableObject<NLog.Layouts.Layout>:
+2024-06-22 14:41:59.4776 Trace Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:41:59.4776 Trace  Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:41:59.4776 Trace  Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:41:59.4776 Trace  Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:41:59.4776 Trace FileTarget(Name=htmlFile) has 3 layouts
+2024-06-22 14:41:59.4776 Trace FileTarget(Name=htmlFile): Using appenderFactory: NLog.Internal.FileAppenders.CountingSingleProcessFileAppender+Factory
+2024-06-22 14:41:59.4776 Info Configuration initialized.
+2024-06-22 14:44:07.3749 Info AppDomain Shutting down. LogFactory closing...
+2024-06-22 14:44:07.3749 Debug Stop watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:44:07.3749 Trace Flushing all 1 targets...
+2024-06-22 14:44:07.3749 Trace ForEachItemInParallel() 1 items
+2024-06-22 14:44:07.3749 Trace FileTarget(Name=htmlFile): FlushAsync
+2024-06-22 14:44:07.3749 Trace Continuation invoked: 
+2024-06-22 14:44:07.3749 Trace Parallel task completed. 0 items remaining
+2024-06-22 14:44:07.3749 Debug Flush completed
+2024-06-22 14:44:07.3749 Trace FileTarget(Name=htmlFile): FlushAsync Done
+2024-06-22 14:44:07.3749 Debug Closing logging configuration...
+2024-06-22 14:44:07.3749 Trace Closing FileTarget(Name=htmlFile)
+2024-06-22 14:44:07.3749 Debug FileTarget(Name=htmlFile): Closing...
+2024-06-22 14:44:07.3842 Debug FileTarget(Name=htmlFile): Closed.
+2024-06-22 14:44:07.3842 Trace Closing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:44:07.3842 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:44:07.3842 Trace Closing Layout Renderer: ${shortdate}
+2024-06-22 14:44:07.3842 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:44:07.3842 Trace Closing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:44:07.3842 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:44:07.3842 Trace Closing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:44:07.3842 Trace Closing Layout Renderer: ${message}
+2024-06-22 14:44:07.3842 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:44:07.3842 Trace Closing Layout Renderer: ${exception}
+2024-06-22 14:44:07.3842 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:44:07.3842 Debug Finished closing logging configuration.
+2024-06-22 14:44:07.3842 Info LogFactory has been closed.
+2024-06-22 14:44:41.4706 Debug Message Template Auto Format enabled
+2024-06-22 14:44:41.5070 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:44:41.5070 Trace Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:44:41.5098 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:44:41.5098 Trace Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:44:41.5098 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:44:41.5098 Trace Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:44:41.5098 Trace  Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:44:41.5098 Warn Error has been raised. Exception: NLog.NLogConfigurationException: 'FileTarget' cannot assign unknown property 'includeAllProperties'='true'
+   at NLog.Config.LoggingConfigurationParser.SetPropertyValueFromString[T](T targetObject, String propertyName, String propertyValue, ValidatedConfigurationElement element)
+2024-06-22 14:44:41.5270 Debug Adding target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:44:41.5270 Info Registered target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:44:41.5270 Trace ParseRulesElement
+2024-06-22 14:44:41.5270 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.2.2526. Product version: 5.3.2+8d52d4f3fcdbd84beae3442e1fdc8125598ed81f. GlobalAssemblyCache: False
+2024-06-22 14:44:41.5270 Debug Start watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:44:41.5270 Debug --- NLog configuration dump ---
+2024-06-22 14:44:41.5270 Debug Targets:
+2024-06-22 14:44:41.5270 Debug FileTarget(Name=htmlFile)
+2024-06-22 14:44:41.5270 Debug Rules:
+2024-06-22 14:44:41.5270 Debug logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]
+2024-06-22 14:44:41.5270 Debug --- End of NLog configuration dump ---
+2024-06-22 14:44:41.5270 Trace FindReachableObject<System.Object>:
+2024-06-22 14:44:41.5270 Trace Scanning LoggingRule 'logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]'
+2024-06-22 14:44:41.5270 Trace  Scanning Property Targets 'System.Collections.Generic.List`1[NLog.Targets.Target]' System.Collections.Generic.IList`1[NLog.Targets.Target]
+2024-06-22 14:44:41.5270 Trace  Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:44:41.5270 Trace   Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:44:41.5270 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:44:41.5270 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:44:41.5270 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:44:41.5270 Trace    Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:44:41.5270 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:44:41.5393 Trace   Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:44:41.5393 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:44:41.5393 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:44:41.5393 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:44:41.5393 Trace   Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:44:41.5393 Trace   Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:44:41.5393 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:44:41.5393 Trace    Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:44:41.5393 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:44:41.5393 Trace    Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:44:41.5393 Trace     Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:44:41.5393 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:44:41.5393 Trace  Scanning Property ChildRules 'System.Collections.Generic.List`1[NLog.Config.LoggingRule]' System.Collections.Generic.IList`1[NLog.Config.LoggingRule]
+2024-06-22 14:44:41.5393 Trace  Scanning Property Filters 'System.Collections.Generic.List`1[NLog.Filters.Filter]' System.Collections.Generic.IList`1[NLog.Filters.Filter]
+2024-06-22 14:44:41.5393 Info Validating config: TargetNames=htmlFile, ConfigItems=13, FilePath=D:\IT\FindPet\FindPet_API\FindPet.API\nlog.config
+2024-06-22 14:44:41.5393 Debug Unused target checking is started... Rule Count: 1, Target Count: 1
+2024-06-22 14:44:41.5393 Debug Unused target checking is completed. Total Rule Count: 1, Total Target Count: 1, Unused Target Count: 0
+2024-06-22 14:44:41.5393 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:44:41.5393 Trace Initializing Layout Renderer: ${exception}
+2024-06-22 14:44:41.5393 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:44:41.5393 Trace Initializing Layout Renderer: ${message}
+2024-06-22 14:44:41.5393 Trace Initializing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:44:41.5393 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:44:41.5393 Trace Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:44:41.5393 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:44:41.5393 Trace  Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:44:41.5393 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:44:41.5393 Trace  Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:44:41.5393 Trace   Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:44:41.5393 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:44:41.5393 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:44:41.5393 Trace Initializing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:44:41.5393 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:44:41.5393 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:44:41.5393 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:44:41.5393 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:44:41.5393 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:44:41.5393 Trace Initializing Layout Renderer: ${shortdate}
+2024-06-22 14:44:41.5393 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:44:41.5393 Trace Initializing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:44:41.5393 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:44:41.5393 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:44:41.5393 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:44:41.5393 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:44:41.5393 Trace  Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:44:41.5393 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:44:41.5393 Trace Initializing FileTarget(Name=htmlFile)
+2024-06-22 14:44:41.5393 Trace FindReachableObject<NLog.Layouts.Layout>:
+2024-06-22 14:44:41.5393 Trace Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:44:41.5393 Trace  Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:44:41.5393 Trace  Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:44:41.5393 Trace  Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:44:41.5393 Trace FileTarget(Name=htmlFile) has 3 layouts
+2024-06-22 14:44:41.5393 Trace FileTarget(Name=htmlFile): Using appenderFactory: NLog.Internal.FileAppenders.CountingSingleProcessFileAppender+Factory
+2024-06-22 14:44:41.5393 Info Configuration initialized.
+2024-06-22 14:58:50.6955 Info AppDomain Shutting down. LogFactory closing...
+2024-06-22 14:58:50.6974 Debug Stop watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:58:50.6974 Trace Flushing all 1 targets...
+2024-06-22 14:58:50.6974 Trace ForEachItemInParallel() 1 items
+2024-06-22 14:58:50.6974 Trace FileTarget(Name=htmlFile): FlushAsync
+2024-06-22 14:58:50.6974 Trace Continuation invoked: 
+2024-06-22 14:58:50.6974 Trace Parallel task completed. 0 items remaining
+2024-06-22 14:58:50.6974 Debug Flush completed
+2024-06-22 14:58:50.6974 Trace FileTarget(Name=htmlFile): FlushAsync Done
+2024-06-22 14:58:50.6974 Debug Closing logging configuration...
+2024-06-22 14:58:50.6974 Trace Closing FileTarget(Name=htmlFile)
+2024-06-22 14:58:50.6974 Debug FileTarget(Name=htmlFile): Closing...
+2024-06-22 14:58:50.6974 Debug FileTarget(Name=htmlFile): Closed.
+2024-06-22 14:58:50.6974 Trace Closing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:58:50.6974 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:58:50.6974 Trace Closing Layout Renderer: ${shortdate}
+2024-06-22 14:58:50.6974 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:58:50.6974 Trace Closing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:58:50.6974 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:58:50.6974 Trace Closing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:58:50.6974 Trace Closing Layout Renderer: ${message}
+2024-06-22 14:58:50.6974 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:58:50.6974 Trace Closing Layout Renderer: ${exception}
+2024-06-22 14:58:50.6974 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:58:50.6974 Debug Finished closing logging configuration.
+2024-06-22 14:58:50.6974 Info LogFactory has been closed.
+2024-06-22 14:58:59.7028 Debug Message Template Auto Format enabled
+2024-06-22 14:58:59.7388 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:58:59.7388 Trace Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:58:59.7388 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:58:59.7388 Trace Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:58:59.7486 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:58:59.7486 Trace Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:58:59.7486 Trace  Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:58:59.7486 Warn Error has been raised. Exception: NLog.NLogConfigurationException: 'FileTarget' cannot assign unknown property 'includeAllProperties'='true'
+   at NLog.Config.LoggingConfigurationParser.SetPropertyValueFromString[T](T targetObject, String propertyName, String propertyValue, ValidatedConfigurationElement element)
+2024-06-22 14:58:59.7638 Debug Adding target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:58:59.7638 Info Registered target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:58:59.7638 Trace ParseRulesElement
+2024-06-22 14:58:59.7638 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.2.2526. Product version: 5.3.2+8d52d4f3fcdbd84beae3442e1fdc8125598ed81f. GlobalAssemblyCache: False
+2024-06-22 14:58:59.7740 Debug Start watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:58:59.7740 Debug --- NLog configuration dump ---
+2024-06-22 14:58:59.7740 Debug Targets:
+2024-06-22 14:58:59.7740 Debug FileTarget(Name=htmlFile)
+2024-06-22 14:58:59.7740 Debug Rules:
+2024-06-22 14:58:59.7740 Debug logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]
+2024-06-22 14:58:59.7740 Debug --- End of NLog configuration dump ---
+2024-06-22 14:58:59.7740 Trace FindReachableObject<System.Object>:
+2024-06-22 14:58:59.7740 Trace Scanning LoggingRule 'logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]'
+2024-06-22 14:58:59.7740 Trace  Scanning Property Targets 'System.Collections.Generic.List`1[NLog.Targets.Target]' System.Collections.Generic.IList`1[NLog.Targets.Target]
+2024-06-22 14:58:59.7740 Trace  Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:58:59.7740 Trace   Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:58:59.7740 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:58:59.7740 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:58:59.7740 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:58:59.7740 Trace    Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:58:59.7740 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:58:59.7740 Trace   Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:58:59.7740 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:58:59.7740 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:58:59.7740 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:58:59.7740 Trace   Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:58:59.7740 Trace   Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:58:59.7740 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:58:59.7740 Trace    Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:58:59.7740 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:58:59.7740 Trace    Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:58:59.7740 Trace     Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:58:59.7740 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:58:59.7740 Trace  Scanning Property ChildRules 'System.Collections.Generic.List`1[NLog.Config.LoggingRule]' System.Collections.Generic.IList`1[NLog.Config.LoggingRule]
+2024-06-22 14:58:59.7740 Trace  Scanning Property Filters 'System.Collections.Generic.List`1[NLog.Filters.Filter]' System.Collections.Generic.IList`1[NLog.Filters.Filter]
+2024-06-22 14:58:59.7740 Info Validating config: TargetNames=htmlFile, ConfigItems=13, FilePath=D:\IT\FindPet\FindPet_API\FindPet.API\nlog.config
+2024-06-22 14:58:59.7740 Debug Unused target checking is started... Rule Count: 1, Target Count: 1
+2024-06-22 14:58:59.7740 Debug Unused target checking is completed. Total Rule Count: 1, Total Target Count: 1, Unused Target Count: 0
+2024-06-22 14:58:59.7740 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:58:59.7740 Trace Initializing Layout Renderer: ${exception}
+2024-06-22 14:58:59.7740 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:58:59.7740 Trace Initializing Layout Renderer: ${message}
+2024-06-22 14:58:59.7740 Trace Initializing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:58:59.7920 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:58:59.7920 Trace Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:58:59.7920 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:58:59.7920 Trace  Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:58:59.7920 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:58:59.7920 Trace  Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:58:59.7920 Trace   Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:58:59.7920 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:58:59.7920 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:58:59.7920 Trace Initializing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:58:59.7920 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:58:59.7920 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:58:59.7920 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:58:59.7920 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:58:59.7920 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:58:59.7920 Trace Initializing Layout Renderer: ${shortdate}
+2024-06-22 14:58:59.7920 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:58:59.7920 Trace Initializing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:58:59.7920 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:58:59.7920 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:58:59.7920 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:58:59.7920 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:58:59.7920 Trace  Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:58:59.7920 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:58:59.7920 Trace Initializing FileTarget(Name=htmlFile)
+2024-06-22 14:58:59.7920 Trace FindReachableObject<NLog.Layouts.Layout>:
+2024-06-22 14:58:59.7920 Trace Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:58:59.7920 Trace  Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:58:59.7920 Trace  Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:58:59.7920 Trace  Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:58:59.7920 Trace FileTarget(Name=htmlFile) has 3 layouts
+2024-06-22 14:58:59.7920 Trace FileTarget(Name=htmlFile): Using appenderFactory: NLog.Internal.FileAppenders.CountingSingleProcessFileAppender+Factory
+2024-06-22 14:58:59.7920 Info Configuration initialized.
+2024-06-22 14:59:00.8813 Info AppDomain Shutting down. LogFactory closing...
+2024-06-22 14:59:00.8813 Debug Stop watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:59:00.8839 Trace Flushing all 1 targets...
+2024-06-22 14:59:00.8839 Trace ForEachItemInParallel() 1 items
+2024-06-22 14:59:00.8839 Trace FileTarget(Name=htmlFile): FlushAsync
+2024-06-22 14:59:00.8839 Trace Continuation invoked: 
+2024-06-22 14:59:00.8839 Trace Parallel task completed. 0 items remaining
+2024-06-22 14:59:00.8839 Debug Flush completed
+2024-06-22 14:59:00.8839 Trace FileTarget(Name=htmlFile): FlushAsync Done
+2024-06-22 14:59:00.8839 Debug Closing logging configuration...
+2024-06-22 14:59:00.8839 Trace Closing FileTarget(Name=htmlFile)
+2024-06-22 14:59:00.8839 Debug FileTarget(Name=htmlFile): Closing...
+2024-06-22 14:59:00.8839 Debug FileTarget(Name=htmlFile): Closed.
+2024-06-22 14:59:00.8839 Trace Closing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:59:00.8839 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:59:00.8839 Trace Closing Layout Renderer: ${shortdate}
+2024-06-22 14:59:00.8839 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:59:00.8839 Trace Closing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:59:00.8839 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:59:00.8839 Trace Closing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:59:00.8839 Trace Closing Layout Renderer: ${message}
+2024-06-22 14:59:00.8839 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:59:00.8839 Trace Closing Layout Renderer: ${exception}
+2024-06-22 14:59:00.8839 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:59:00.8839 Debug Finished closing logging configuration.
+2024-06-22 14:59:00.8839 Info LogFactory has been closed.
+2024-06-22 14:59:38.4922 Debug Message Template Auto Format enabled
+2024-06-22 14:59:38.5363 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:59:38.5463 Trace Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:59:38.5463 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:59:38.5463 Trace Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:59:38.5591 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:59:38.5591 Trace Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:59:38.5591 Trace  Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:59:38.5591 Warn Error has been raised. Exception: NLog.NLogConfigurationException: 'FileTarget' cannot assign unknown property 'includeAllProperties'='true'
+   at NLog.Config.LoggingConfigurationParser.SetPropertyValueFromString[T](T targetObject, String propertyName, String propertyValue, ValidatedConfigurationElement element)
+2024-06-22 14:59:38.5731 Debug Adding target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:59:38.5731 Info Registered target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:59:38.5731 Trace ParseRulesElement
+2024-06-22 14:59:38.5731 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.2.2526. Product version: 5.3.2+8d52d4f3fcdbd84beae3442e1fdc8125598ed81f. GlobalAssemblyCache: False
+2024-06-22 14:59:38.5731 Debug Start watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:59:38.5731 Debug --- NLog configuration dump ---
+2024-06-22 14:59:38.5731 Debug Targets:
+2024-06-22 14:59:38.5731 Debug FileTarget(Name=htmlFile)
+2024-06-22 14:59:38.5731 Debug Rules:
+2024-06-22 14:59:38.5731 Debug logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]
+2024-06-22 14:59:38.5731 Debug --- End of NLog configuration dump ---
+2024-06-22 14:59:38.5731 Trace FindReachableObject<System.Object>:
+2024-06-22 14:59:38.5731 Trace Scanning LoggingRule 'logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]'
+2024-06-22 14:59:38.5731 Trace  Scanning Property Targets 'System.Collections.Generic.List`1[NLog.Targets.Target]' System.Collections.Generic.IList`1[NLog.Targets.Target]
+2024-06-22 14:59:38.5731 Trace  Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:59:38.5871 Trace   Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:59:38.5871 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:59:38.5871 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:59:38.5871 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:38.5871 Trace    Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:59:38.5871 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:38.5871 Trace   Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:59:38.5871 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:59:38.5871 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:59:38.5871 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:38.5871 Trace   Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:59:38.5871 Trace   Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:59:38.5871 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:59:38.5871 Trace    Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:59:38.5871 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:38.5871 Trace    Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:59:38.5871 Trace     Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:59:38.5871 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:38.5871 Trace  Scanning Property ChildRules 'System.Collections.Generic.List`1[NLog.Config.LoggingRule]' System.Collections.Generic.IList`1[NLog.Config.LoggingRule]
+2024-06-22 14:59:38.5871 Trace  Scanning Property Filters 'System.Collections.Generic.List`1[NLog.Filters.Filter]' System.Collections.Generic.IList`1[NLog.Filters.Filter]
+2024-06-22 14:59:38.5871 Info Validating config: TargetNames=htmlFile, ConfigItems=13, FilePath=D:\IT\FindPet\FindPet_API\FindPet.API\nlog.config
+2024-06-22 14:59:38.5871 Debug Unused target checking is started... Rule Count: 1, Target Count: 1
+2024-06-22 14:59:38.5871 Debug Unused target checking is completed. Total Rule Count: 1, Total Target Count: 1, Unused Target Count: 0
+2024-06-22 14:59:38.5871 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:59:38.5871 Trace Initializing Layout Renderer: ${exception}
+2024-06-22 14:59:38.5871 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:59:38.5871 Trace Initializing Layout Renderer: ${message}
+2024-06-22 14:59:38.5871 Trace Initializing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:59:38.5871 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:59:38.5871 Trace Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:59:38.5871 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:59:38.5871 Trace  Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:59:38.5871 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:38.5871 Trace  Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:59:38.5871 Trace   Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:59:38.5871 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:38.5871 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:59:38.5871 Trace Initializing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:59:38.5871 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:59:38.5871 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:59:38.5871 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:59:38.5871 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:38.6024 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:59:38.6024 Trace Initializing Layout Renderer: ${shortdate}
+2024-06-22 14:59:38.6024 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:59:38.6024 Trace Initializing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:59:38.6024 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:59:38.6024 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:59:38.6024 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:59:38.6024 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:38.6024 Trace  Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:59:38.6024 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:38.6024 Trace Initializing FileTarget(Name=htmlFile)
+2024-06-22 14:59:38.6024 Trace FindReachableObject<NLog.Layouts.Layout>:
+2024-06-22 14:59:38.6024 Trace Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:59:38.6024 Trace  Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:59:38.6024 Trace  Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:59:38.6024 Trace  Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:59:38.6024 Trace FileTarget(Name=htmlFile) has 3 layouts
+2024-06-22 14:59:38.6024 Trace FileTarget(Name=htmlFile): Using appenderFactory: NLog.Internal.FileAppenders.CountingSingleProcessFileAppender+Factory
+2024-06-22 14:59:38.6024 Info Configuration initialized.
+2024-06-22 14:59:40.5743 Info AppDomain Shutting down. LogFactory closing...
+2024-06-22 14:59:40.5743 Debug Stop watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:59:40.5743 Trace Flushing all 1 targets...
+2024-06-22 14:59:40.5743 Trace ForEachItemInParallel() 1 items
+2024-06-22 14:59:40.5743 Trace FileTarget(Name=htmlFile): FlushAsync
+2024-06-22 14:59:40.5743 Trace Continuation invoked: 
+2024-06-22 14:59:40.5743 Trace Parallel task completed. 0 items remaining
+2024-06-22 14:59:40.5743 Debug Flush completed
+2024-06-22 14:59:40.5743 Trace FileTarget(Name=htmlFile): FlushAsync Done
+2024-06-22 14:59:40.5743 Debug Closing logging configuration...
+2024-06-22 14:59:40.5743 Trace Closing FileTarget(Name=htmlFile)
+2024-06-22 14:59:40.5743 Debug FileTarget(Name=htmlFile): Closing...
+2024-06-22 14:59:40.5743 Debug FileTarget(Name=htmlFile): Closed.
+2024-06-22 14:59:40.5743 Trace Closing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:59:40.5743 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:59:40.5743 Trace Closing Layout Renderer: ${shortdate}
+2024-06-22 14:59:40.5743 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:59:40.5743 Trace Closing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:59:40.5743 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:59:40.5743 Trace Closing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:59:40.5743 Trace Closing Layout Renderer: ${message}
+2024-06-22 14:59:40.5743 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:59:40.5743 Trace Closing Layout Renderer: ${exception}
+2024-06-22 14:59:40.5743 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:59:40.5743 Debug Finished closing logging configuration.
+2024-06-22 14:59:40.5743 Info LogFactory has been closed.
+2024-06-22 14:59:46.9086 Debug Message Template Auto Format enabled
+2024-06-22 14:59:46.9402 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:59:46.9402 Trace Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:59:46.9402 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:59:46.9402 Trace Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:59:46.9472 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:59:46.9472 Trace Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:59:46.9472 Trace  Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:59:46.9472 Warn Error has been raised. Exception: NLog.NLogConfigurationException: 'FileTarget' cannot assign unknown property 'includeAllProperties'='true'
+   at NLog.Config.LoggingConfigurationParser.SetPropertyValueFromString[T](T targetObject, String propertyName, String propertyValue, ValidatedConfigurationElement element)
+2024-06-22 14:59:46.9472 Debug Adding target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:59:46.9472 Info Registered target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:59:46.9472 Trace ParseRulesElement
+2024-06-22 14:59:46.9638 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.2.2526. Product version: 5.3.2+8d52d4f3fcdbd84beae3442e1fdc8125598ed81f. GlobalAssemblyCache: False
+2024-06-22 14:59:46.9638 Debug Start watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:59:46.9638 Debug --- NLog configuration dump ---
+2024-06-22 14:59:46.9638 Debug Targets:
+2024-06-22 14:59:46.9638 Debug FileTarget(Name=htmlFile)
+2024-06-22 14:59:46.9638 Debug Rules:
+2024-06-22 14:59:46.9638 Debug logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]
+2024-06-22 14:59:46.9638 Debug --- End of NLog configuration dump ---
+2024-06-22 14:59:46.9638 Trace FindReachableObject<System.Object>:
+2024-06-22 14:59:46.9638 Trace Scanning LoggingRule 'logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]'
+2024-06-22 14:59:46.9638 Trace  Scanning Property Targets 'System.Collections.Generic.List`1[NLog.Targets.Target]' System.Collections.Generic.IList`1[NLog.Targets.Target]
+2024-06-22 14:59:46.9638 Trace  Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:59:46.9638 Trace   Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:59:46.9638 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:59:46.9638 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:59:46.9638 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:46.9638 Trace    Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:59:46.9638 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:46.9638 Trace   Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:59:46.9638 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:59:46.9638 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:59:46.9638 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:46.9638 Trace   Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:59:46.9638 Trace   Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:59:46.9638 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:59:46.9638 Trace    Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:59:46.9638 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:46.9638 Trace    Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:59:46.9638 Trace     Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:59:46.9638 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:46.9638 Trace  Scanning Property ChildRules 'System.Collections.Generic.List`1[NLog.Config.LoggingRule]' System.Collections.Generic.IList`1[NLog.Config.LoggingRule]
+2024-06-22 14:59:46.9638 Trace  Scanning Property Filters 'System.Collections.Generic.List`1[NLog.Filters.Filter]' System.Collections.Generic.IList`1[NLog.Filters.Filter]
+2024-06-22 14:59:46.9638 Info Validating config: TargetNames=htmlFile, ConfigItems=13, FilePath=D:\IT\FindPet\FindPet_API\FindPet.API\nlog.config
+2024-06-22 14:59:46.9638 Debug Unused target checking is started... Rule Count: 1, Target Count: 1
+2024-06-22 14:59:46.9776 Debug Unused target checking is completed. Total Rule Count: 1, Total Target Count: 1, Unused Target Count: 0
+2024-06-22 14:59:46.9776 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:59:46.9776 Trace Initializing Layout Renderer: ${exception}
+2024-06-22 14:59:46.9776 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:59:46.9776 Trace Initializing Layout Renderer: ${message}
+2024-06-22 14:59:46.9776 Trace Initializing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:59:46.9776 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:59:46.9776 Trace Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:59:46.9776 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:59:46.9776 Trace  Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:59:46.9776 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:46.9776 Trace  Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:59:46.9776 Trace   Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:59:46.9776 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:46.9776 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:59:46.9776 Trace Initializing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:59:46.9776 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:59:46.9776 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:59:46.9776 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:59:46.9776 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:46.9776 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:59:46.9776 Trace Initializing Layout Renderer: ${shortdate}
+2024-06-22 14:59:46.9776 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:59:46.9776 Trace Initializing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:59:46.9776 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:59:46.9776 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:59:46.9776 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:59:46.9776 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:46.9776 Trace  Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:59:46.9776 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:46.9776 Trace Initializing FileTarget(Name=htmlFile)
+2024-06-22 14:59:46.9776 Trace FindReachableObject<NLog.Layouts.Layout>:
+2024-06-22 14:59:46.9776 Trace Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:59:46.9776 Trace  Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:59:46.9776 Trace  Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:59:46.9776 Trace  Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:59:46.9776 Trace FileTarget(Name=htmlFile) has 3 layouts
+2024-06-22 14:59:46.9776 Trace FileTarget(Name=htmlFile): Using appenderFactory: NLog.Internal.FileAppenders.CountingSingleProcessFileAppender+Factory
+2024-06-22 14:59:46.9776 Info Configuration initialized.
+2024-06-22 14:59:48.2219 Info AppDomain Shutting down. LogFactory closing...
+2024-06-22 14:59:48.2219 Debug Stop watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:59:48.2219 Trace Flushing all 1 targets...
+2024-06-22 14:59:48.2219 Trace ForEachItemInParallel() 1 items
+2024-06-22 14:59:48.2274 Trace FileTarget(Name=htmlFile): FlushAsync
+2024-06-22 14:59:48.2274 Trace Continuation invoked: 
+2024-06-22 14:59:48.2274 Trace Parallel task completed. 0 items remaining
+2024-06-22 14:59:48.2274 Debug Flush completed
+2024-06-22 14:59:48.2274 Trace FileTarget(Name=htmlFile): FlushAsync Done
+2024-06-22 14:59:48.2274 Debug Closing logging configuration...
+2024-06-22 14:59:48.2274 Trace Closing FileTarget(Name=htmlFile)
+2024-06-22 14:59:48.2274 Debug FileTarget(Name=htmlFile): Closing...
+2024-06-22 14:59:48.2274 Debug FileTarget(Name=htmlFile): Closed.
+2024-06-22 14:59:48.2274 Trace Closing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:59:48.2274 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:59:48.2274 Trace Closing Layout Renderer: ${shortdate}
+2024-06-22 14:59:48.2274 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:59:48.2274 Trace Closing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:59:48.2274 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:59:48.2274 Trace Closing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:59:48.2274 Trace Closing Layout Renderer: ${message}
+2024-06-22 14:59:48.2274 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:59:48.2274 Trace Closing Layout Renderer: ${exception}
+2024-06-22 14:59:48.2274 Trace Closing Layout Renderer: ${literal}
+2024-06-22 14:59:48.2274 Debug Finished closing logging configuration.
+2024-06-22 14:59:48.2274 Info LogFactory has been closed.
+2024-06-22 14:59:50.5638 Debug Message Template Auto Format enabled
+2024-06-22 14:59:50.5982 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:59:50.5982 Trace Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:59:50.5982 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:59:50.5982 Trace Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:59:50.6052 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:59:50.6052 Trace Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:59:50.6052 Trace  Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:59:50.6052 Warn Error has been raised. Exception: NLog.NLogConfigurationException: 'FileTarget' cannot assign unknown property 'includeAllProperties'='true'
+   at NLog.Config.LoggingConfigurationParser.SetPropertyValueFromString[T](T targetObject, String propertyName, String propertyValue, ValidatedConfigurationElement element)
+2024-06-22 14:59:50.6200 Debug Adding target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:59:50.6200 Info Registered target NLog.Targets.FileTarget(Name=htmlFile)
+2024-06-22 14:59:50.6200 Trace ParseRulesElement
+2024-06-22 14:59:50.6200 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.2.2526. Product version: 5.3.2+8d52d4f3fcdbd84beae3442e1fdc8125598ed81f. GlobalAssemblyCache: False
+2024-06-22 14:59:50.6200 Debug Start watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 14:59:50.6200 Debug --- NLog configuration dump ---
+2024-06-22 14:59:50.6200 Debug Targets:
+2024-06-22 14:59:50.6200 Debug FileTarget(Name=htmlFile)
+2024-06-22 14:59:50.6200 Debug Rules:
+2024-06-22 14:59:50.6200 Debug logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]
+2024-06-22 14:59:50.6200 Debug --- End of NLog configuration dump ---
+2024-06-22 14:59:50.6200 Trace FindReachableObject<System.Object>:
+2024-06-22 14:59:50.6200 Trace Scanning LoggingRule 'logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] writeTo: [ htmlFile ]'
+2024-06-22 14:59:50.6200 Trace  Scanning Property Targets 'System.Collections.Generic.List`1[NLog.Targets.Target]' System.Collections.Generic.IList`1[NLog.Targets.Target]
+2024-06-22 14:59:50.6200 Trace  Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:59:50.6200 Trace   Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:59:50.6200 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:59:50.6331 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:59:50.6331 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:50.6331 Trace    Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:59:50.6331 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:50.6331 Trace   Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:59:50.6331 Trace   Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:59:50.6331 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:59:50.6331 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:50.6331 Trace   Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:59:50.6331 Trace   Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:59:50.6331 Trace    Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:59:50.6331 Trace    Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:59:50.6331 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:50.6331 Trace    Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:59:50.6331 Trace     Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:59:50.6331 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:50.6331 Trace  Scanning Property ChildRules 'System.Collections.Generic.List`1[NLog.Config.LoggingRule]' System.Collections.Generic.IList`1[NLog.Config.LoggingRule]
+2024-06-22 14:59:50.6331 Trace  Scanning Property Filters 'System.Collections.Generic.List`1[NLog.Filters.Filter]' System.Collections.Generic.IList`1[NLog.Filters.Filter]
+2024-06-22 14:59:50.6331 Info Validating config: TargetNames=htmlFile, ConfigItems=13, FilePath=D:\IT\FindPet\FindPet_API\FindPet.API\nlog.config
+2024-06-22 14:59:50.6331 Debug Unused target checking is started... Rule Count: 1, Target Count: 1
+2024-06-22 14:59:50.6331 Debug Unused target checking is completed. Total Rule Count: 1, Total Target Count: 1, Unused Target Count: 0
+2024-06-22 14:59:50.6331 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:59:50.6331 Trace Initializing Layout Renderer: ${exception}
+2024-06-22 14:59:50.6331 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:59:50.6331 Trace Initializing Layout Renderer: ${message}
+2024-06-22 14:59:50.6331 Trace Initializing ${message} | ${exception:format=tostring}<br />
+2024-06-22 14:59:50.6331 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:59:50.6331 Trace Scanning SimpleLayout '${message} | ${exception:format=tostring}<br />'
+2024-06-22 14:59:50.6331 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:59:50.6331 Trace  Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2024-06-22 14:59:50.6331 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:50.6331 Trace  Scanning ExceptionLayoutRenderer 'Layout Renderer: ${exception}'
+2024-06-22 14:59:50.6331 Trace   Scanning Property Formats 'System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]' System.Collections.Generic.List`1[NLog.Config.ExceptionRenderingFormat]
+2024-06-22 14:59:50.6331 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:50.6331 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:59:50.6331 Trace Initializing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 14:59:50.6331 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:59:50.6331 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html'
+2024-06-22 14:59:50.6331 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:59:50.6331 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:50.6331 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:59:50.6331 Trace Initializing Layout Renderer: ${shortdate}
+2024-06-22 14:59:50.6331 Trace Initializing Layout Renderer: ${literal}
+2024-06-22 14:59:50.6331 Trace Initializing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 14:59:50.6331 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2024-06-22 14:59:50.6331 Trace Scanning SimpleLayout 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html'
+2024-06-22 14:59:50.6331 Trace  Scanning Property LayoutRenderers 'NLog.LayoutRenderers.LayoutRenderer[]' System.Collections.Generic.IEnumerable`1[NLog.LayoutRenderers.LayoutRenderer]
+2024-06-22 14:59:50.6331 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:50.6331 Trace  Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2024-06-22 14:59:50.6331 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2024-06-22 14:59:50.6331 Trace Initializing FileTarget(Name=htmlFile)
+2024-06-22 14:59:50.6501 Trace FindReachableObject<NLog.Layouts.Layout>:
+2024-06-22 14:59:50.6501 Trace Scanning FileTarget 'FileTarget(Name=htmlFile)'
+2024-06-22 14:59:50.6501 Trace  Scanning Property FileName 'd:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html' NLog.Layouts.Layout
+2024-06-22 14:59:50.6501 Trace  Scanning Property ArchiveFileName 'd:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html' NLog.Layouts.Layout
+2024-06-22 14:59:50.6501 Trace  Scanning Property Layout '${message} | ${exception:format=tostring}<br />' NLog.Layouts.Layout
+2024-06-22 14:59:50.6501 Trace FileTarget(Name=htmlFile) has 3 layouts
+2024-06-22 14:59:50.6501 Trace FileTarget(Name=htmlFile): Using appenderFactory: NLog.Internal.FileAppenders.CountingSingleProcessFileAppender+Factory
+2024-06-22 14:59:50.6501 Info Configuration initialized.
+2024-06-22 15:21:24.3586 Info AppDomain Shutting down. LogFactory closing...
+2024-06-22 15:21:24.3586 Debug Stop watching file-filter 'nlog.config' in directory: D:\IT\FindPet\FindPet_API\FindPet.API
+2024-06-22 15:21:24.3586 Trace Flushing all 1 targets...
+2024-06-22 15:21:24.3586 Trace ForEachItemInParallel() 1 items
+2024-06-22 15:21:24.3586 Trace FileTarget(Name=htmlFile): FlushAsync
+2024-06-22 15:21:24.3586 Trace Continuation invoked: 
+2024-06-22 15:21:24.3586 Trace Parallel task completed. 0 items remaining
+2024-06-22 15:21:24.3586 Debug Flush completed
+2024-06-22 15:21:24.3586 Trace FileTarget(Name=htmlFile): FlushAsync Done
+2024-06-22 15:21:24.3586 Debug Closing logging configuration...
+2024-06-22 15:21:24.3586 Trace Closing FileTarget(Name=htmlFile)
+2024-06-22 15:21:24.3586 Debug FileTarget(Name=htmlFile): Closing...
+2024-06-22 15:21:24.3586 Debug FileTarget(Name=htmlFile): Closed.
+2024-06-22 15:21:24.3586 Trace Closing d:/IT/FindPet/FindPet_API//LogInfo/${shortdate}_logfile.html
+2024-06-22 15:21:24.3682 Trace Closing Layout Renderer: ${literal}
+2024-06-22 15:21:24.3682 Trace Closing Layout Renderer: ${shortdate}
+2024-06-22 15:21:24.3682 Trace Closing Layout Renderer: ${literal}
+2024-06-22 15:21:24.3682 Trace Closing d:/IT/FindPet/FindPet_API/LogInfo/archive/{#}.html
+2024-06-22 15:21:24.3682 Trace Closing Layout Renderer: ${literal}
+2024-06-22 15:21:24.3682 Trace Closing ${message} | ${exception:format=tostring}<br />
+2024-06-22 15:21:24.3682 Trace Closing Layout Renderer: ${message}
+2024-06-22 15:21:24.3682 Trace Closing Layout Renderer: ${literal}
+2024-06-22 15:21:24.3682 Trace Closing Layout Renderer: ${exception}
+2024-06-22 15:21:24.3682 Trace Closing Layout Renderer: ${literal}
+2024-06-22 15:21:24.3682 Debug Finished closing logging configuration.
+2024-06-22 15:21:24.3682 Info LogFactory has been closed.

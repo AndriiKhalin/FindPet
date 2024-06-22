@@ -5,5 +5,5 @@ export interface RegisterRequest {
   birthDate: Date;
   phoneNumber: string;
   photo: string;
-  role: string;
+  role: string | null;
 }

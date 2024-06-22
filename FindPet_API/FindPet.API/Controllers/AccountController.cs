@@ -221,7 +221,7 @@ namespace FindPet.API.Controllers
                 Name = user.Name,
                 Photo = user.Photo,
                 BirthDate = user.BirthDate,
-                Roles = [.. await _userManager.GetRolesAsync(user)],
+                Role = (await _userManager.GetRolesAsync(user)).FirstOrDefault(),
                 PhoneNumber = user.PhoneNumber,
                 PhoneNumberConfirmed = user.PhoneNumberConfirmed,
                 AccessFailedCount = user.AccessFailedCount,
@@ -246,7 +246,7 @@ namespace FindPet.API.Controllers
                     Id = user.Id,
                     Email = user.Email,
                     Name = user.Name,
-                    Roles = roles.ToArray(),
+                    Role = roles.ToArray().FirstOrDefault(),
                     PhoneNumber = user.PhoneNumber
                 });
             }

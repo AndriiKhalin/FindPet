@@ -5,7 +5,7 @@
     </h1>
     <div *ngIf="accountDetail$ | async as user">
       <div class="text-center">
-        <img *ngIf="user.photo" [src]="user.photo.substring(2)" alt="User Photo" class="w-full h-auto">
+        <img *ngIf="user.photo" [src]="this.authService.createImgPath(user.photo)" alt="User Photo" class="w-full h-auto">
           <div *ngIf="!user.photo" class="bg-blue-500 text-4xl text-white flex items-center justify-center font-bold">
             {{user.name[0] | uppercase}}
           </div>

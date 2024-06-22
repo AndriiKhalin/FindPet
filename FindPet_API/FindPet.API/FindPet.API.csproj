@@ -34,6 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Middleware\" />
+    <Folder Include="wwwroot\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FindPet.Core\FindPet.Core.csproj" />

@@ -79,4 +79,10 @@ export class AuthService {
   getToken = (): string | null =>
     this.localStorageService.getItem(this.tokenKey) || '';
 
+  public createImgPath = (serverPath: string) => {
+    return `${this.apiUrl}${serverPath}`;
+  }
+  getUserPhoto(photoPath: string): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}photo/${photoPath}`, { responseType: 'blob' });
+}
 }

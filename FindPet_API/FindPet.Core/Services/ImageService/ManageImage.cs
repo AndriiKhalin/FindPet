@@ -58,7 +58,7 @@ public class ManageImage<T> : IManageImage<T> where T : class
             await file.CopyToAsync(fileStream);
         }
 
-        return ImgPath + rootImg + fileName;
+        return rootImg + fileName;
     }
 
     public async Task<string> UploadPhotoAsync(string fileName, Guid id)
@@ -86,7 +86,7 @@ public class ManageImage<T> : IManageImage<T> where T : class
         File.Copy(fileName, filePath, true);
 
         // Вернуть путь к загруженному файлу
-        return ImgPath + rootImg + uniqueFileName;
+        return rootImg + uniqueFileName;
     }
 
 
@@ -112,8 +112,7 @@ public class ManageImage<T> : IManageImage<T> where T : class
     public string GetPath()
     {
         var currentDirectory = Directory.GetCurrentDirectory();
-        var projectRoot = Path.GetFullPath(Path.Combine(currentDirectory, "..", ".."));
-        var pathToImages = Path.Combine(projectRoot, @"FindPet_UI\src\assets\");
+        var pathToImages = Path.Combine(currentDirectory, @"wwwroot");
 
         return pathToImages;
     }

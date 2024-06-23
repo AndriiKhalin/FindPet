@@ -66,7 +66,7 @@ namespace FindPet.API.Controllers
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(PetDto))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> CreatePet([FromQuery] Guid userId, [FromForm] PetForCreateDto petCreate)
+        public async Task<IActionResult> CreatePet([FromQuery] Guid userId, PetForCreateDto petCreate)
         {
 
             var petMap = await _petService.CreatePetAsync(userId, petCreate);

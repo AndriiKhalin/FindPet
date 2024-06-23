@@ -52,8 +52,11 @@ namespace FindPet.API.Controllers
                 return BadRequest(ModelState);
             }
 
+            var id = Guid.NewGuid();
+
             var user = new AuthUser
             {
+                Id = id.ToString(),
                 Email = registerDto.Email,
                 Name = registerDto.Name,
                 UserName = registerDto.Email,
@@ -90,6 +93,7 @@ namespace FindPet.API.Controllers
 
             await _userService.CreateUserAsync(new UserForCreateDto()
             {
+                Id = id,
                 Name = registerDto.Name,
                 Email = registerDto.Email,
                 Password = registerDto.Password,

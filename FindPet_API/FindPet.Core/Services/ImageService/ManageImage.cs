@@ -37,7 +37,7 @@ public class ManageImage<T> : IManageImage<T> where T : class
             File.Delete(filePath);
         }
     }
-    public async Task<string> UploadPhotoAsync(IFormFile file, Guid id)
+    public async Task<string> UploadPhotoAsync(IFormFile file, Guid? id)
     {
 
         if (file == null || file.Length == 0)
@@ -64,7 +64,7 @@ public class ManageImage<T> : IManageImage<T> where T : class
         return rootImg + fileName;
     }
 
-    public async Task<string> UploadPhotoAsync(string fileName, Guid id)
+    public async Task<string> UploadPhotoAsync(string fileName, Guid? id)
     {
         if (string.IsNullOrEmpty(fileName))
         {
@@ -93,7 +93,7 @@ public class ManageImage<T> : IManageImage<T> where T : class
     }
 
 
-    public async Task<IFormFile> UploadPhotoIFormFileAsync(string fileName, Guid id)
+    public async Task<IFormFile> UploadPhotoIFormFileAsync(string fileName, Guid? id)
     {
         if (string.IsNullOrEmpty(fileName))
         {
@@ -119,7 +119,7 @@ public class ManageImage<T> : IManageImage<T> where T : class
 
         return currentDirectory;
     }
-    public string GetUniqueFileName(string fileName, Guid id)
+    public string GetUniqueFileName(string fileName, Guid? id)
     {
         var extension = Path.GetExtension(fileName);
         var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);

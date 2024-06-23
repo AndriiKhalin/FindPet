@@ -24,6 +24,9 @@ export class PetService {
     return this.http.post<string>(`${this.apiUrl}Pet/uploadImage`,data);
   }
 
-  getDetail = (): Observable<PetDetail> =>
-    this.http.get<PetDetail>(`${this.apiUrl}Pet`);
+  getDetails = (): Observable<PetDetail[]> =>
+    this.http.get<PetDetail[]>(`${this.apiUrl}Pet`);
+
+  getDetail = (petId:string): Observable<PetDetail> =>
+    this.http.get<PetDetail>(`${this.apiUrl}Pet?petId=${petId}`);
 }

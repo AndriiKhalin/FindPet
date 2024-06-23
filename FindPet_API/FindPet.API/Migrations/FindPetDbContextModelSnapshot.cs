@@ -70,6 +70,9 @@ namespace FindPet.API.Migrations
                     b.Property<DateTime?>("DateCreateUpdate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("FoundDate")
                         .HasColumnType("datetime2");
 

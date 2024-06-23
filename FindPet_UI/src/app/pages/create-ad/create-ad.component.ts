@@ -15,13 +15,14 @@ import { PetService } from '../../services/pet.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { UserDetail } from '../../interfaces/user-detail';
+import { UploadComponent } from "../../components/upload/upload.component";
 
 
 
 @Component({
   selector: 'app-create-ad',
   standalone: true,
-  imports: [FormsModule, RouterOutlet, AsyncPipe, RouterLink, MatIconModule, MatInputModule, NgClass, ReactiveFormsModule, NgFor, NgIf],
+  imports: [FormsModule,UploadComponent, RouterOutlet, AsyncPipe, RouterLink, MatIconModule, MatInputModule, NgClass, ReactiveFormsModule, NgFor, NgIf],
   templateUrl: './create-ad.component.html',
   styleUrl: './create-ad.component.scss'
 })
@@ -35,7 +36,7 @@ export class CreateAdComponent {
   errors!: ValidationError[];
   selectedFile: File | null = null;
   response: { filePath: string } = { filePath: '' };
-  @Output() onUploadFinished = new EventEmitter<{ filePath: string }>();
+  // @Output() onUploadFinished = new EventEmitter<{ filePath: string }>();
 
   constructor(private formBuilder: FormBuilder){
     this.form = formBuilder.group({
@@ -129,20 +130,22 @@ update() {
   }
 
 
-  uploadFile = (files: FileList) => {
-    if (files.length === 0) {
-      return;
-    }
-    let fileToUpload = <File>files[0];
-    const formData = new FormData();
-    formData.append('file', fileToUpload, fileToUpload.name);
+  // uploadFile = (files: FileList) => {
+  //   if (files.length === 0) {
+  //     return;
+  //   }
+  //   let fileToUpload = <File>files[0];
+  //   const formData = new FormData();
+  //   formData.append('file', fileToUpload, fileToUpload.name);
 
-    this.petService.upload(formData).subscribe({
-      next:(response:any)=>{
-        this.onUploadFinished.emit({ filePath: response.filePath });
-      }
-    });
-  }
+  //   this.petService.upload(formData).subscribe({
+  //     next:(response:any)=>{
+  //       this.onUploadFinished.emit({ filePath: response.filePath });
+  //     }
+  //   });
+  // }
+
+
 // private passwordMatchValidator(
 //     control: AbstractControl
 //   ): { [key: string]: boolean } | null {

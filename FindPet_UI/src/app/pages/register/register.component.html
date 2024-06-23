@@ -60,7 +60,7 @@
 
           <div class="form-outline w-72 mx-auto mb-4">
             <!-- <input type="file" id="photo" class="form-control form-control-lg  placeholder:italic placeholder:text-slate-200" formControlName="photo" placeholder="Photo"/> -->
-             <app-upload id="photo" formControlName="photo" (onUploadFinished)="uploadFinished($event)"></app-upload>
+             <app-upload id="photo" [uploadType]="'user'" formControlName="photo" (onUploadFinished)="uploadFinished($event)"></app-upload>
             <div *ngIf="form.controls['photo'].invalid && (form.controls['photo'].touched || form.controls['photo'].dirty)" class="text-red-500 text-sm absolute">
               Photo invalid
             </div>

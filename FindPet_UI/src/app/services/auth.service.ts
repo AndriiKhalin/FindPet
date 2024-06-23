@@ -8,6 +8,7 @@ import { jwtDecode } from 'jwt-decode';
 import { RegisterRequest } from '../interfaces/register-request';
 import { UserDetail } from '../interfaces/user-detail';
 import { LocalStorageService } from './local-storage.service';
+import { User } from '../interfaces/user';
 
 
 @Injectable({
@@ -56,6 +57,9 @@ export class AuthService {
 
   getDetail = (): Observable<UserDetail> =>
     this.http.get<UserDetail>(`${this.apiUrl}Account/detail`);
+
+  // getUser = ():Observable<User>=>
+  //   this.http.get<UserDetail>(`${this.apiUrl}Account/detail`);
 
   isLoggedIn = (): boolean => {
     const token = this.getToken();

@@ -24,7 +24,7 @@ namespace FindPet.API.Migrations
 
             modelBuilder.Entity("FindPet.Domain.Entities.Ad", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -57,7 +57,7 @@ namespace FindPet.API.Migrations
 
             modelBuilder.Entity("FindPet.Domain.Entities.Pet", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -118,7 +118,7 @@ namespace FindPet.API.Migrations
 
             modelBuilder.Entity("FindPet.Domain.Entities.User", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 

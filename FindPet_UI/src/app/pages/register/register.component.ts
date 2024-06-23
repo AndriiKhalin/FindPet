@@ -44,7 +44,8 @@ export class RegisterComponent implements OnInit{
         "birthDate": ['', [Validators.required]],
         "phoneNumber":[ "", [Validators.required]],
         "photo" : [""],
-        "role": ['']
+        "role": [''],
+        "acceptTerm":['',[Validators.requiredTrue,Validators.required]]
     });
 }
 

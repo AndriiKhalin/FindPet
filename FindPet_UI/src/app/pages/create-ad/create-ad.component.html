@@ -104,24 +104,22 @@
           <div class="row">
               <div class="col-md-2">
                   <div class="row">
-                      <div *ngFor="let prdImg of existingProduct.productImages" class="col-md-12">
-                          <img class="card-img-top cursor" src="data:{{prdImg.mime}};base64,{{prdImg.base64Image}}"
-                              (click)="setSelectedImage(prdImg)">
+                      <div >
+                          <img class="card-img-top cursor" src=""
+                              >
                           <hr>
                       </div>
                   </div>
               </div>
               <div class="col-md-2">
                   <div class="margin-top">
-                      <div class="card" style="width: 22rem;" *ngIf="selectedPhoto">
+                      <div class="card" style="width: 22rem;" >
                           <img class="card-img-all"
-                              src="data:{{selectedPhoto.mime}};base64,{{selectedPhoto.base64Image}}">
+                              src="">
                       </div>
                   </div>
               </div>
           </div>
-          <app-upload-product-image [productId]="productId" (imageUploadCompleted)="imageUploadCompleted($event)">
-          </app-upload-product-image>
       </div> -->
       <div>
         <button class="btn btn-success btn-block w-28 h-10 mb-4 flex justify-center items-center">

@@ -1,11 +1,155 @@
-<!-- <div class="container">
-  <h2>Search Animals</h2>
-  <div *ngFor="let animal of animals">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">{{ animal.name }}</h5>
-        <p class="card-text">{{ animal.description }}</p>
-        <p class="card-text"><small class="text-muted">{{ animal.date }}</small></p>
+<!-- <div class="list-view">
+  <div class="row mb-5" *ngFor="let pet of pets$ | async">
+      <div class="col" >
+
+<div class="list-view">
+  <div class="card">
+      <div class="row g-0">
+          <div class="col-md-4 overflow-hidden d-flex justify-content-center align-items-center">
+              <img src="{{pet.photo}}"
+                   class="img-fluid rounded-start" alt="Product Image">
+          </div>
+          <div class="col d-flex flex-column">
+              <div class="card-header text-center">
+                  Header
+              </div>
+
+              <div class="card-body">
+                  <h5 class="card-title title"> {{pet.nickname}} </h5>
+                  <p class="card-text description"> {{pet.description}} </p>
+                  <h6 class="card-subtitle mb-3 text-primary"> {{pet.breed}} products are available. </h6>
+              </div>
+
+              <div class="card-body">
+                  <h4 class="card-title text-muted">Pricing</h4>
+                  <h2 class="card-title text-success">
+                      <span class="text-primary"> -{{pet.gender}}% </span>
+                  </h2>
+                  <h5 class="card-subtitle text-danger text-decoration-line-through">
+                      {{pet.gender}}
+                  </h5>
+              </div>
+
+              <div class="card-footer text-muted d-grid gap-2">
+                  <button type="button" class="btn btn-outline-success"
+                          >
+                      Add to Cart
+                      <span >(Login First)</span>
+                  </button>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+</div>
+</div>
+</div> -->
+
+
+<!-- <div class="grid-view">
+  <div class="row g-5">
+      <div class="col-4" *ngFor="let pet of pets$ | async">
+
+        <div class="grid-view mx-2 h-" >
+          <div class="card  mt-3">
+              <div class="card-header fw-bold fs-5 text-success text-center">
+                  {{pet.type}}
+              </div>
+
+              <div class="overflow-hidden d-flex justify-content-center align-items-center">
+                  <img src="{{pet.photo}}" alt=""
+                       class="card-img-top w-80 h-80" >
+              </div>
+
+              <div class="card-body h-">
+                  <span class="text-primary">NickName: <h5 class="card-title title"> {{pet.nickname}} </h5></span>
+                  <span class="text-primary">Description: <h6 class="card-subtitle my-2"> {{pet.description | uppercase}}  </h6></span>
+                  <span class="text-primary">Breed: <p class="card-text description"> {{pet.breed}} </p></span>
+              </div>
+
+              <div class="card-body">
+                <span class="text-primary">Gender:
+                  <h6 class="card-subtitle ">
+                      {{pet.gender}}
+                  </h6></span>
+                  <span class="text-primary">Lost Date:
+                  <h5 class="card-title text-success">
+
+                        {{pet.lostDate}}
+
+                  </h5>
+                </span>
+              </div>
+
+              <div class="card-footer d-grid gap-2">
+                  <button type="button" class="btn btn-outline-success"
+                          >
+                      More Info
+
+                  </button>
+              </div>
+          </div>
+      </div>
+
+</div>
+</div>
+</div> -->
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+  <div *ngFor="let pet of pets$ | async">
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden mt-3 ml-2">
+      <div class="bg-green-500 text-white text-center py-2">
+        <span class="font-bold text-lg">{{ pet.type }}</span>
+      </div>
+      <div class="overflow-hidden flex justify-center items-center">
+        <img src="{{ pet.photo }}" alt="Pet Photo" class="object-cover w-full h-96">
+      </div>
+      <div class="p-4">
+        <h5 class="text-xl font-bold">{{ pet.nickname }}</h5>
+        <h6 class="text-blue-500 my-2">{{ pet.description | uppercase }}</h6>
+        <p class="text-gray-700">{{ pet.breed }}</p>
+      </div>
+      <div class="p-4">
+        <h5 class="text-xl text-green-500">
+          <span class="text-blue-500"></span>
+        </h5>
+        <h6 class="text-lg">{{ pet.gender }}</h6>
+      </div>
+      <div class="p-4">
+        <button type="button" class="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600">
+          More Info
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+  <div *ngFor="let pet of pets$ | async">
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden mt-3">
+      <div class="bg-green-500 text-white text-center py-2">
+        <span class="font-bold text-lg">{{ pet.type }}</span>
+      </div>
+      <div class="overflow-hidden flex justify-center items-center">
+        <img src="{{ pet.photo }}" alt="Pet Photo" class="object-cover w-full h-48">
+      </div>
+      <div class="p-4">
+        <h5 class="text-xl font-bold">{{ pet.nickname }}</h5>
+        <h6 class="text-blue-500 my-2">{{ pet.description | uppercase }}</h6>
+        <p class="text-gray-700">{{ pet.breed }}</p>
+      </div>
+      <div class="p-4">
+        <h5 class="text-xl text-green-500">
+          <span class="text-blue-500"></span>
+        </h5>
+        <h6 class="text-lg">{{ pet.gender }}</h6>
+      </div>
+      <div class="p-4">
+        <button type="button" class="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600">
+          More Info
+        </button>
       </div>
     </div>
   </div>

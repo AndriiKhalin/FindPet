@@ -28,5 +28,5 @@ export class PetService {
     this.http.get<PetDetail[]>(`${this.apiUrl}Pet`);
 
   getDetail = (petId:string): Observable<PetDetail> =>
-    this.http.get<PetDetail>(`${this.apiUrl}Pet?petId=${petId}`);
+    this.http.get<PetDetail>(`${this.apiUrl}Pet/${petId}`);
 }

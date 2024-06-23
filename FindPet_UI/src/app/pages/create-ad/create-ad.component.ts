@@ -5,7 +5,7 @@ import { AuthService } from '../../services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {NgClass,NgFor,NgIf,AsyncPipe} from "@angular/common";
 import { Role } from '../../interfaces/role';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { FormsModule, FormGroup, FormControl,FormBuilder, Validators, ReactiveFormsModule, AbstractControl} from "@angular/forms";
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { ValidationError } from '../../interfaces/validation-error';
@@ -16,6 +16,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { UserDetail } from '../../interfaces/user-detail';
 import { UploadComponent } from "../../components/upload/upload.component";
+import { PetDetail } from '../../interfaces/pet-detail';
 
 
 
@@ -36,6 +37,8 @@ export class CreateAdComponent {
   errors!: ValidationError[];
   selectedFile: File | null = null;
   response: { filePath: string } = { filePath: '' };
+  petId!:string;
+  existingPet!: Observable<PetDetail>;
   // @Output() onUploadFinished = new EventEmitter<{ filePath: string }>();
 
   constructor(private formBuilder: FormBuilder){
@@ -61,7 +64,7 @@ uploadFinished = (event: { filePath: string }) => {
 }
 
 ngOnInit(): void {
-
+  // this.getPetDetails();
 
 }
 
@@ -108,7 +111,7 @@ update() {
     {
       next: (response) => {
         console.log(response);
-
+     this.petId=response.id;
         this.matSnackbar.open("Create Ad success", 'Close', {
           duration: 5000,
           horizontalPosition: 'center',
@@ -130,6 +133,13 @@ update() {
   }
 
 
+  getPetDetails() {
+    this.petService.getDetail(this.petId)
+      .subscribe((data) => {
+        console.log(data);
+        this.existingPet = of(data);
+      });
+  }
   // uploadFile = (files: FileList) => {
   //   if (files.length === 0) {
   //     return;

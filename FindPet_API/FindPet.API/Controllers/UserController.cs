@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FindPet.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase

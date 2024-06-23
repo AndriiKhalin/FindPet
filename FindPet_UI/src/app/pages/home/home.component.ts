@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 @Component({
@@ -13,4 +14,15 @@ import { AuthService } from '../../services/auth.service';
 })
 export class HomeComponent {
   authService = inject(AuthService);
+  matSnackBar = inject(MatSnackBar);
+  router = inject(Router);
+
+  logout = () => {
+    this.authService.logout();
+    this.matSnackBar.open('Logout success', 'Close', {
+      duration: 5000,
+      horizontalPosition: 'center',
+    });
+    this.router.navigate(['/login']);
+  };
 }

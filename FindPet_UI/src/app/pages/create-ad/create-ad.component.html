@@ -1,59 +1,95 @@
-<!-- <div class="container"><br>
+<div class="container"><br>
 
-  <br><br>
-  <div class="row" *ngIf="existingProduct">
-      <h3>Edit Product</h3><br>
-      <div class="col-md-8">
-          <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
+  <div class="row">
+      <h3>Create Ad</h3><br>
+      <div class="col-md-8 mt-2">
+          <form [formGroup]="form" (ngSubmit)="update()">
+            @for(error of errors; track error){
+              <div class="bg-red-100 border mb-2 flex flex-col gap-2 border-red-400 text-red-400 px4 py4 rounded-md relative">
+                <div class="text-xs p-2">{{error.description}}</div>
+              </div>
+              }
               <div class="form-group">
-                  <label for="name">Name</label>
-                  <input type="text" formControlName="name" class="form-control" placeholder="Enter Product Name"
-                      [class.has-error]="control('name')?.errors">
+                  <label for="nickname"  class="mb-1">NickName</label>
+                  <input type="text" id="nickname" formControlName="nickname" class="form-control" placeholder="Enter Pet NickName">
 
               </div>
               <br>
               <div class="form-group">
-                  <label for="description">Product Descriptions</label>
+                  <label for="description"  class="mb-1">Pet Descriptions</label>
                   <div class="form-line">
-                      <textarea rows="10" [class.has-error]="control('descriptions')?.errors"
-                          formControlName="descriptions" class="form-control"
-                          placeholder="Enter descriptions of the product">
+                      <textarea rows="5" id="description"
+                          formControlName="description" class="form-control"
+                          placeholder="Enter description">
                           </textarea>
 
                   </div>
               </div><br>
               <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-md-4 mb-4">
                       <div class="form-group">
-                          <label for="description">Price</label>
+                          <label for="breed"  class="mb-1">Breed</label>
                           <div class="form-line">
-                              <input [class.has-error]="control('price')?.errors" formControlName="price"
-                                  class="form-control" placeholder="Enter price of the product">
-
+                              <input  formControlName="breed" id="breed"
+                                  class="form-control" placeholder="Enter breed">
                           </div>
                       </div>
                   </div>
                   <div class="col-md-4">
                       <div class="form-group">
-                          <label for="isActive">Select Category</label>
-                          <select [class.has-error]="control('categoryId')?.errors" class="form-control"
-                              formControlName="categoryId">
-                              <option value="-1">Select</option>
-                              <option *ngFor="let item of categories" [value]="item.id">{{item.name}}</option>
-                          </select>
-
+                          <label for="gender"  class="mb-1">Gender</label>
+                          <div class="form-line">
+                            <input id="gender" formControlName="gender"
+                                class="form-control" placeholder="Enter gender">
+                        </div>
                       </div>
                   </div>
-                  <div class="col-md-4">
-                      <div class="form-group">
-                          <label for="isActive">Available since</label>
-                          <input type="date" class="form-control" formControlName="availableSince"
-                              [class.has-error]="control('availableSince')?.errors">
 
+                  <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="color"  class="mb-1">Color</label>
+                        <div class="form-line">
+                          <input id="color" formControlName="color"
+                              class="form-control" placeholder="Enter color">
                       </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                      <label for="size"  class="mb-1">Size</label>
+                      <div class="form-line">
+                        <input id="size" formControlName="size"
+                            class="form-control" placeholder="Enter size">
+                    </div>
                   </div>
               </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                    <label for="specialMarks"  class="mb-1">SpecialMarks</label>
+                    <div class="form-line">
+                      <input id="specialMarks" formControlName="specialMarks"
+                          class="form-control" placeholder="Enter specialMarks">
+                  </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                  <label for="isActive" class="mb-1">Lost Date</label>
+                  <input type="date" id="lostDate" class="form-control" formControlName="lostDate">
+              </div>
+          </div>
+
+          <div class="col-md-12 mt-4">
+            <div class="form-group">
+                <label for="photo"  class="mb-1">Image Pet</label>
+                <input type="file" #file id="photo" (change)="file.files && uploadFile(file.files)" formControlName="photo" class="form-control form-control-lg  placeholder:italic placeholder:text-slate-200"  placeholder="Photo"/>
+            </div>
+        </div>
+        </div>
 
               <br>
               <div class="d-grid gap-2">
@@ -62,7 +98,7 @@
           </form>
           <br><br>
       </div>
-      <div class="col-md-4">
+      <!-- <div class="col-md-4">
           <h5>Product images</h5>
           <div class="row">
               <div class="col-md-2">
@@ -85,9 +121,11 @@
           </div>
           <app-upload-product-image [productId]="productId" (imageUploadCompleted)="imageUploadCompleted($event)">
           </app-upload-product-image>
-      </div>
+      </div> -->
       <div>
-          <a class="nav-link" [routerLink]="['/admin/products/manage']">GO BACK</a>
-      </div>
+        <button class="btn btn-success btn-block w-28 h-10 mb-4 flex justify-center items-center">
+            <a class="nav-link w-full h-full flex justify-center items-center text-white no-underline" routerLink="/">GO BACK</a>
+        </button>
+    </div>
   </div>
-</div> -->
+</div>

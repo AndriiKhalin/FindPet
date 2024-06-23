@@ -25,7 +25,7 @@ public class Mapping : Profile
         //CreateMap<Finder, FinderForCreateDto>().ReverseMap();
         //CreateMap<Finder, FinderForUpdateDto>().ReverseMap();S
 
-        CreateMap<Pet, PetDto>().ReverseMap();
+        CreateMap<Pet, PetDto>().ForMember(d => d.Photo, o => o.MapFrom<PetResolver>()).ReverseMap();
         CreateMap<Pet, PetForCreateDto>().ReverseMap();
         CreateMap<Pet, PetForUpdateDto>().ReverseMap();
 

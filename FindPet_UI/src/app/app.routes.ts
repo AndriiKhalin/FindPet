@@ -27,12 +27,12 @@ export const routes: Routes = [
   },
   {
     path : "searchAnimals",
-    component : CreateAdComponent,
+    component : SearchAnimalsComponent,
     canActivate: [authGuard]
   },
   {
     path : "createAd",
-    component : SearchAnimalsComponent,
+    component : CreateAdComponent,
     canActivate: [authGuard]
   }
 ];

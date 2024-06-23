@@ -10,6 +10,7 @@ public class Pet : BaseEntity
     public string? Size { get; set; }
     public string? SpecialMarks { get; set; }
     public string? Photo { get; set; }
+    public string? Description { get; set; }
 
     public DateTime? DateCreateUpdate { get; set; }
     public DateTime? LostDate { get; set; }

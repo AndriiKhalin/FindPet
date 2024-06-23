@@ -38,7 +38,7 @@ export class AuthService {
   }
 
   upload(data:FormData):Observable<string>{
-    return this.http.post<string>(`${this.apiUrl}UploadImage`,data);
+    return this.http.post<string>(`${this.apiUrl}User/uploadImage`,data);
   }
 
   getUserDetail = () => {

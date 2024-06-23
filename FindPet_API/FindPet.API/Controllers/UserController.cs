@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
+using FindPet.Domain.Entities;
 using FindPet.Infrastructure.Interfaces.IEntityService;
+using FindPet.Infrastructure.Interfaces.IImageService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +16,13 @@ namespace FindPet.API.Controllers
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
+        private readonly IManageImage<User> _manageImage;
 
-        public UserController(IUserService userService, IMapper mapper)
+        public UserController(IUserService userService, IMapper mapper, IManageImage<User> manageImage)
         {
             _userService = userService;
             _mapper = mapper;
+            _manageImage = manageImage;
         }
 
         [HttpGet]
@@ -94,6 +98,35 @@ namespace FindPet.API.Controllers
 
             return NoContent();
 
+        }
+
+        [AllowAnonymous]
+        [HttpPost("uploadImage"), DisableRequestSizeLimit]
+        public async Task<IActionResult> UploadImage()
+        {
+            try
+            {
+                var formCollection = await Request.ReadFormAsync();
+                var file = formCollection.Files.First();
+                if (file.Length > 0)
+                {
+                    // Сохранить изображение
+                    var uniqueId = Guid.NewGuid();
+                    var filePath = await _manageImage.UploadPhotoAsync(file, uniqueId);
+
+                    // Вы можете добавить здесь обработку предсказания, например, сохранить результат в базу данных и т.д.
+
+                    return Ok(new { filePath });
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex}");
+            }
         }
     }
 }

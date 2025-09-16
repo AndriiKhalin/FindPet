@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FindPet_API.Helpers.UrlHelper;
 using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
 using FindPet.Domain.Entities;
 using FindPet.Infrastructure.Interfaces.IEntityRepository;
@@ -37,6 +38,17 @@ public class UserService : IUserService
         }
 
         return await _unitOfWorkRep.User.GetAsync(userId);
+    }
+
+    public async Task<User?> GetUserAsync(string userName)
+    {
+        if (!await UserExistsAsync(userName))
+        {
+            _logger.LogError($"User with name: {userName}, hasn't been found in db.");
+            throw new ArgumentNullException("Invalid user Name");
+        }
+
+        return await _unitOfWorkRep.User.GetUserAsync(userName);
     }
 
     //public async Task<IEnumerable<Ad>?> GetAdsByUserAsync(Guid userId)
@@ -81,7 +93,7 @@ public class UserService : IUserService
 
         var userEntityForDelete = await GetUserAsync(userId);
 
-        //_manageImage.DeletePhoto(userEntityForDelete.Photo);
+        _manageImage.DeletePhoto(userEntityForDelete.Photo);
 
         await _unitOfWorkRep.User.DeleteAsync(userId);
 
@@ -106,17 +118,12 @@ public class UserService : IUserService
         var userEntity = await GetUserAsync(userId);
 
 
-        //if (user.Photo is not null)
-        //{
-        //    _manageImage.DeletePhoto(userEntity.Photo);
-        //    await _manageImage.UploadPhotoAsync(user.Photo, userId);
+        if (user.Photo is not null)
+        {
+            _manageImage.DeletePhoto(userEntity.Photo);
+            await _manageImage.UploadPhotoAsync(user.Photo, userId);
 
-        //}
-        //else
-        //{
-        //    _logger.LogError($"Photo is null");
-        //    throw new ArgumentException("Photo cannot be null.");
-        //}
+        }
 
         _mapper.Map(user, userEntity);
 
@@ -136,8 +143,8 @@ public class UserService : IUserService
 
         var userMap = _mapper.Map<User>(user);
 
-        //userMap.DateCreateUpdate = DateTime.UtcNow;
-        //userMap.Photo = await _manageImage.UploadPhotoAsync(user.Photo, userMap.Id);
+        userMap.DateCreateUpdate = DateTime.UtcNow;
+        userMap.Photo = user.Photo;
 
 
         await _unitOfWorkRep.User.CreateAsync(userMap);

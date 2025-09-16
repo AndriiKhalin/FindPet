@@ -6,9 +6,9 @@ public interface IUnitOfWork
 {
     IPetRepository Pet { get; }
 
-    IUserRepository<Finder> Finder { get; }
+    //IUserRepository<Finder> Finder { get; }
 
-    IUserRepository<Owner> Owner { get; }
+    //IUserRepository<Owner> Owner { get; }
 
     IUserRepository<User> User { get; }
 

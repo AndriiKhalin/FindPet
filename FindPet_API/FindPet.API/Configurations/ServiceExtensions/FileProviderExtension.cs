@@ -22,8 +22,7 @@ public static class FileProviderExtension
         //return @"D:\IT\My_Projects\RentShop\RentShop_UI\Stuff\Images";
 
         var currentDirectory = Directory.GetCurrentDirectory();
-        var projectRoot = Path.GetFullPath(Path.Combine(currentDirectory, "..", ".."));
-        var pathToImages = Path.Combine(projectRoot, @"FindPet_UI\src\assets\");
+        var pathToImages = Path.Combine(currentDirectory, @"wwwroot");
 
         return pathToImages;
     }

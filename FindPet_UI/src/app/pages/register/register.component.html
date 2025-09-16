@@ -44,7 +44,7 @@
             </div>
           </div> -->
 
-          <!-- <div class="form-outline mb-4 w-72 mx-auto">
+          <div class="form-outline mb-4 w-72 mx-auto">
             <input type="date" id="birthDate" formControlName="birthDate" class="form-control form-control-lg placeholder:italic placeholder:text-slate-200"/>
             <div *ngIf="form.controls['birthDate'].invalid && (form.controls['birthDate'].touched || form.controls['birthDate'].dirty)" class="text-red-500 text-sm absolute">
               BirthDate invalid
@@ -52,18 +52,19 @@
           </div>
 
           <div class="form-outline w-72 mx-auto mb-4">
-            <input type="tel" id="phoneNumber" class="form-control form-control-lg  placeholder:italic placeholder:text-slate-200" formControlName="phoneNumber" placeholder="Phone"/>
+            <input type="tel" id="phoneNumber" class="form-control form-control-lg  placeholder:italic placeholder:text-slate-200" formControlName="phoneNumber" placeholder="Phone" />
             <div *ngIf="form.controls['phoneNumber'].invalid && (form.controls['phoneNumber'].touched || form.controls['phoneNumber'].dirty)" class="text-red-500 text-sm absolute">
               Phone invalid
             </div>
           </div>
 
           <div class="form-outline w-72 mx-auto mb-4">
-            <input type="file" id="photo" class="form-control form-control-lg  placeholder:italic placeholder:text-slate-200" formControlName="photo" placeholder="Photo"/>
+            <!-- <input type="file" id="photo" class="form-control form-control-lg  placeholder:italic placeholder:text-slate-200" formControlName="photo" placeholder="Photo"/> -->
+             <app-upload id="photo" [uploadType]="'user'" formControlName="photo" (onUploadFinished)="uploadFinished($event)"></app-upload>
             <div *ngIf="form.controls['photo'].invalid && (form.controls['photo'].touched || form.controls['photo'].dirty)" class="text-red-500 text-sm absolute">
               Photo invalid
             </div>
-          </div> -->
+          </div>
 
           <div class="form-outline mb-4 w-72 mx-auto">
 
@@ -81,8 +82,8 @@
 
           <div class="flex justify-center items-center mb-4">
             <div class="flex items-center">
-              <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"/>
-              <label for="remember-me" class="ml-2 text-sm">
+              <input id="acceptTerm" name="acceptTerm" formControlName="acceptTerm" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"/>
+              <label for="acceptTerm" class="ml-2 text-sm">
                 I accept the <a href="javascript:void(0);" class="text-blue-600 font-semibold hover:underline">Terms and Conditions</a>
               </label>
             </div>

@@ -8,8 +8,8 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly FindPetDbContext _context;
     private IPetRepository? _pet;
-    private IUserRepository<Finder>? _finder;
-    private IUserRepository<Owner>? _owner;
+    //private IUserRepository<Finder>? _finder;
+    //private IUserRepository<Owner>? _owner;
     private IAdRepository? _ad;
     private IUserRepository<User> _user;
 
@@ -29,21 +29,21 @@ public class UnitOfWork : IUnitOfWork
         }
     }
 
-    public IUserRepository<Finder> Finder
-    {
-        get
-        {
-            return _finder ??= new FinderRepository(_context);
-        }
-    }
+    //public IUserRepository<Finder> Finder
+    //{
+    //    get
+    //    {
+    //        return _finder ??= new FinderRepository(_context);
+    //    }
+    //}
 
-    public IUserRepository<Owner> Owner
-    {
-        get
-        {
-            return _owner ??= new OwnerRepository(_context);
-        }
-    }
+    //public IUserRepository<Owner> Owner
+    //{
+    //    get
+    //    {
+    //        return _owner ??= new OwnerRepository(_context);
+    //    }
+    //}
 
 
 

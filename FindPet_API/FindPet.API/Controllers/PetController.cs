@@ -1,23 +1,27 @@
 ﻿using AutoMapper;
 using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
+using FindPet.Domain.Entities;
 using FindPet.Infrastructure.Interfaces.IEntityService;
+using FindPet.Infrastructure.Interfaces.IImageService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FindPet.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PetController : ControllerBase
     {
         private readonly IPetService _petService;
         private readonly IMapper _mapper;
+        private readonly IManageImage<Pet> _manageImage;
 
-        public PetController(IPetService petService, IMapper mapper)
+        public PetController(IPetService petService, IMapper mapper, IManageImage<Pet> manageImage)
         {
             _petService = petService;
             _mapper = mapper;
+            _manageImage = manageImage;
         }
 
         [HttpGet]
@@ -62,10 +66,10 @@ namespace FindPet.API.Controllers
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(PetDto))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> CreatePet([FromQuery] Guid ownerId, [FromQuery] Guid finderId, [FromForm] PetForCreateDto petCreate)
+        public async Task<IActionResult> CreatePet([FromQuery] Guid userId, PetForCreateDto petCreate)
         {
 
-            var petMap = await _petService.CreatePetAsync(ownerId, finderId, petCreate);
+            var petMap = await _petService.CreatePetAsync(userId, petCreate);
 
             var createdPet = _mapper.Map<PetDto>(petMap);
 
@@ -93,6 +97,35 @@ namespace FindPet.API.Controllers
 
             return NoContent();
 
+        }
+
+        [AllowAnonymous]
+        [HttpPost("uploadImage"), DisableRequestSizeLimit]
+        public async Task<IActionResult> UploadImage()
+        {
+            try
+            {
+                var formCollection = await Request.ReadFormAsync();
+                var file = formCollection.Files.First();
+                if (file.Length > 0)
+                {
+                    // Сохранить изображение
+                    var uniqueId = Guid.NewGuid();
+                    var filePath = await _manageImage.UploadPhotoAsync(file, uniqueId);
+
+                    // Вы можете добавить здесь обработку предсказания, например, сохранить результат в базу данных и т.д.
+
+                    return Ok(new { filePath });
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex}");
+            }
         }
     }
 }

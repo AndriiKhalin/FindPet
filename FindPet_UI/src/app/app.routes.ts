@@ -4,11 +4,14 @@ import { HomeComponent } from './pages/home/home.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { CreateAdComponent } from './pages/create-ad/create-ad.component';
 import { SearchAnimalsComponent } from './pages/search-animals/search-animals.component';
+import { AccountComponent } from './pages/account/account.component';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
     path : "",
-    component : HomeComponent
+    component : HomeComponent,
+    pathMatch: 'full'
   },
   {
     path : "login",
@@ -19,11 +22,18 @@ export const routes: Routes = [
     component : RegisterComponent
   },
   {
+    path: 'account/:id',
+    component: AccountComponent,
+    canActivate: [authGuard]
+  },
+  {
     path : "searchAnimals",
-    component : CreateAdComponent
+    component : SearchAnimalsComponent,
+    canActivate: [authGuard]
   },
   {
     path : "createAd",
-    component : SearchAnimalsComponent
+    component : CreateAdComponent,
+    canActivate: [authGuard]
   }
 ];

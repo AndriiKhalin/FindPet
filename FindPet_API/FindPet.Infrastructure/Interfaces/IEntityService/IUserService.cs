@@ -9,6 +9,8 @@ public interface IUserService
 
     Task<User?> GetUserAsync(Guid UserId);
 
+    Task<User?> GetUserAsync(string userName);
+
     Task<bool> UserExistsAsync(Guid UserId);
 
     Task<bool> UserExistsAsync(string UserFirstName);

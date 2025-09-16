@@ -6,6 +6,9 @@ import { AuthResponse } from '../interfaces/auth-response';
 import { HttpClient } from '@angular/common/http';
 import { jwtDecode } from 'jwt-decode';
 import { RegisterRequest } from '../interfaces/register-request';
+import { UserDetail } from '../interfaces/user-detail';
+import { LocalStorageService } from './local-storage.service';
+import { User } from '../interfaces/user';
 
 
 @Injectable({
@@ -15,7 +18,7 @@ export class AuthService {
   apiUrl: string = environment.apiUrl;
   private tokenKey = 'token';
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient,private localStorageService: LocalStorageService) { }
 
   login(data: LoginRequest): Observable<AuthResponse> {
     return this.http
@@ -23,7 +26,7 @@ export class AuthService {
       .pipe(
         map((response) => {
           if (response.isSuccess) {
-            localStorage.setItem(this.tokenKey, response.token);
+            this.localStorageService.setItem(this.tokenKey, response.token);
           }
           return response;
         })
@@ -35,6 +38,10 @@ export class AuthService {
     .post<AuthResponse>(`${this.apiUrl}Account/register`, data);
   }
 
+  upload(data:FormData):Observable<string>{
+    return this.http.post<string>(`${this.apiUrl}User/uploadImage`,data);
+  }
+
   getUserDetail = () => {
     const token = this.getToken();
     if (!token) return null;
@@ -43,11 +50,18 @@ export class AuthService {
       id: decodedToken.nameid,
       fullName: decodedToken.name,
       email: decodedToken.email,
-      roles: decodedToken.role || [],
+      roles: Array.isArray(decodedToken.role)
+        ? decodedToken.role
+        : decodedToken.role ? [decodedToken.role] : []
     };
     return userDetail;
   };
 
+  getDetail = (): Observable<UserDetail> =>
+    this.http.get<UserDetail>(`${this.apiUrl}Account/detail`);
+
+  // getUser = ():Observable<User>=>
+  //   this.http.get<UserDetail>(`${this.apiUrl}Account/detail`);
 
   isLoggedIn = (): boolean => {
     const token = this.getToken();
@@ -65,10 +79,16 @@ export class AuthService {
   }
 
   logout = (): void => {
-    localStorage.removeItem(this.tokenKey);
+    this.localStorageService.removeItem(this.tokenKey);
   };
 
-  private getToken = (): string | null =>
-    localStorage.getItem(this.tokenKey) || '';
+  getToken = (): string | null =>
+    this.localStorageService.getItem(this.tokenKey) || '';
 
+  public createImgPath(serverPath: string): string {
+    return `https://localhost:7163/${serverPath}`;
+  }
+//   getUserPhoto(photoPath: string): Observable<Blob> {
+//     return this.http.get(`${this.apiUrl}photo/${photoPath}`, { responseType: 'blob' });
+// }
 }

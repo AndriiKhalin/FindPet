@@ -10,11 +10,10 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 @Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [MatCardModule, MatFormFieldModule,MatCheckboxModule,RouterOutlet,MatSnackBarModule, RouterLink,NgClass,ReactiveFormsModule,NgFor,NgIf],
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+    selector: 'app-login',
+    imports: [MatCardModule, MatFormFieldModule, MatCheckboxModule, RouterOutlet, MatSnackBarModule, RouterLink, NgClass, ReactiveFormsModule, NgFor, NgIf],
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit{
   authService = inject(AuthService);

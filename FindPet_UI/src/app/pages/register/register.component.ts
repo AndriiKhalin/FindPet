@@ -19,7 +19,6 @@ import { UploadComponent } from "../../components/upload/upload.component";
 
 @Component({
     selector: 'app-register',
-    standalone: true,
     templateUrl: './register.component.html',
     styleUrl: './register.component.scss',
     imports: [FormsModule, RouterOutlet, AsyncPipe, RouterLink, MatIconModule, MatInputModule, NgClass, ReactiveFormsModule, NgFor, NgIf, UploadComponent]

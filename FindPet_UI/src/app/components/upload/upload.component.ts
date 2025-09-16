@@ -5,11 +5,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from '../../../environments/environment';
 
 @Component({
-  selector: 'app-upload',
-  standalone: true,
-  imports: [],
-  templateUrl: './upload.component.html',
-  styleUrl: './upload.component.scss'
+    selector: 'app-upload',
+    imports: [],
+    templateUrl: './upload.component.html',
+    styleUrl: './upload.component.scss'
 })
 export class UploadComponent{
   authService = inject(AuthService);

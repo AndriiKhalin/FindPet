@@ -21,11 +21,10 @@ import { PetDetail } from '../../interfaces/pet-detail';
 
 
 @Component({
-  selector: 'app-create-ad',
-  standalone: true,
-  imports: [FormsModule,UploadComponent, RouterOutlet, AsyncPipe, RouterLink, MatIconModule, MatInputModule, NgClass, ReactiveFormsModule, NgFor, NgIf],
-  templateUrl: './create-ad.component.html',
-  styleUrl: './create-ad.component.scss'
+    selector: 'app-create-ad',
+    imports: [FormsModule, UploadComponent, RouterOutlet, AsyncPipe, RouterLink, MatIconModule, MatInputModule, NgClass, ReactiveFormsModule, NgFor, NgIf],
+    templateUrl: './create-ad.component.html',
+    styleUrl: './create-ad.component.scss'
 })
 export class CreateAdComponent {
   roleService = inject(RoleService);

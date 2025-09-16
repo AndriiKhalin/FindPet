@@ -13,11 +13,10 @@ import { UserDetail } from '../../interfaces/user-detail';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-navbar',
-  standalone: true,
-  imports: [MatToolbarModule,MatIconButton,MatMenuModule,CommonModule,MatIconModule,MatSnackBarModule,RouterLink,RouterOutlet,MatButtonModule,MatDividerModule],
-  templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.scss'
+    selector: 'app-navbar',
+    imports: [MatToolbarModule, MatIconButton, MatMenuModule, CommonModule, MatIconModule, MatSnackBarModule, RouterLink, RouterOutlet, MatButtonModule, MatDividerModule],
+    templateUrl: './navbar.component.html',
+    styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent implements OnInit{
   authService = inject(AuthService);

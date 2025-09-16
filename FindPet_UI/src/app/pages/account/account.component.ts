@@ -5,11 +5,10 @@ import { Observable } from 'rxjs';
 import { UserDetail } from '../../interfaces/user-detail';
 
 @Component({
-  selector: 'app-account',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './account.component.html',
-  styleUrl: './account.component.scss'
+    selector: 'app-account',
+    imports: [CommonModule],
+    templateUrl: './account.component.html',
+    styleUrl: './account.component.scss'
 })
 export class AccountComponent implements OnInit {
   authService = inject(AuthService);

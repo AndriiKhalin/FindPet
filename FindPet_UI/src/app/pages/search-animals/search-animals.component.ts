@@ -10,11 +10,10 @@ import { FormsModule, FormGroup, FormControl,FormBuilder, Validators, ReactiveFo
 
 
 @Component({
-  selector: 'app-search-animals',
-  standalone: true,
-  imports: [NgClass,ReactiveFormsModule,CommonModule,FormsModule,NgFor,NgIf,AsyncPipe,RouterLink,RouterOutlet],
-  templateUrl: './search-animals.component.html',
-  styleUrl: './search-animals.component.scss'
+    selector: 'app-search-animals',
+    imports: [NgClass, ReactiveFormsModule, CommonModule, FormsModule, NgFor, NgIf, AsyncPipe, RouterLink, RouterOutlet],
+    templateUrl: './search-animals.component.html',
+    styleUrl: './search-animals.component.scss'
 })
 export class SearchAnimalsComponent implements OnInit{
   petService=inject(PetService);

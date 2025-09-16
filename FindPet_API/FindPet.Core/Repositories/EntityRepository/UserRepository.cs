@@ -22,6 +22,6 @@ public class UserRepository : BaseRepository<User>, IUserRepository<User>
 
     public async Task<User?> GetUserAsync(string userName)
     {
-        return await GetByConditionAsync(x => x.Name == userName).Result.FirstOrDefaultAsync();
+        return await (await GetByConditionAsync(x => x.Name == userName)).FirstOrDefaultAsync();
     }
 }

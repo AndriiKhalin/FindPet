@@ -93,9 +93,6 @@ register() {
 
   const roles = this.form.get('role')?.value || [];
 
-  console.log(this.response);
-  console.log(this.response.filePath);
-
   const registrationData: RegisterRequest = {
     name: this.form.get('name')?.value,
     email: this.form.get('email')?.value,

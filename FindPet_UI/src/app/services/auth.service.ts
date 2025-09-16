@@ -86,7 +86,7 @@ export class AuthService {
     this.localStorageService.getItem(this.tokenKey) || '';
 
   public createImgPath(serverPath: string): string {
-    return `https://localhost:7163/${serverPath}`;
+    return `${this.apiUrl}${serverPath}`;
   }
 //   getUserPhoto(photoPath: string): Observable<Blob> {
 //     return this.http.get(`${this.apiUrl}photo/${photoPath}`, { responseType: 'blob' });

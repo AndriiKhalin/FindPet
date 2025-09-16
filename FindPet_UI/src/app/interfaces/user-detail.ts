@@ -6,7 +6,7 @@ export interface UserDetail {
   birthDate:Date;
   role: string[];
   phoneNumber: string;
-  twoFacotrEnabled: boolean;
+  twoFactorEnabled: boolean;
   phoneNumberConfirmed: boolean;
   accessFailedCount: 0;
 }

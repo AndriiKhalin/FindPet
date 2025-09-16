@@ -35,10 +35,10 @@ export class AppComponent implements OnInit ,OnDestroy{
     this.authService.logout();
   }
   ngOnInit(): void {
-    // Удаляем токен при старте приложения
+    // Remove token at application startup
     //this.authService.logout();
 
-    // Перенаправляем на начальную страницу
-    this.router.navigate(['/']);  // замените '/start' на ваш маршрут начальной страницы
+    // Redirect to the home page
+    this.router.navigate(['/']);  // replace '/start' with your home route if needed
   }
 }

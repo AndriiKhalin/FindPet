@@ -124,11 +124,6 @@ public class PetService : IPetService
             await _manageImage.UploadPhotoAsync(pet.Photo, petId);
 
         }
-        else
-        {
-            _logger.LogError($"Photo is null");
-            throw new ArgumentException("Photo cannot be null.");
-        }
 
         _mapper.Map(pet, petEntity);
 
@@ -154,7 +149,7 @@ public class PetService : IPetService
         petMap.UserId = userEntity.Id;
         petMap.DateCreateUpdate = DateTime.UtcNow;
         petMap.Photo = pet.Photo;
-        petMap.Type = await _mlService.PredictAsync(Path.Combine(@"wwwroot", petMap.Photo!));
+        petMap.Type = await _mlService.PredictAsync(Path.Combine(@"wwwroot", Path.GetFileName(petMap.Photo!)));
         await _unitOfWorkRep.Pet.CreateAsync(petMap);
 
         await _unitOfWorkRep.SaveAsync();

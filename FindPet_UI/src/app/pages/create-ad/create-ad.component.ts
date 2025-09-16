@@ -44,7 +44,7 @@ export class CreateAdComponent {
   constructor(private formBuilder: FormBuilder){
     this.form = formBuilder.group({
         "breed": ["", [Validators.required]],
-        "nickname": ["", [ Validators.required,Validators.email]],
+        "nickname": ["", [ Validators.required]],
         "gender": ['', [Validators.required]],
         "color": ['', [Validators.required]],
         "size": ['', [Validators.required]],

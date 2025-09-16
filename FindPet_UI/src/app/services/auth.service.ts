@@ -50,7 +50,9 @@ export class AuthService {
       id: decodedToken.nameid,
       fullName: decodedToken.name,
       email: decodedToken.email,
-      roles: decodedToken.role || []
+      roles: Array.isArray(decodedToken.role)
+        ? decodedToken.role
+        : decodedToken.role ? [decodedToken.role] : []
     };
     return userDetail;
   };

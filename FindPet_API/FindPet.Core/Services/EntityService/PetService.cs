@@ -154,7 +154,7 @@ public class PetService : IPetService
         petMap.UserId = userEntity.Id;
         petMap.DateCreateUpdate = DateTime.UtcNow;
         petMap.Photo = pet.Photo;
-        petMap.Type = await _mlService.PredictAsync(@"wwwroot/" + petMap.Photo);
+        petMap.Type = await _mlService.PredictAsync(Path.Combine(@"wwwroot", petMap.Photo!));
         await _unitOfWorkRep.Pet.CreateAsync(petMap);
 
         await _unitOfWorkRep.SaveAsync();

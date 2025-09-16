@@ -1,20 +1,21 @@
 ﻿using Azure;
+using FindPet.Domain.DTOs;
+using FindPet.Domain.DTOs.AuthDTOs;
+using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
 using FindPet.Domain.Entities;
 using FindPet.Domain.ValueObjects;
+using FindPet.Infrastructure.Interfaces.IEntityRepository;
+using FindPet.Infrastructure.Interfaces.IEntityService;
+using FindPet_API.Helpers.UrlHelper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using FindPet.Domain.DTOs;
-using FindPet.Domain.DTOs.AuthDTOs;
-using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
-using FindPet.Infrastructure.Interfaces.IEntityRepository;
-using FindPet.Infrastructure.Interfaces.IEntityService;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
 
 namespace FindPet.API.Controllers
 {
@@ -50,6 +51,11 @@ namespace FindPet.API.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            if (!string.IsNullOrEmpty(registerDto.Photo))
+            {
+                registerDto.Photo = PathNormalizer.NormalizePath(registerDto.Photo);
             }
 
             var id = Guid.NewGuid();

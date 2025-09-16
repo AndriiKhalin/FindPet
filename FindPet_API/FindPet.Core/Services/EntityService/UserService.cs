@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FindPet_API.Helpers.UrlHelper;
 using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
 using FindPet.Domain.Entities;
 using FindPet.Infrastructure.Interfaces.IEntityRepository;
@@ -122,11 +123,6 @@ public class UserService : IUserService
             _manageImage.DeletePhoto(userEntity.Photo);
             await _manageImage.UploadPhotoAsync(user.Photo, userId);
 
-        }
-        else
-        {
-            _logger.LogError($"Photo is null");
-            throw new ArgumentException("Photo cannot be null.");
         }
 
         _mapper.Map(user, userEntity);

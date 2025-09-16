@@ -102,7 +102,7 @@ register() {
     password: this.form.get('password')?.value,
     birthDate: this.form.get('birthDate')?.value,
     phoneNumber: this.form.get('phoneNumber')?.value,
-    photo: this.response.filePath.replace(/\\/g, '/'),
+    photo: this.response.filePath,
     role: this.form.get('role')?.value || null,
   };
 

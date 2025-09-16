@@ -5,6 +5,7 @@ import { RegisterComponent } from './pages/register/register.component';
 import { CreateAdComponent } from './pages/create-ad/create-ad.component';
 import { SearchAnimalsComponent } from './pages/search-animals/search-animals.component';
 import { AccountComponent } from './pages/account/account.component';
+import { TestNormalizeUrlComponent } from './pages/test-normalize-url/test-normalize-url.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -35,5 +36,9 @@ export const routes: Routes = [
     path : "createAd",
     component : CreateAdComponent,
     canActivate: [authGuard]
+  },
+  {
+    path: "test-normalize-url",
+    component: TestNormalizeUrlComponent
   }
 ];

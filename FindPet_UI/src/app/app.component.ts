@@ -3,14 +3,13 @@ import { Router, RouterOutlet } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { FootbarComponent } from './components/footbar/footbar.component';
-import { HomeComponent } from './pages/home/home.component';
 import { AuthService } from './services/auth.service';
 import { isPlatformBrowser } from '@angular/common';
 
 
 @Component({
     selector: 'app-root',
-    imports: [RouterOutlet, MatButtonModule, NavbarComponent, HomeComponent, FootbarComponent],
+    imports: [RouterOutlet, MatButtonModule, NavbarComponent, FootbarComponent],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss'
 })

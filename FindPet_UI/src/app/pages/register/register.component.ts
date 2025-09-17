@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef, inject } from '@angular/core';
-import { RouterOutlet, RouterLink, Router} from "@angular/router";
+import { RouterLink, Router} from "@angular/router";
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, FormGroup, FormControl,FormBuilder, Validators, ReactiveFormsModule, AbstractControl} from "@angular/forms";
-import {NgClass,NgFor,NgIf,AsyncPipe} from "@angular/common";
+import { NgClass, AsyncPipe } from "@angular/common";
 import intlTelInput from 'intl-tel-input';
 import { RoleService } from '../../services/role.service';
 import { AuthService } from '../../services/auth.service';
@@ -21,7 +21,7 @@ import { UploadComponent } from "../../components/upload/upload.component";
     selector: 'app-register',
     templateUrl: './register.component.html',
     styleUrl: './register.component.scss',
-    imports: [FormsModule, RouterOutlet, AsyncPipe, RouterLink, MatIconModule, MatInputModule, NgClass, ReactiveFormsModule, NgFor, NgIf, UploadComponent]
+    imports: [FormsModule, AsyncPipe, RouterLink, MatIconModule, MatInputModule, NgClass, ReactiveFormsModule, UploadComponent]
 })
 export class RegisterComponent implements OnInit{
   roleService = inject(RoleService);
@@ -62,7 +62,6 @@ uploadFinished = (event: { filePath: string }) => {
 ngOnInit(): void {
   const input = document.querySelector("#phoneNumber") as HTMLInputElement;
   intlTelInput(input, {
-    utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.12/build/js/utils.js",
     separateDialCode:true
   });
 

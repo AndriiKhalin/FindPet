@@ -1,17 +1,17 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule, FormGroup, FormControl,FormBuilder, Validators, ReactiveFormsModule} from "@angular/forms";
-import { RouterOutlet, RouterLink,Router} from "@angular/router";
+import { Router} from "@angular/router";
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { AuthService } from '../../services/auth.service';
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 @Component({
     selector: 'app-login',
-    imports: [MatCardModule, MatFormFieldModule, MatCheckboxModule, RouterOutlet, MatSnackBarModule, RouterLink, NgClass, ReactiveFormsModule, NgFor, NgIf],
+    imports: [MatCardModule, MatFormFieldModule, MatCheckboxModule, MatSnackBarModule, NgClass, ReactiveFormsModule],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
 })

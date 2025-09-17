@@ -1,10 +1,5 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './pages/login/login.component';
 import { HomeComponent } from './pages/home/home.component';
-import { RegisterComponent } from './pages/register/register.component';
-import { CreateAdComponent } from './pages/create-ad/create-ad.component';
-import { SearchAnimalsComponent } from './pages/search-animals/search-animals.component';
-import { AccountComponent } from './pages/account/account.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -14,26 +9,26 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path : "login",
-    component : LoginComponent
+    path: "login",
+    loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent)
   },
   {
-    path : "register",
-    component : RegisterComponent
+    path: "register",
+    loadComponent: () => import('./pages/register/register.component').then(m => m.RegisterComponent)
   },
   {
     path: 'account/:id',
-    component: AccountComponent,
+    loadComponent: () => import('./pages/account/account.component').then(m => m.AccountComponent),
     canActivate: [authGuard]
   },
   {
-    path : "searchAnimals",
-    component : SearchAnimalsComponent,
+    path: "searchAnimals",
+    loadComponent: () => import('./pages/search-animals/search-animals.component').then(m => m.SearchAnimalsComponent),
     canActivate: [authGuard]
   },
   {
-    path : "createAd",
-    component : CreateAdComponent,
+    path: "createAd",
+    loadComponent: () => import('./pages/create-ad/create-ad.component').then(m => m.CreateAdComponent),
     canActivate: [authGuard]
   }
 ];

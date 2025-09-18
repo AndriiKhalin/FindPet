@@ -3,11 +3,10 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { RoleService } from '../../services/role.service';
 import { AuthService } from '../../services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import {NgClass,NgFor,NgIf,AsyncPipe} from "@angular/common";
 import { Role } from '../../interfaces/role';
 import { Observable, of } from 'rxjs';
 import { FormsModule, FormGroup, FormControl,FormBuilder, Validators, ReactiveFormsModule, AbstractControl} from "@angular/forms";
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ValidationError } from '../../interfaces/validation-error';
 import { RegisterRequest } from '../../interfaces/register-request';
 import { PetResponse } from '../../interfaces/pet-response';
@@ -21,11 +20,10 @@ import { PetDetail } from '../../interfaces/pet-detail';
 
 
 @Component({
-  selector: 'app-create-ad',
-  standalone: true,
-  imports: [FormsModule,UploadComponent, RouterOutlet, AsyncPipe, RouterLink, MatIconModule, MatInputModule, NgClass, ReactiveFormsModule, NgFor, NgIf],
-  templateUrl: './create-ad.component.html',
-  styleUrl: './create-ad.component.scss'
+    selector: 'app-create-ad',
+    imports: [FormsModule, UploadComponent, RouterLink, MatIconModule, MatInputModule, ReactiveFormsModule],
+    templateUrl: './create-ad.component.html',
+    styleUrl: './create-ad.component.scss'
 })
 export class CreateAdComponent {
   roleService = inject(RoleService);

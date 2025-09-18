@@ -1,9 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { MatIconButton } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { RouterOutlet, RouterLink, Router} from "@angular/router";
+import { RouterLink, Router} from "@angular/router";
 import { MatButtonModule } from '@angular/material/button';
 import {MatDividerModule} from '@angular/material/divider';
 import { AuthService } from '../../services/auth.service';
@@ -13,11 +12,10 @@ import { UserDetail } from '../../interfaces/user-detail';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-navbar',
-  standalone: true,
-  imports: [MatToolbarModule,MatIconButton,MatMenuModule,CommonModule,MatIconModule,MatSnackBarModule,RouterLink,RouterOutlet,MatButtonModule,MatDividerModule],
-  templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.scss'
+    selector: 'app-navbar',
+    imports: [MatToolbarModule, MatMenuModule, CommonModule, MatIconModule, MatSnackBarModule, RouterLink, MatButtonModule, MatDividerModule],
+    templateUrl: './navbar.component.html',
+    styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent implements OnInit{
   authService = inject(AuthService);

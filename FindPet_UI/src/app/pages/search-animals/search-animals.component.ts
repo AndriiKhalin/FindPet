@@ -2,19 +2,18 @@ import { Component, inject, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { PetService } from '../../services/pet.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router, RouterLink, RouterOutlet} from '@angular/router';
+import { Router} from '@angular/router';
 import { PetDetail } from '../../interfaces/pet-detail';
 import { Observable } from 'rxjs';
-import {NgClass,NgFor,NgIf,AsyncPipe,CommonModule} from "@angular/common";
+import { AsyncPipe, CommonModule } from "@angular/common";
 import { FormsModule, FormGroup, FormControl,FormBuilder, Validators, ReactiveFormsModule, AbstractControl} from "@angular/forms";
 
 
 @Component({
-  selector: 'app-search-animals',
-  standalone: true,
-  imports: [NgClass,ReactiveFormsModule,CommonModule,FormsModule,NgFor,NgIf,AsyncPipe,RouterLink,RouterOutlet],
-  templateUrl: './search-animals.component.html',
-  styleUrl: './search-animals.component.scss'
+    selector: 'app-search-animals',
+    imports: [ReactiveFormsModule, CommonModule, FormsModule, AsyncPipe],
+    templateUrl: './search-animals.component.html',
+    styleUrl: './search-animals.component.scss'
 })
 export class SearchAnimalsComponent implements OnInit{
   petService=inject(PetService);

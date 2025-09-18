@@ -3,37 +3,40 @@
     <h1 class="text-3xl text-gray-600 font-bold mb-4 text-center">
       Account Detail
     </h1>
-    <div *ngIf="accountDetail$ | async as user">
-      <div class="text-center">
-        <img *ngIf="user.photo" [src]="createImgPath(user.photo)" alt="User Photo" class="w-32 h-32 rounded-full  mx-auto">
-          <div *ngIf="!user.photo" class="bg-blue-500 text-4xl text-white flex items-center justify-center font-bold">
-            {{user.name[0] | uppercase}}
+    @if (accountDetail$ | async; as user) {
+      <div>
+        <div class="text-center">
+          @if (user.photo) {
+            <img [src]="createImgPath(user.photo)" alt="User Photo" class="w-32 h-32 rounded-full  mx-auto">
+          }
+          @if (!user.photo) {
+            <div class="bg-blue-500 text-4xl text-white flex items-center justify-center font-bold">
+              {{user.name[0] | uppercase}}
+            </div>
+          }
+        </div>
+        <hr class="py-4 border-slate-400">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="text-gray-600 font-bold">Full Name</div>
+          <div class="text-gray-800 font-medium">{{user.name | titlecase}}</div>
+          <div class="text-gray-600 font-bold">Email</div>
+          <div class="text-gray-800 font-medium">{{user.email}}</div>
+          <div class="text-gray-600 font-bold">
+            Role
           </div>
+          <div>
+            <span class="bg-green-700 text-white rounded-md  px-2">{{user.role}}</span>
+          </div>
+          <div class="text-gray-600 font-bold">
+            Phone
+          </div>
+          <div class="text-gray-800 font-medium">{{user.phoneNumber || '-'}}</div>
+          <div class="text-gray-600 font-bold">
+            Access Failed Count
+          </div>
+          <div class="text-gray-800 font-medium">{{user.accessFailedCount}}</div>
+        </div>
       </div>
-      <hr class="py-4 border-slate-400">
-      <div class="grid grid-cols-2 gap-4">
-        <div class="text-gray-600 font-bold">Full Name</div>
-        <div class="text-gray-800 font-medium">{{user.name | titlecase}}</div>
-
-        <div class="text-gray-600 font-bold">Email</div>
-        <div class="text-gray-800 font-medium">{{user.email}}</div>
-
-        <div class="text-gray-600 font-bold">
-          Role
-        </div>
-
-        <div>
-          <span class="bg-green-700 text-white rounded-md  px-2">{{user.role}}</span>
-        </div>
-        <div class="text-gray-600 font-bold">
-          Phone
-        </div>
-        <div class="text-gray-800 font-medium">{{user.phoneNumber || '-'}}</div>
-        <div class="text-gray-600 font-bold">
-          Access Failed Count
-        </div>
-        <div class="text-gray-800 font-medium">{{user.accessFailedCount}}</div>
-      </div>
-    </div>
+    }
   </div>
 </div>

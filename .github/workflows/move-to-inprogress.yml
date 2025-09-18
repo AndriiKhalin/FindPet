@@ -21,3 +21,4 @@ jobs:
           # Статус, в який потрібно перемістити картку
           status_value: "In progress"
           user: AndriiKhalin
+          resource_node_id: ${{ github.event.pull_request.node_id }}

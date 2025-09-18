@@ -20,3 +20,4 @@ jobs:
           project_id: 6 # <---- ЗАМІНІТЬ НА НОМЕР ВАШОГО ПРОЄКТУ
           # Статус, в який потрібно перемістити картку
           status_value: "In progress"
+          user: AndriiKhalin

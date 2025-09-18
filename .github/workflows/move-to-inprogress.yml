@@ -1,0 +1,22 @@
+# Назва нашого робочого процесу
+name: 'Move Issue to In Progress'
+
+# Умова запуску: коли Пул Реквест відкрито або перевідкрито
+on:
+  pull_request:
+    types: [opened, reopened]
+
+# Завдання, які будуть виконуватися
+jobs:
+  move-card:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Move issue to 'In Progress'
+        uses: leonsteinhaeuser/project-beta-automations@v1.2.0
+        with:
+          # Використовуємо секретний токен, який ми створили
+          gh_token: ${{ secrets.PROJECTS_PAT }}
+          # Номер вашого проєкту. Його можна знайти в URL (наприклад, .../users/YourName/projects/5)
+          project_id: 6 # <---- ЗАМІНІТЬ НА НОМЕР ВАШОГО ПРОЄКТУ
+          # Статус, в який потрібно перемістити картку
+          status_value: "In progress"

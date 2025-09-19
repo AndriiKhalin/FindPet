@@ -1,0 +1,48 @@
+name: 'Project Automation'
+
+on:
+  # Тригери для різних подій
+  pull_request:
+    types: [opened, reopened, review_requested, closed]
+
+jobs:
+  automate-project-card:
+    runs-on: ubuntu-latest
+    steps:
+      # Крок 1: Коли PR відкрито, переміщуємо Issue в "In Progress"
+      - name: Move linked issue to 'In Progress'
+        if: github.event.action == 'opened' || github.event.action == 'reopened'
+        uses: leonsteinhaeuser/project-beta-automations@v1.2.0
+        with:
+          gh_token: ${{ secrets.PROJECTS_PAT }}
+          user: AndriiKhalin
+          project_id: 6
+          status_value: "In progress"
+          resource_node_id: ${{ github.event.pull_request.node_id }}
+          get_linked_issue: true
+
+      # Крок 2: Коли запрошено рев'ю, переміщуємо Issue в "In Review"
+      # Це краще, ніж на кожен коміт. Це свідома дія розробника.
+      - name: Move linked issue to 'In Review'
+        if: github.event.action == 'review_requested'
+        uses: leonsteinhaeuser/project-beta-automations@v1.2.0
+        with:
+          gh_token: ${{ secrets.PROJECTS_PAT }}
+          user: AndriiKhalin
+          project_id: 6
+          status_value: "In review"
+          resource_node_id: ${{ github.event.pull_request.node_id }}
+          get_linked_issue: true
+
+      # Крок 3: Коли PR злито (merged), переміщуємо Issue в "Done"
+      - name: Move linked issue to 'Done'
+        # Умова: PR повинен бути закритий (closed) І злитий (merged == true)
+        if: github.event.action == 'closed' && github.event.pull_request.merged == true
+        uses: leonsteinhaeuser/project-beta-automations@v1.2.0
+        with:
+          gh_token: ${{ secrets.PROJECTS_PAT }}
+          user: AndriiKhalin
+          project_id: 6
+          status_value: "Done"
+          resource_node_id: ${{ github.event.pull_request.node_id }}
+          get_linked_issue: true

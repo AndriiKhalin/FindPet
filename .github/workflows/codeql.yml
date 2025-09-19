@@ -2,11 +2,9 @@ name: "CodeQL Advanced - FindPet Security Analysis"
 
 on:
   push:
-    branches: 
-        - "**"
+    branches: [ "master", "main", "develop" ]
   pull_request:
-    branches: 
-        - "**"
+    branches: [ "master", "main", "develop" ]
   schedule:
     - cron: '30 2 * * 1'  # Weekly scan on Monday at 2:30 AM UTC
 
@@ -27,11 +25,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-        - language: csharp
-          build-mode: none  # Change to none to skip build issues
-        - language: javascript-typescript
-          build-mode: none
+        language: [ 'csharp', 'javascript-typescript' ]
 
     steps:
     - name: Checkout repository

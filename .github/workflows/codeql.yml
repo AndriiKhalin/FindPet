@@ -1,0 +1,84 @@
+name: "CodeQL Advanced - FindPet Security Analysis"
+
+on:
+  push:
+    branches: 
+        - "**"
+  pull_request:
+    branches: 
+        - "**"
+  schedule:
+    - cron: '30 2 * * 1'  # Weekly scan on Monday at 2:30 AM UTC
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      # Required for all workflows
+      security-events: write
+      # Required to fetch internal or private CodeQL packs
+      packages: read
+      # Required for workflows in private repositories
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - language: csharp
+          build-mode: manual
+        - language: javascript-typescript
+          build-mode: none
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # Setup .NET for C# analysis
+    - name: Setup .NET
+      if: matrix.language == 'csharp'
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    # Setup Node.js for TypeScript/JavaScript analysis
+    - name: Setup Node.js
+      if: matrix.language == 'javascript-typescript'
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: FindPet_UI/package-lock.json
+
+    # Initialize CodeQL
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+        build-mode: ${{ matrix.build-mode }}
+        queries: security-extended,security-and-quality
+
+    # Manual build for C# (.NET)
+    - if: matrix.language == 'csharp' && matrix.build-mode == 'manual'
+      name: Build .NET Project
+      run: |
+        echo "Building FindPet .NET API..."
+        dotnet restore FindPet_API/FindPet_API.sln
+        dotnet build FindPet_API/FindPet_API.sln --no-restore --configuration Release --verbosity minimal
+
+    # Build Angular project for better analysis
+    - if: matrix.language == 'javascript-typescript'
+      name: Build Angular Project
+      run: |
+        echo "Building FindPet Angular UI..."
+        cd FindPet_UI
+        npm ci --silent
+        npm run build --if-present
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{matrix.language}}"

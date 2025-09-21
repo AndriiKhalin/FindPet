@@ -1,12 +1,9 @@
-﻿using Azure;
+﻿using FindPet.BusinessLogicLayer.Helpers.UrlHelper;
 using FindPet.Domain.DTOs;
 using FindPet.Domain.DTOs.AuthDTOs;
 using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
 using FindPet.Domain.Entities;
 using FindPet.Domain.ValueObjects;
-using FindPet.Infrastructure.Interfaces.IEntityRepository;
-using FindPet.Infrastructure.Interfaces.IEntityService;
-using FindPet_API.Helpers.UrlHelper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -16,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 
 namespace FindPet.API.Controllers
 {

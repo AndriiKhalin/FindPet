@@ -37,8 +37,8 @@
     <Folder Include="wwwroot\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FindPet.Core\FindPet.Core.csproj" />
-    <ProjectReference Include="..\FindPet.Tests\FindPet.Tests.csproj" />
+    <ProjectReference Include="..\FindPet.BusinessLogicLayer\FindPet.BusinessLogicLayer.csproj" />
+    <ProjectReference Include="..\FindPet.Infrastructure\FindPet.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="PetMLModel.mlnet">

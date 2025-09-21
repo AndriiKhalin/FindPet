@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
+using FindPet.BusinessLogicLayer.Interfaces.IImageService;
 using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
 using FindPet.Domain.Entities;
-using FindPet.Infrastructure.Interfaces.IEntityService;
-using FindPet.Infrastructure.Interfaces.IImageService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

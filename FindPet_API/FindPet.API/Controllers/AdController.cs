@@ -2,11 +2,11 @@
 using FindPet.Domain.DTOs.EntitiesDTOs.AdDTO;
 using FindPet.Domain.Entities;
 using FindPet.Domain.ValueObjects;
-using FindPet.Infrastructure.Interfaces.IEntityService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 
 namespace FindPet.API.Controllers
 {

@@ -1,9 +1,4 @@
-using FindPet.API.Configurations;
-using FindPet.API.Configurations.ServiceExtensions;
-using FindPet.Core.Mappings;
 using FindPet.Domain.ValueObjects;
-using FindPet.Infrastructure.Data;
-using FindPet.Infrastructure.Data.SeedData;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -11,6 +6,10 @@ using Microsoft.OpenApi.Models;
 using NLog;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using FindPet.BusinessLogicLayer.Mappings;
+using FindPet.DataAccessLayer.Data;
+using FindPet.DataAccessLayer.Data.SeedData;
+using FindPet.Infrastructure.Configurations.ServiceExtensions;
 
 var builder = WebApplication.CreateBuilder(args);
 LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));

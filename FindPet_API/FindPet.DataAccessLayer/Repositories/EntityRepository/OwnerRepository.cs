@@ -14,7 +14,6 @@
 //        _context = context;
 //    }
 
-
 //    //public async Task<IEnumerable<Owner>> GetsAsync()
 //    //{
 //    //    return await GetAllAsync().Result.ToListAsync();
@@ -48,7 +47,6 @@
 //    {
 //        return await IsExistAsync(x => x.Name == userName);
 //    }
-
 
 //    //public async Task DeleteAsync(Guid userId)
 //    //{

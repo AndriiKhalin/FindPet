@@ -13,12 +13,10 @@ public class UserResolver : IValueResolver<User, UserDto, string>
     {
         _configuration = configuration;
     }
+
     public string Resolve(User source, UserDto destination, string destMember, ResolutionContext context)
     {
-        if (!string.IsNullOrEmpty(source.Photo))
-        {
-            return _configuration["API_url"] + source.Photo;
-        }
+        if (!string.IsNullOrEmpty(source.Photo)) return _configuration["API_url"] + source.Photo;
         return null;
     }
 }

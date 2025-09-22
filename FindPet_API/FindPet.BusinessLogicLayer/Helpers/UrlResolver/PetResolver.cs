@@ -16,10 +16,7 @@ public class PetResolver : IValueResolver<Pet, PetDto, string>
 
     public string Resolve(Pet source, PetDto destination, string destMember, ResolutionContext context)
     {
-        if (!string.IsNullOrEmpty(source.Photo))
-        {
-            return _configuration["API_url"] + source.Photo;
-        }
+        if (!string.IsNullOrEmpty(source.Photo)) return _configuration["API_url"] + source.Photo;
         return null;
     }
 }

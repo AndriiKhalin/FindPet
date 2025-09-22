@@ -9,8 +9,12 @@ public class FindPetDbContext : IdentityDbContext<AuthUser>
 {
     public FindPetDbContext(DbContextOptions<FindPetDbContext> options) : base(options)
     {
-
     }
+
+    public DbSet<Pet>? Pets { get; set; } = null!;
+    public DbSet<User>? Users { get; set; } = null!;
+
+    public DbSet<Ad>? Ads { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -34,17 +38,16 @@ public class FindPetDbContext : IdentityDbContext<AuthUser>
         #region SetNullDeleteBehavior
 
         modelBuilder.Entity<Pet>()
-                .HasOne(x => x.User)
-                .WithMany(y => y.Pets)
-                .HasForeignKey(x => x.UserId)
-                .OnDelete(DeleteBehavior.Restrict); // Замените DeleteBehavior.Restrict на DeleteBehavior.SetNull
+            .HasOne(x => x.User)
+            .WithMany(y => y.Pets)
+            .HasForeignKey(x => x.UserId)
+            .OnDelete(DeleteBehavior.Restrict); // Замените DeleteBehavior.Restrict на DeleteBehavior.SetNull
 
         //modelBuilder.Entity<Pet>()
         //    .HasOne(x => x.Finder)
         //    .WithMany(y => y.Pets)
         //    .HasForeignKey(x => x.FinderId)
         //    .OnDelete(DeleteBehavior.Restrict);
-
 
         modelBuilder.Entity<Ad>()
             .HasOne(x => x.Pet)
@@ -57,15 +60,11 @@ public class FindPetDbContext : IdentityDbContext<AuthUser>
             .WithMany(y => y.Ads)
             .HasForeignKey(x => x.UserId)
             .OnDelete(DeleteBehavior.SetNull);
-        #endregion
+
+        #endregion SetNullDeleteBehavior
+
         base.OnModelCreating(modelBuilder);
-
     }
-
-    public DbSet<Pet>? Pets { get; set; } = null!;
-    public DbSet<User>? Users { get; set; } = null!;
-
-    public DbSet<Ad>? Ads { get; set; } = null!;
 
     //public DbSet<Finder>? Finders { get; set; } = null!;
     //public DbSet<Owner>? Owners { get; set; } = null!;

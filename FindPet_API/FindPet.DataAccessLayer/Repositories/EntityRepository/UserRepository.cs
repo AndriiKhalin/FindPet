@@ -1,15 +1,12 @@
 ﻿using FindPet.DataAccessLayer.Data;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using FindPet.Domain.Entities;
-using FindPet.DataAccessLayer.Data;
-using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using Microsoft.EntityFrameworkCore;
 
 namespace FindPet.DataAccessLayer.Repositories.EntityRepository;
 
 public class UserRepository : BaseRepository<User>, IUserRepository<User>
 {
-
     private readonly FindPetDbContext _context;
 
     public UserRepository(FindPetDbContext context) : base(context)

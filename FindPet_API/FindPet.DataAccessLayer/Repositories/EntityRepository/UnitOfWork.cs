@@ -7,14 +7,14 @@ namespace FindPet.DataAccessLayer.Repositories.EntityRepository;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly FindPetDbContext _context;
-    private IPetRepository? _pet;
+
     //private IUserRepository<Finder>? _finder;
     //private IUserRepository<Owner>? _owner;
     private IAdRepository? _ad;
-    private IUserRepository<User> _user;
 
     private bool _disposedValue;
-
+    private IPetRepository? _pet;
+    private IUserRepository<User> _user;
 
     public UnitOfWork(FindPetDbContext context)
     {
@@ -23,10 +23,7 @@ public class UnitOfWork : IUnitOfWork
 
     public IPetRepository Pet
     {
-        get
-        {
-            return _pet ??= new PetRepository(_context);
-        }
+        get { return _pet ??= new PetRepository(_context); }
     }
 
     //public IUserRepository<Finder> Finder
@@ -45,11 +42,13 @@ public class UnitOfWork : IUnitOfWork
     //    }
     //}
 
-
-
     public IAdRepository Ad => _ad ??= new AdRepository(_context);
     public IUserRepository<User> User => _user ??= new UserRepository(_context);
 
+    public async Task SaveAsync()
+    {
+        await _context.SaveChangesAsync();
+    }
 
     public void Dispose()
     {
@@ -59,21 +58,10 @@ public class UnitOfWork : IUnitOfWork
 
     protected virtual void Dispose(bool disposing)
     {
-        if (_disposedValue)
-        {
-            return;
-        }
+        if (_disposedValue) return;
 
-        if (disposing)
-        {
-            _context.Dispose();
-        }
+        if (disposing) _context.Dispose();
 
         _disposedValue = true;
-    }
-
-    public async Task SaveAsync()
-    {
-        await _context.SaveChangesAsync();
     }
 }

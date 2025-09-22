@@ -10,11 +10,10 @@ namespace FindPet.BusinessLogicLayer.Services.EntityService;
 
 public class AdService : IAdService
 {
-    private readonly IUnitOfWork _unitOfWorkRep;
-    private readonly IMapper _mapper;
-    private readonly IManageImage<Ad> _manageImage;
     private readonly ILoggerManager _logger;
-
+    private readonly IManageImage<Ad> _manageImage;
+    private readonly IMapper _mapper;
+    private readonly IUnitOfWork _unitOfWorkRep;
 
     public AdService(IUnitOfWork unitOfWorkRep, IMapper mapper, IManageImage<Ad> manageImage, ILoggerManager logger)
     {
@@ -84,10 +83,9 @@ public class AdService : IAdService
 
     public async Task UpdateAdAsync(Guid adId, AdForUpdateDto ad)
     {
-
         if (ad == null)
         {
-            _logger.LogError($"Ad object sent from client is null.");
+            _logger.LogError("Ad object sent from client is null.");
             throw new ArgumentNullException("Ad is null");
         }
 
@@ -106,13 +104,11 @@ public class AdService : IAdService
         }
         else
         {
-            _logger.LogError($"Photo is null");
+            _logger.LogError("Photo is null");
             throw new ArgumentException("Photo cannot be null.");
         }
 
         _mapper.Map(ad, adEntity);
-
-
 
         await _unitOfWorkRep.Ad.UpdateAsync(adEntity);
 

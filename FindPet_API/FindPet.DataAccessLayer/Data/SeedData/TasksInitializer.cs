@@ -10,13 +10,12 @@ public static class TasksInitializer
     {
         using (var scope = app.Services.CreateScope())
         {
-
             using var context = scope.ServiceProvider.GetRequiredService<FindPetDbContext>();
             using var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
             await SeedData.SeedDatesAsync(context, roleManager);
-
         }
+
         return app;
     }
 }

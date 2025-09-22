@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using FindPet.BusinessLogicLayer.Helpers.UrlHelper;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
 using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
@@ -11,10 +10,10 @@ namespace FindPet.BusinessLogicLayer.Services.EntityService;
 
 public class UserService : IUserService
 {
-    private readonly IUnitOfWork _unitOfWorkRep;
-    private readonly IMapper _mapper;
-    private readonly IManageImage<User> _manageImage;
     private readonly ILoggerManager _logger;
+    private readonly IManageImage<User> _manageImage;
+    private readonly IMapper _mapper;
+    private readonly IUnitOfWork _unitOfWorkRep;
 
     public UserService(IUnitOfWork unitOfWorkRep, IMapper mapper, IManageImage<User> manageImage, ILoggerManager logger)
     {
@@ -102,10 +101,9 @@ public class UserService : IUserService
 
     public async Task UpdateUserAsync(Guid userId, UserForUpdateDto user)
     {
-
         if (user == null)
         {
-            _logger.LogError($"User object sent from client is null.");
+            _logger.LogError("User object sent from client is null.");
             throw new ArgumentNullException("User is null");
         }
 
@@ -117,16 +115,13 @@ public class UserService : IUserService
 
         var userEntity = await GetUserAsync(userId);
 
-
         if (user.Photo is not null)
         {
             _manageImage.DeletePhoto(userEntity.Photo);
             await _manageImage.UploadPhotoAsync(user.Photo, userId);
-
         }
 
         _mapper.Map(user, userEntity);
-
 
         await _unitOfWorkRep.User.UpdateAsync(userEntity);
 
@@ -145,7 +140,6 @@ public class UserService : IUserService
 
         userMap.DateCreateUpdate = DateTime.UtcNow;
         userMap.Photo = user.Photo;
-
 
         await _unitOfWorkRep.User.CreateAsync(userMap);
 

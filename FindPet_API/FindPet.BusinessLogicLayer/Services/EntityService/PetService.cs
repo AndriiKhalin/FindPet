@@ -8,15 +8,17 @@ using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
 using FindPet.Domain.Entities;
 
 namespace FindPet.BusinessLogicLayer.Services.EntityService;
+
 public class PetService : IPetService
 {
-    private readonly IUnitOfWork _unitOfWorkRep;
-    private readonly IMapper _mapper;
-    private readonly IManageImage<Pet> _manageImage;
-    private readonly IMLService _mlService;
     private readonly ILoggerManager _logger;
+    private readonly IManageImage<Pet> _manageImage;
+    private readonly IMapper _mapper;
+    private readonly IMLService _mlService;
+    private readonly IUnitOfWork _unitOfWorkRep;
 
-    public PetService(IUnitOfWork unitOfWorkRep, IMapper mapper, IManageImage<Pet> manageImage, IMLService mlService, ILoggerManager logger)
+    public PetService(IUnitOfWork unitOfWorkRep, IMapper mapper, IManageImage<Pet> manageImage, IMLService mlService,
+        ILoggerManager logger)
     {
         _unitOfWorkRep = unitOfWorkRep;
         _mapper = mapper;
@@ -105,7 +107,7 @@ public class PetService : IPetService
     {
         if (pet == null)
         {
-            _logger.LogError($"Pet object sent from client is null.");
+            _logger.LogError("Pet object sent from client is null.");
             throw new ArgumentNullException("Pet is null");
         }
 
@@ -117,22 +119,18 @@ public class PetService : IPetService
 
         var petEntity = await GetPetAsync(petId);
 
-
         if (pet.Photo is not null)
         {
             _manageImage.DeletePhoto(petEntity.Photo);
             await _manageImage.UploadPhotoAsync(pet.Photo, petId);
-
         }
 
         _mapper.Map(pet, petEntity);
-
 
         await _unitOfWorkRep.Pet.UpdateAsync(petEntity);
 
         await _unitOfWorkRep.SaveAsync();
     }
-
 
     public async Task<Pet> CreatePetAsync(Guid userId, PetForCreateDto pet)
     {

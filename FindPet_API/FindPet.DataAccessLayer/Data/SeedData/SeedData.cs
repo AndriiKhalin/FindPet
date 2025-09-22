@@ -6,23 +6,15 @@ public class SeedData
 {
     public static async Task SeedDatesAsync(FindPetDbContext context, RoleManager<IdentityRole> roleManager)
     {
-
         //context.Database.EnsureDeleted();
 
         //context.Database.EnsureCreated();
-        if (!await roleManager.RoleExistsAsync("Admin"))
-        {
-            await roleManager.CreateAsync(new IdentityRole("Admin"));
-        }
+        if (!await roleManager.RoleExistsAsync("Admin")) await roleManager.CreateAsync(new IdentityRole("Admin"));
 
-        if (!await roleManager.RoleExistsAsync("User"))
-        {
-            await roleManager.CreateAsync(new IdentityRole("User"));
-        }
+        if (!await roleManager.RoleExistsAsync("User")) await roleManager.CreateAsync(new IdentityRole("User"));
 
         //if (!context.Users.Any())
         //{
-
         ////User
         //User andrew = new User()
         //{
@@ -119,7 +111,6 @@ public class SeedData
         //};
 
         //context.Pets.AddRange(dog, cat, rabbit);
-
 
         //Ad dogAd = new Ad()
         //{

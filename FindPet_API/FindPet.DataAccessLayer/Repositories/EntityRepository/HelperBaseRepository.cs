@@ -1,7 +1,7 @@
-﻿using System.Linq.Expressions;
-using FindPet.DataAccessLayer.Data;
+﻿using FindPet.DataAccessLayer.Data;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace FindPet.DataAccessLayer.Repositories.EntityRepository;
 
@@ -27,7 +27,7 @@ public abstract class HelperBaseRepository<T> : IHelperBaseRepository<T> where T
 
     public async Task<IQueryable<T>> GetByConditionAsync(Expression<Func<T, bool>> expression)
     {
-        return Queryable.Where(_context.Set<T>(), expression).AsNoTracking();
+        return _context.Set<T>().Where(expression).AsNoTracking();
     }
 
     public IQueryable<T> GetAll()

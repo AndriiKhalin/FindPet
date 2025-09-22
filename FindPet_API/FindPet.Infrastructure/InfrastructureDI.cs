@@ -1,16 +1,9 @@
 ﻿using FindPet.BusinessLogicLayer;
-using FindPet.BusinessLogicLayer.Interfaces.IImageService;
-using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
-using FindPet.BusinessLogicLayer.Services.ImageService;
-using FindPet.BusinessLogicLayer.Services.LoggerService;
 using FindPet.DataAccessLayer;
 using FindPet.Infrastructure.Configurations.AuthExtensions;
 using FindPet.Infrastructure.Configurations.ServiceExtensions;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace FindPet.Infrastructure;
 

@@ -1,8 +1,6 @@
 ﻿using FindPet.DataAccessLayer.Data;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using FindPet.Domain.Entities;
-using FindPet.DataAccessLayer.Data;
-using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 
 namespace FindPet.DataAccessLayer.Repositories.EntityRepository;
 

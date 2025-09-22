@@ -18,5 +18,4 @@ public class UserDto
     public DateTime? FindPet { get; set; }
     public DateTime? LostPet { get; set; }
     public bool? IsPet { get; set; }
-
 }

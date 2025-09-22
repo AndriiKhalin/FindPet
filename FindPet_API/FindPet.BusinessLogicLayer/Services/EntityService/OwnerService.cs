@@ -90,7 +90,6 @@
 
 //    public async Task UpdateOwnerAsync(Guid ownerId, OwnerForUpdateDto owner)
 //    {
-
 //        if (owner == null)
 //        {
 //            _logger.LogError($"Owner object sent from client is null.");
@@ -104,7 +103,6 @@
 //        }
 
 //        var ownerEntity = await GetOwnerAsync(ownerId);
-
 
 //        //if (owner.Photo is not null)
 //        //{
@@ -120,13 +118,10 @@
 
 //        _mapper.Map(owner, ownerEntity);
 
-
 //        await _unitOfWorkRep.Owner.UpdateAsync(ownerEntity);
 
 //        await _unitOfWorkRep.SaveAsync();
 //    }
-
-
 
 //    public async Task<Owner> CreateOwnerAsync(OwnerForCreateDto owner)
 //    {
@@ -141,7 +136,6 @@
 //        //ownerMap.DateCreateUpdate = DateTime.UtcNow;
 //        //ownerMap.Photo = await _manageImage.UploadPhotoAsync(owner.Photo, ownerMap.Id);
 
-
 //        await _unitOfWorkRep.Owner.CreateAsync(ownerMap);
 
 //        await _unitOfWorkRep.SaveAsync();
@@ -149,3 +143,4 @@
 //        return ownerMap;
 //    }
 //}
+

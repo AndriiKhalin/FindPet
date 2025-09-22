@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
+using System.Diagnostics;
 
 namespace FindPet.Infrastructure.Configurations.ServiceExtensions;
 
@@ -12,9 +12,6 @@ public static class StartUpLoggingExtensions
         // Открытие файла логирования
         var logFile = $"d:/IT/FindPet/FindPet_API/LogInfo/{DateTime.Today:yyyy-MM-dd}_logfile.html";
 
-        if (File.Exists(logFile))
-        {
-            Process.Start("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", logFile);
-        }
+        if (File.Exists(logFile)) Process.Start("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", logFile);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
-using FindPet.BusinessLogicLayer.Services;
 using FindPet.BusinessLogicLayer.Services.LoggerService;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -11,9 +10,6 @@ public static class LogExtension
     public static void ConfigureLoggerService(this IServiceCollection services)
     {
         services.AddSingleton<ILoggerManager, LoggerManager>();
-        services.AddLogging(logging =>
-        {
-            logging.AddConsole();
-        });
+        services.AddLogging(logging => { logging.AddConsole(); });
     }
 }

@@ -1,10 +1,4 @@
-﻿using FindPet.DataAccessLayer.Data;
-using FindPet.Domain.ValueObjects;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.Text;
+﻿using Microsoft.OpenApi.Models;
 
 namespace FindPet.API;
 
@@ -33,7 +27,7 @@ public static class APILayerDI
                 Scheme = "Bearer"
             });
 
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
                     new OpenApiSecurityScheme
@@ -45,7 +39,7 @@ public static class APILayerDI
                         },
                         Scheme = "oauth2",
                         Name = "Bearer",
-                        In = ParameterLocation.Header,
+                        In = ParameterLocation.Header
                     },
                     new List<string>()
                 }

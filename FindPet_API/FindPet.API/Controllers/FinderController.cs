@@ -53,7 +53,6 @@
 //        //[ProducesResponseType(400)]
 //        //public async Task<IActionResult> GetCategoryByFinder(Guid FinderId)
 //        //{
-
 //        //    var categoryByFinder = _mapper.Map<FinderCategoryDto>(await _FinderService.GetCategoryByFinder(FinderId));
 
 //        //    return Ok(categoryByFinder);
@@ -64,7 +63,6 @@
 //        [ProducesResponseType(400)]
 //        public async Task<IActionResult> CreateFinder([FromForm] FinderForCreateDto finderCreate)
 //        {
-
 //            var finderMap = await _finderService.CreateFinderAsync(finderCreate);
 
 //            var createdFinder = _mapper.Map<FinderDto>(finderMap);
@@ -72,14 +70,12 @@
 //            return CreatedAtAction(nameof(GetFinder), new { finderId = createdFinder.Id }, createdFinder);
 //        }
 
-
 //        [HttpPut("{finderId}")]
 //        [ProducesResponseType(204)]
 //        [ProducesResponseType(400)]
 //        [ProducesResponseType(404)]
 //        public async Task<IActionResult> UpdateFinder(Guid finderId, [FromForm] FinderForUpdateDto finderUpdate)
 //        {
-
 //            await _finderService.UpdateFinderAsync(finderId, finderUpdate);
 
 //            return NoContent();
@@ -88,7 +84,6 @@
 //        [HttpDelete("{finderId}")]
 //        public async Task<IActionResult> DeleteFinder(Guid finderId)
 //        {
-
 //            await _finderService.DeleteFinderAsync(finderId);
 
 //            return NoContent();
@@ -96,3 +91,4 @@
 //        }
 //    }
 //}
+

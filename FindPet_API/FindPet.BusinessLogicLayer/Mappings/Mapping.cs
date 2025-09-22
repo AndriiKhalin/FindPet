@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using FindPet.BusinessLogicLayer.Helpers.UrlResolver;
 using FindPet.Domain.DTOs.EntitiesDTOs.AdDTO;
-//using FindPet.Domain.DTOs.EntitiesDTOs.FinderDTO;
-//using FindPet.Domain.DTOs.EntitiesDTOs.OwnerDTO;
 using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
 using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
 using FindPet.Domain.Entities;
+
+//using FindPet.Domain.DTOs.EntitiesDTOs.FinderDTO;
+//using FindPet.Domain.DTOs.EntitiesDTOs.OwnerDTO;
 
 namespace FindPet.BusinessLogicLayer.Mappings;
 

@@ -104,7 +104,6 @@
 
 //        var finderEntity = await GetFinderAsync(finderId);
 
-
 //        //if (finder.Photo is not null)
 //        //{
 //        //    _manageImage.DeletePhoto(finderEntity.Photo);
@@ -119,12 +118,10 @@
 
 //        _mapper.Map(finder, finderEntity);
 
-
 //        await _unitOfWorkRep.Finder.UpdateAsync(finderEntity);
 
 //        await _unitOfWorkRep.SaveAsync();
 //    }
-
 
 //    public async Task<Finder> CreateFinderAsync(FinderForCreateDto finder)
 //    {
@@ -139,7 +136,6 @@
 //        //finderMap.DateCreateUpdate = DateTime.UtcNow;
 //        //finderMap.Photo = await _manageImage.UploadPhotoAsync(finder.Photo, finderMap.Id);
 
-
 //        await _unitOfWorkRep.Finder.CreateAsync(finderMap);
 
 //        await _unitOfWorkRep.SaveAsync();
@@ -147,3 +143,4 @@
 //        return finderMap;
 //    }
 //}
+

@@ -44,7 +44,6 @@
 //        return await IsExistAsync(x => x.Name == userName);
 //    }
 
-
 //    public async Task<Finder?> GetUserAsync(string finderName)
 //    {
 //        return await GetByConditionAsync(x => x.Name == finderName).Result.FirstOrDefaultAsync();

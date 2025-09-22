@@ -19,6 +19,7 @@ public static class FileProviderExtension
             RequestPath = @"/Images"
         });
     }
+
     private static string GetPath()
     {
         //return @"D:\IT\My_Projects\RentShop\RentShop_UI\Stuff\Images";

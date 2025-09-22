@@ -7,52 +7,44 @@ namespace FindPet.BusinessLogicLayer.Services.ImageService;
 public class ManageImage<T> : IManageImage<T> where T : class
 {
     private readonly IWebHostEnvironment _env;
-    public string ImgPath { get; set; }
 
     public ManageImage(IWebHostEnvironment env)
     {
         _env = env;
         ImgPath = GetPath();
     }
+
+    public string ImgPath { get; set; }
+
     public void DeletePhoto(string filePath)
     {
         if (File.Exists(filePath))
         {
-            string nameFile = Path.GetFileName(filePath);
+            var nameFile = Path.GetFileName(filePath);
 
-            string navigationPath = NavigateToFolder(filePath, "Images");
-            string deletedFolderPath = Path.Combine(navigationPath, "Deleted");
-            string entityFolderPath = Path.Combine(deletedFolderPath, typeof(T).Name);
+            var navigationPath = NavigateToFolder(filePath, "Images");
+            var deletedFolderPath = Path.Combine(navigationPath, "Deleted");
+            var entityFolderPath = Path.Combine(deletedFolderPath, typeof(T).Name);
 
+            if (!Directory.Exists(entityFolderPath)) Directory.CreateDirectory(entityFolderPath);
 
-            if (!Directory.Exists(entityFolderPath))
-            {
-                Directory.CreateDirectory(entityFolderPath);
-            }
-
-            string newFilePath = Path.Combine(entityFolderPath, Path.GetFileName(filePath));
+            var newFilePath = Path.Combine(entityFolderPath, Path.GetFileName(filePath));
 
             File.Move(filePath, newFilePath);
 
             File.Delete(filePath);
         }
     }
+
     public async Task<string> UploadPhotoAsync(IFormFile file, Guid? id)
     {
-
-        if (file == null || file.Length == 0)
-        {
-            return null;
-        }
+        if (file == null || file.Length == 0) return null;
 
         var rootImg = $"\\Stuff\\Images\\Upload\\{typeof(T).Name}\\";
         var fileName = GetUniqueFileName(file.FileName, id);
         var directoryPath = ImgPath + rootImg;
 
-        if (!Directory.Exists(directoryPath))
-        {
-            Directory.CreateDirectory(directoryPath);
-        }
+        if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath);
 
         var filePath = Path.Combine(directoryPath, fileName);
 
@@ -66,18 +58,12 @@ public class ManageImage<T> : IManageImage<T> where T : class
 
     public async Task<string> UploadPhotoAsync(string fileName, Guid? id)
     {
-        if (string.IsNullOrEmpty(fileName))
-        {
-            return null;
-        }
+        if (string.IsNullOrEmpty(fileName)) return null;
         // Путь к папке, где будут сохраняться изображения
         var rootImg = $"\\Stuff\\Images\\Upload\\{typeof(T).Name}\\";
         var directoryPath = ImgPath + rootImg;
 
-        if (!Directory.Exists(directoryPath))
-        {
-            Directory.CreateDirectory(directoryPath);
-        }
+        if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath);
 
         // Получить уникальное имя файла
         var uniqueFileName = GetUniqueFileName(fileName, id);
@@ -92,19 +78,15 @@ public class ManageImage<T> : IManageImage<T> where T : class
         return rootImg + uniqueFileName;
     }
 
-
     public async Task<IFormFile> UploadPhotoIFormFileAsync(string fileName, Guid? id)
     {
-        if (string.IsNullOrEmpty(fileName))
-        {
-            return null;
-        }
+        if (string.IsNullOrEmpty(fileName)) return null;
 
         var filePath = await UploadPhotoAsync(fileName, id);
 
         // Пример чтения файла в MemoryStream
-        byte[] fileBytes = await File.ReadAllBytesAsync(filePath);
-        MemoryStream memoryStream = new MemoryStream(fileBytes);
+        var fileBytes = await File.ReadAllBytesAsync(filePath);
+        var memoryStream = new MemoryStream(fileBytes);
 
         // Создание объекта FormFile
         IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, fileName, fileName);
@@ -119,6 +101,7 @@ public class ManageImage<T> : IManageImage<T> where T : class
 
         return currentDirectory;
     }
+
     public string GetUniqueFileName(string fileName, Guid? id)
     {
         var extension = Path.GetExtension(fileName);
@@ -126,12 +109,11 @@ public class ManageImage<T> : IManageImage<T> where T : class
         var newFileName = $"{fileNameWithoutExtension}({id}){extension}";
         return newFileName;
     }
+
     public string NavigateToFolder(string currentPath, string targetDirectoryName)
     {
         while (Path.GetFileNameWithoutExtension(currentPath) != targetDirectoryName)
-        {
             currentPath = Path.GetFullPath(Path.Combine(currentPath, ".."));
-        }
 
         return currentPath;
     }

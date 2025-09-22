@@ -3,8 +3,8 @@
 public static class PathNormalizer
 {
     /// <summary>
-    /// Normalizes file paths by converting backslashes to forward slashes
-    /// and removing duplicate slashes
+    ///     Normalizes file paths by converting backslashes to forward slashes
+    ///     and removing duplicate slashes
     /// </summary>
     public static string NormalizePath(string path)
     {
@@ -12,13 +12,10 @@ public static class PathNormalizer
             return path;
 
         // Replace backslashes with forward slashes
-        string normalizedPath = path.Replace('\\', '/');
+        var normalizedPath = path.Replace('\\', '/');
 
         // Remove duplicate slashes
-        while (normalizedPath.Contains("//"))
-        {
-            normalizedPath = normalizedPath.Replace("//", "/");
-        }
+        while (normalizedPath.Contains("//")) normalizedPath = normalizedPath.Replace("//", "/");
 
         return normalizedPath;
     }

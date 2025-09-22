@@ -1,10 +1,11 @@
-﻿using FindPet.BusinessLogicLayer.Interfaces.IImageService;
+﻿using FindPet.BusinessLogicLayer;
+using FindPet.BusinessLogicLayer.Interfaces.IImageService;
 using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
 using FindPet.BusinessLogicLayer.Services.ImageService;
 using FindPet.BusinessLogicLayer.Services.LoggerService;
 using FindPet.DataAccessLayer;
+using FindPet.Infrastructure.Configurations.AuthExtensions;
 using FindPet.Infrastructure.Configurations.ServiceExtensions;
-using FindPet_API;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Configuration;
@@ -28,6 +29,8 @@ public static class InfrastructureDI
         services.ConfigureForm();
         services.ConfigureIISIntegration();
         services.ConfigureLoggerService();
+        services.AddIdentityConfiguration();
+        services.AddJwtAuthentication(configuration);
     }
 
     private static void AddLayersServices(this IServiceCollection services, IConfiguration configuration)

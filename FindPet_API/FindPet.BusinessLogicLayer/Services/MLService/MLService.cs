@@ -1,5 +1,4 @@
-﻿using FindPet_API;
-using FindPet.BusinessLogicLayer.Interfaces.IMLService;
+﻿using FindPet.BusinessLogicLayer.Interfaces.IMLService;
 
 
 namespace FindPet.BusinessLogicLayer.Services.MLService;

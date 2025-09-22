@@ -5,10 +5,9 @@ using FindPet.BusinessLogicLayer.Mappings;
 using FindPet.BusinessLogicLayer.Services.EntityService;
 using FindPet.BusinessLogicLayer.Services.ImageService;
 using FindPet.BusinessLogicLayer.Services.MLService;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FindPet_API;
+namespace FindPet.BusinessLogicLayer;
 
 public static class BusinessLogicLayerDI
 {

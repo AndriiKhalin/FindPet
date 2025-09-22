@@ -14,7 +14,8 @@ public static class DataAccessLayerDI
     {
         // Database Context
         services.AddDbContext<FindPetDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("AppDb")));
+            options.UseSqlServer(configuration.GetConnectionString("AppDb"),
+                sqlServerOptions => sqlServerOptions.MigrationsAssembly("FindPet.DataAccessLayer")));
         //services.AddDbContext<AuthDbContext>(o => o.UseSqlServer(connectionString));
 
         // Repository Pattern

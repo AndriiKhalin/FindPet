@@ -1,5 +1,4 @@
 using FindPet.API;
-using FindPet.DataAccessLayer.Data.SeedData;
 using FindPet.Infrastructure;
 using FindPet.Infrastructure.Configurations.ServiceExtensions;
 using NLog;
@@ -28,9 +27,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-// Initialize data
-
-await app.SeedAsync();
+// Initialize app
 app.OpenLogFile();
 
 app.Run();

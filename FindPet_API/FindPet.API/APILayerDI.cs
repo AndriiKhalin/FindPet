@@ -37,7 +37,7 @@ public static class APILayerDI
                             Type = ReferenceType.SecurityScheme,
                             Id = "Bearer"
                         },
-                        Scheme = "oauth2",
+                        Scheme = "Bearer",
                         Name = "Bearer",
                         In = ParameterLocation.Header
                     },

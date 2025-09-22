@@ -66,4 +66,3 @@
 
 //}
 
-namespace FindPet.DataAccessLayer.Repositories.EntityRepository;

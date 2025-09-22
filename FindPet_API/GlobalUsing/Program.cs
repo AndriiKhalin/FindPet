@@ -1,4 +1,0 @@
-﻿[STAThread]
-static void Main()
-{
-}

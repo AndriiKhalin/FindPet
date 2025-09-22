@@ -1,4 +1,5 @@
 ﻿using FindPet.Domain.DTOs.AuthDTOs;
+using FindPet.Domain.Entities;
 using FindPet.Domain.ValueObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -59,6 +60,7 @@ public class RolesController : ControllerBase
         return Ok(roleDtos);
     }
 
+    [Authorize(Roles = UserRoles.Admin)]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteRole(string id)
     {

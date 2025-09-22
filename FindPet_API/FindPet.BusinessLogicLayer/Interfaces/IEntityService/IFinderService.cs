@@ -24,4 +24,3 @@
 //    Task<Finder> CreateFinderAsync(FinderForCreateDto finder);
 //}
 
-namespace FindPet.BusinessLogicLayer.Interfaces.IEntityService;

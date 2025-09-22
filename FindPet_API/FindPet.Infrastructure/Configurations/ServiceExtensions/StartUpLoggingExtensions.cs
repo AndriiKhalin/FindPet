@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Builder;
 
 namespace FindPet.Infrastructure.Configurations.ServiceExtensions;
 

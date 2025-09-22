@@ -20,4 +20,3 @@
 //    Task<Owner> CreateOwnerAsync(OwnerForCreateDto owner);
 //}
 
-namespace FindPet.BusinessLogicLayer.Interfaces.IEntityService;

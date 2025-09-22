@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlobalUsing", "GlobalUsing\GlobalUsing.csproj", "{23326C22-CCFF-4CC1-A4CE-317A1B5F8482}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FindPet.BusinessLogicLayer", "FindPet.BusinessLogicLayer\FindPet.BusinessLogicLayer.csproj", "{5788D434-B7D7-4CCF-93BA-8A58CA7E5ABD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FindPet.Infrastructure", "FindPet.Infrastructure\FindPet.Infrastructure.csproj", "{198CBD81-E749-4BCC-85DD-DBCDF7EAEE97}"
@@ -29,10 +27,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{23326C22-CCFF-4CC1-A4CE-317A1B5F8482}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{23326C22-CCFF-4CC1-A4CE-317A1B5F8482}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{23326C22-CCFF-4CC1-A4CE-317A1B5F8482}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{23326C22-CCFF-4CC1-A4CE-317A1B5F8482}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5788D434-B7D7-4CCF-93BA-8A58CA7E5ABD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5788D434-B7D7-4CCF-93BA-8A58CA7E5ABD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5788D434-B7D7-4CCF-93BA-8A58CA7E5ABD}.Release|Any CPU.ActiveCfg = Release|Any CPU

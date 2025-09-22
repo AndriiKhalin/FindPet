@@ -23,12 +23,12 @@ public class ManageImage<T> : IManageImage<T> where T : class
             var nameFile = Path.GetFileName(filePath);
 
             var navigationPath = NavigateToFolder(filePath, "Images");
-            var deletedFolderPath = Path.Combine(navigationPath, "Deleted");
-            var entityFolderPath = Path.Combine(deletedFolderPath, typeof(T).Name);
+            var deletedFolderPath = Path.Join(navigationPath, "Deleted");
+            var entityFolderPath = Path.Join(deletedFolderPath, typeof(T).Name);
 
             if (!Directory.Exists(entityFolderPath)) Directory.CreateDirectory(entityFolderPath);
 
-            var newFilePath = Path.Combine(entityFolderPath, Path.GetFileName(filePath));
+            var newFilePath = Path.Join(entityFolderPath, Path.GetFileName(filePath));
 
             File.Move(filePath, newFilePath);
 
@@ -86,7 +86,7 @@ public class ManageImage<T> : IManageImage<T> where T : class
 
         // Пример чтения файла в MemoryStream
         var fileBytes = await File.ReadAllBytesAsync(filePath);
-        var memoryStream = new MemoryStream(fileBytes);
+        using var memoryStream = new MemoryStream(fileBytes);
 
         // Создание объекта FormFile
         IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, fileName, fileName);

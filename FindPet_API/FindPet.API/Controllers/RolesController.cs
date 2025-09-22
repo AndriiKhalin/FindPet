@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FindPet.API.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class RolesController : ControllerBase

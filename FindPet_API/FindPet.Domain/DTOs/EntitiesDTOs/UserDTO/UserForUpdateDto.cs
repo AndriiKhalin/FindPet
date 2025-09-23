@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
+﻿namespace FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
 
 public class UserForUpdateDto
 {

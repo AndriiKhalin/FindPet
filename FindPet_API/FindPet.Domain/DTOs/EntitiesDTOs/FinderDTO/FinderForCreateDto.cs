@@ -11,3 +11,4 @@
 //    public DateTime? BirthDate { get; set; }
 //    public IFormFile? Photo { get; set; }
 //}
+

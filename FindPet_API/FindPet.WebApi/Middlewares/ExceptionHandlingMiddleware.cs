@@ -1,9 +1,8 @@
-﻿using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
+﻿using System.Net;
+using System.Text.Json;
+using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
 using FindPet.Domain.Exceptions;
 using FindPet.WebApi.Models.Exceptions;
-using System;
-using System.Net;
-using System.Text.Json;
 
 namespace FindPet.WebApi.Middlewares;
 

@@ -20,17 +20,17 @@ public class AdRepository : BaseRepository<Ad>, IAdRepository
 
     //public async Task<Ad?> GetAsync(Guid adId)
     //{
-    //    return await GetByConditionAsync(x => x.Id == adId).Result.FirstOrDefaultAsync();
+    //    return await GetByCondition(x => x.Id == adId).Result.FirstOrDefaultAsync();
     //}
 
     //public async Task<Pet?> GetPetByAd(Guid adId)
     //{
-    //    return await GetByConditionAsync(x => x.Id == adId).Result.Include(x => x.Pet).Select(x => x.Pet).FirstOrDefaultAsync();
+    //    return await GetByCondition(x => x.Id == adId).Result.Include(x => x.Pet).Select(x => x.Pet).FirstOrDefaultAsync();
     //}
 
     //public async Task<User> GetUserByAd(Guid adId)
     //{
-    //    return await GetByConditionAsync(x => x.Id == adId).Result.Include(x => x.User).Select(x => x.User).FirstOrDefaultAsync();
+    //    return await GetByCondition(x => x.Id == adId).Result.Include(x => x.User).Select(x => x.User).FirstOrDefaultAsync();
     //}
 
     //public async Task<bool> IsExistAsync(Guid adId)

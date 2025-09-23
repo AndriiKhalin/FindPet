@@ -173,7 +173,7 @@ public class ExceptionHandlingMiddleware
                 "NULL_REFERENCE",
                 traceId,
                 _environment.IsDevelopment()
-                    ? new { OriginalMessage = nullRefEx.Message, nullRefEx.StackTrace }
+                    ? new { OriginalMessage = nullRefEx.Message, StackTrace = nullRefEx.StackTrace }
                     : null),
 
             // Fallback for all other exceptions
@@ -187,7 +187,7 @@ public class ExceptionHandlingMiddleware
                     {
                         ExceptionType = exception.GetType().Name,
                         OriginalMessage = exception.Message,
-                        exception.StackTrace,
+                        StackTrace = exception.StackTrace,
                         InnerException = exception.InnerException?.Message
                     }
                     : null)

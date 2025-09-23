@@ -1,2 +1,2 @@
 # FindPet
-.NET Project + Angular(v20)
+.NET Project(.NET 8) + Angular(v20)

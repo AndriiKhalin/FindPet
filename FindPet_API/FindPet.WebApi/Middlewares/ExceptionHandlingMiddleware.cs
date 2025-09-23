@@ -1,8 +1,9 @@
-﻿using System.Net;
-using System.Text.Json;
-using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
+﻿using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
 using FindPet.Domain.Exceptions;
 using FindPet.WebApi.Models.Exceptions;
+using System;
+using System.Net;
+using System.Text.Json;
 
 namespace FindPet.WebApi.Middlewares;
 
@@ -57,11 +58,11 @@ public class ExceptionHandlingMiddleware
     {
         return exception switch
         {
-            // Наші custom винятки - використовуємо їх властивості
+            // Our custom exceptions - use their properties
             ValidationException validationEx => ErrorResponse.CreateValidationError(validationEx, traceId),
             BaseException baseEx => ErrorResponse.CreateFromException(baseEx, traceId),
 
-            // Стандартні .NET винятки
+            // Standard .NET exceptions
             UnauthorizedAccessException => ErrorResponse.Create(
                 "Authentication required",
                 HttpStatusCode.Unauthorized,
@@ -176,7 +177,7 @@ public class ExceptionHandlingMiddleware
                     ? new { OriginalMessage = nullRefEx.Message, nullRefEx.StackTrace }
                     : null),
 
-            // Fallback для всіх інших винятків
+            // Fallback for all other exceptions
             _ => ErrorResponse.Create(
                 _environment.IsDevelopment() ? exception.Message : "An unexpected error occurred",
                 HttpStatusCode.InternalServerError,

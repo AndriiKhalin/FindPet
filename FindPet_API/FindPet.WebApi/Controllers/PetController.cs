@@ -24,6 +24,7 @@ public class PetController : ControllerBase
         _manageImage = manageImage;
     }
 
+    [AllowAnonymous]
     [HttpGet]
     [ProducesResponseType(200, Type = typeof(IEnumerable<PetDto>))]
     public async Task<IActionResult> GetPets()
@@ -33,6 +34,7 @@ public class PetController : ControllerBase
         return Ok(pets);
     }
 
+    [AllowAnonymous]
     [HttpGet("{petId}")]
     [ProducesResponseType(200, Type = typeof(PetDto))]
     [ProducesResponseType(400)]

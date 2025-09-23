@@ -6,6 +6,7 @@ using FindPet.BusinessLogicLayer.Interfaces.IMLService;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
 using FindPet.Domain.Entities;
+using FindPet.Domain.Exceptions;
 
 namespace FindPet.BusinessLogicLayer.Services.EntityService;
 
@@ -37,7 +38,7 @@ public class PetService : IPetService
         if (!await PetExistsAsync(petId))
         {
             _logger.LogError($"Pet with id: {petId}, hasn't been found in db.");
-            throw new ArgumentNullException("Invalid pet Id");
+            throw new NotFoundException("Pet", petId);
         }
 
         return await _unitOfWorkRep.Pet.GetAsync(petId);
@@ -91,7 +92,7 @@ public class PetService : IPetService
         if (!await PetExistsAsync(petId))
         {
             _logger.LogError($"Pet with id: {petId}, hasn't been found in db.");
-            throw new ArgumentNullException("Invalid pet Id");
+            throw new NotFoundException("Pet", petId);
         }
 
         var petEntityForDelete = await GetPetAsync(petId);
@@ -114,7 +115,7 @@ public class PetService : IPetService
         if (!await PetExistsAsync(petId))
         {
             _logger.LogError($"Pet with id: {petId}, hasn't been found in db.");
-            throw new ArgumentNullException("Invalid pet Id");
+            throw new NotFoundException("Pet", petId);
         }
 
         var petEntity = await GetPetAsync(petId);

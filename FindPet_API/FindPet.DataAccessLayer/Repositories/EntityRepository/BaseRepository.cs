@@ -21,7 +21,7 @@ public class BaseRepository<T> : HelperBaseRepository<T>, IBaseRepository<T> whe
 
     public async Task<T?> GetAsync(Guid Id)
     {
-        return await GetByConditionAsync(x => x.Id == Id).Result.FirstOrDefaultAsync();
+        return await (await GetByConditionAsync(x => x.Id == Id)).FirstOrDefaultAsync();
     }
 
     public async Task<bool> IsExistAsync(Guid Id)

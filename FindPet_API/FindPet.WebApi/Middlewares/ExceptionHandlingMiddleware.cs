@@ -1,13 +1,26 @@
-﻿namespace FindPet.WebApi.Middlewares;
+﻿using System.Net;
+using System.Text.Json;
+using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
+using FindPet.Domain.Exceptions;
+using FindPet.WebApi.Models.Exceptions;
+
+namespace FindPet.WebApi.Middlewares;
 
 // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
 public class ExceptionHandlingMiddleware
 {
+    private readonly IWebHostEnvironment _environment;
+    private readonly ILoggerManager _logger;
     private readonly RequestDelegate _next;
 
-    public ExceptionHandlingMiddleware(RequestDelegate next)
+    public ExceptionHandlingMiddleware(
+        RequestDelegate next,
+        ILoggerManager logger,
+        IWebHostEnvironment environment)
     {
         _next = next;
+        _logger = logger;
+        _environment = environment;
     }
 
     public async Task Invoke(HttpContext httpContext)
@@ -18,19 +31,184 @@ public class ExceptionHandlingMiddleware
         }
         catch (Exception ex)
         {
-            httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            httpContext.Response.ContentType = "application/json";
-            var result = System.Text.Json.JsonSerializer.Serialize(new { error = "An unexpected error occurred." });
-            await httpContext.Response.WriteAsync(result);
+            await HandleExceptionAsync(httpContext, ex);
         }
     }
-}
 
-// Extension method used to add the middleware to the HTTP request pipeline.
-public static class ExceptionHandlingMiddlewareExtensions
-{
-    public static IApplicationBuilder UseExceptionHandlingMiddleware(this IApplicationBuilder builder)
+    private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        return builder.UseMiddleware<ExceptionHandlingMiddleware>();
+        context.Response.ContentType = "application/json";
+
+        var errorResponse = CreateErrorResponse(exception, context.TraceIdentifier);
+        context.Response.StatusCode = errorResponse.StatusCode;
+
+        LogException(exception, errorResponse.StatusCode);
+
+        var jsonResponse = JsonSerializer.Serialize(errorResponse, new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = _environment.IsDevelopment()
+        });
+
+        await context.Response.WriteAsync(jsonResponse);
+    }
+
+    private ErrorResponse CreateErrorResponse(Exception exception, string traceId)
+    {
+        return exception switch
+        {
+            // Наші custom винятки - використовуємо їх властивості
+            ValidationException validationEx => ErrorResponse.CreateValidationError(validationEx, traceId),
+            BaseException baseEx => ErrorResponse.CreateFromException(baseEx, traceId),
+
+            // Стандартні .NET винятки
+            UnauthorizedAccessException => ErrorResponse.Create(
+                "Authentication required",
+                HttpStatusCode.Unauthorized,
+                "UNAUTHORIZED",
+                traceId),
+
+            ArgumentNullException argNullEx => ErrorResponse.Create(
+                $"Required parameter '{argNullEx.ParamName}' is missing",
+                HttpStatusCode.BadRequest,
+                "MISSING_PARAMETER",
+                traceId,
+                new { Parameter = argNullEx.ParamName }),
+
+            ArgumentException argEx => ErrorResponse.Create(
+                "Invalid input provided",
+                HttpStatusCode.BadRequest,
+                "INVALID_INPUT",
+                traceId,
+                _environment.IsDevelopment()
+                    ? new { Parameter = argEx.ParamName, OriginalMessage = argEx.Message }
+                    : null),
+
+            InvalidOperationException invalidOpEx => ErrorResponse.Create(
+                "The requested operation cannot be performed",
+                HttpStatusCode.BadRequest,
+                "INVALID_OPERATION",
+                traceId,
+                _environment.IsDevelopment() ? new { OriginalMessage = invalidOpEx.Message } : null),
+
+            TimeoutException => ErrorResponse.Create(
+                "Operation timed out",
+                HttpStatusCode.RequestTimeout,
+                "TIMEOUT",
+                traceId),
+
+            TaskCanceledException => ErrorResponse.Create(
+                "Operation was cancelled",
+                HttpStatusCode.RequestTimeout,
+                "OPERATION_CANCELLED",
+                traceId),
+
+            NotSupportedException notSupportedEx => ErrorResponse.Create(
+                "Operation not supported",
+                HttpStatusCode.NotImplemented,
+                "NOT_SUPPORTED",
+                traceId,
+                _environment.IsDevelopment() ? new { OriginalMessage = notSupportedEx.Message } : null),
+
+            FileNotFoundException fileNotFoundEx => ErrorResponse.Create(
+                "Required file was not found",
+                HttpStatusCode.NotFound,
+                "FILE_NOT_FOUND",
+                traceId,
+                new { fileNotFoundEx.FileName }),
+
+            DirectoryNotFoundException => ErrorResponse.Create(
+                "Required directory was not found",
+                HttpStatusCode.NotFound,
+                "DIRECTORY_NOT_FOUND",
+                traceId),
+
+            OutOfMemoryException => ErrorResponse.Create(
+                "Server is out of memory",
+                HttpStatusCode.InternalServerError,
+                "OUT_OF_MEMORY",
+                traceId),
+
+            StackOverflowException => ErrorResponse.Create(
+                "Stack overflow occurred",
+                HttpStatusCode.InternalServerError,
+                "STACK_OVERFLOW",
+                traceId),
+
+            FormatException formatEx => ErrorResponse.Create(
+                "Invalid data format",
+                HttpStatusCode.BadRequest,
+                "INVALID_FORMAT",
+                traceId,
+                _environment.IsDevelopment() ? new { OriginalMessage = formatEx.Message } : null),
+
+            OverflowException => ErrorResponse.Create(
+                "Numeric overflow occurred",
+                HttpStatusCode.BadRequest,
+                "NUMERIC_OVERFLOW",
+                traceId),
+
+            DivideByZeroException => ErrorResponse.Create(
+                "Division by zero attempted",
+                HttpStatusCode.BadRequest,
+                "DIVISION_BY_ZERO",
+                traceId),
+
+            IndexOutOfRangeException => ErrorResponse.Create(
+                "Index was outside the bounds of the array",
+                HttpStatusCode.BadRequest,
+                "INDEX_OUT_OF_RANGE",
+                traceId),
+
+            KeyNotFoundException keyNotFoundEx => ErrorResponse.Create(
+                "Required key was not found",
+                HttpStatusCode.NotFound,
+                "KEY_NOT_FOUND",
+                traceId,
+                _environment.IsDevelopment() ? new { OriginalMessage = keyNotFoundEx.Message } : null),
+
+            NullReferenceException nullRefEx => ErrorResponse.Create(
+                "Null reference encountered",
+                HttpStatusCode.InternalServerError,
+                "NULL_REFERENCE",
+                traceId,
+                _environment.IsDevelopment()
+                    ? new { OriginalMessage = nullRefEx.Message, nullRefEx.StackTrace }
+                    : null),
+
+            // Fallback для всіх інших винятків
+            _ => ErrorResponse.Create(
+                _environment.IsDevelopment() ? exception.Message : "An unexpected error occurred",
+                HttpStatusCode.InternalServerError,
+                "INTERNAL_ERROR",
+                traceId,
+                _environment.IsDevelopment()
+                    ? new
+                    {
+                        ExceptionType = exception.GetType().Name,
+                        OriginalMessage = exception.Message,
+                        exception.StackTrace,
+                        InnerException = exception.InnerException?.Message
+                    }
+                    : null)
+        };
+    }
+
+    private void LogException(Exception exception, int statusCode)
+    {
+        var message = $"Exception: {exception.GetType().Name} - {exception.Message}";
+
+        switch (statusCode)
+        {
+            case >= 500:
+                _logger.LogError(message);
+                break;
+            case >= 400:
+                _logger.LogWarn(message);
+                break;
+            default:
+                _logger.LogInfo(message);
+                break;
+        }
     }
 }

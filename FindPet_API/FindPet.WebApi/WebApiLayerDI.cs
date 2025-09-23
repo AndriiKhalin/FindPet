@@ -1,8 +1,8 @@
 ﻿using Microsoft.OpenApi.Models;
 
-namespace FindPet.API;
+namespace FindPet.WebApi;
 
-public static class APILayerDI
+public static class WebApiLayerDI
 {
     public static void AddAPIServices(this IServiceCollection services, IConfiguration configuration)
     {

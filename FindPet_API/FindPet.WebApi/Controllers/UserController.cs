@@ -6,7 +6,7 @@ using FindPet.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FindPet.API.Controllers;
+namespace FindPet.WebApi.Controllers;
 
 [Authorize]
 [Route("api/[controller]")]

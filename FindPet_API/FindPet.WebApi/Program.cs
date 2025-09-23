@@ -1,6 +1,6 @@
-using FindPet.API;
 using FindPet.Infrastructure;
 using FindPet.Infrastructure.Configurations.ServiceExtensions;
+using FindPet.WebApi;
 using NLog;
 
 var builder = WebApplication.CreateBuilder(args);

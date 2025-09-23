@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
-namespace FindPet.API.Controllers;
+namespace FindPet.WebApi.Controllers;
 
 [Authorize]
 [ApiController]

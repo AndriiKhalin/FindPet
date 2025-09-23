@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FindPet.Tests", "FindPet.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FindPet.Domain", "FindPet.Domain\FindPet.Domain.csproj", "{C4301332-608B-4858-BAA6-40E3FE7AAEFD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FindPet.API", "FindPet.API\FindPet.API.csproj", "{D2046F49-1C40-4061-A244-11235BADAF2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FindPet.WebApi", "FindPet.WebApi\FindPet.WebApi.csproj", "{D2046F49-1C40-4061-A244-11235BADAF2E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FindPet.Media", "FindPet.Media\FindPet.Media.csproj", "{0C76A636-4BE2-4FCF-8C8C-19AD0C3950A5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FindPet.Email", "FindPet.Email\FindPet.Email.csproj", "{DB2D2F52-B7D0-4A71-ABD1-367F42AF3626}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{97207750-6972-232F-BB7B-6106666106AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +61,10 @@ Global
 		{DB2D2F52-B7D0-4A71-ABD1-367F42AF3626}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB2D2F52-B7D0-4A71-ABD1-367F42AF3626}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB2D2F52-B7D0-4A71-ABD1-367F42AF3626}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97207750-6972-232F-BB7B-6106666106AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97207750-6972-232F-BB7B-6106666106AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97207750-6972-232F-BB7B-6106666106AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97207750-6972-232F-BB7B-6106666106AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

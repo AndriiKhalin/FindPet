@@ -20,8 +20,6 @@ public class ManageImage<T> : IManageImage<T> where T : class
     {
         if (File.Exists(filePath))
         {
-            Path.GetFileName(filePath);
-
             var navigationPath = NavigateToFolder(filePath, "Images");
             var deletedFolderPath = Path.Join(navigationPath, "Deleted");
             var entityFolderPath = Path.Join(deletedFolderPath, typeof(T).Name);

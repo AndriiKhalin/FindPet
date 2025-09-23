@@ -10,9 +10,19 @@ public class ExceptionHandlingMiddleware
         _next = next;
     }
 
-    public Task Invoke(HttpContext httpContext)
+    public async Task Invoke(HttpContext httpContext)
     {
-        return _next(httpContext);
+        try
+        {
+            await _next(httpContext);
+        }
+        catch (Exception ex)
+        {
+            httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            httpContext.Response.ContentType = "application/json";
+            var result = System.Text.Json.JsonSerializer.Serialize(new { error = "An unexpected error occurred." });
+            await httpContext.Response.WriteAsync(result);
+        }
     }
 }
 

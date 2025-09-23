@@ -4,7 +4,7 @@ using FindPet.Domain.DTOs.EntitiesDTOs.AdDTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FindPet.API.Controllers;
+namespace FindPet.WebApi.Controllers;
 
 [Authorize(Roles = "Admin")]
 [Route("api/[controller]")]

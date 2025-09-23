@@ -56,7 +56,7 @@ public class ErrorResponse
         return new ErrorResponse
         {
             Message = exception.Message,
-            StatusCode = 400,
+            StatusCode = (int)HttpStatusCode.BadRequest,
             ErrorCode = "VALIDATION_FAILED",
             TraceId = traceId,
             ValidationErrors = exception.ValidationErrors

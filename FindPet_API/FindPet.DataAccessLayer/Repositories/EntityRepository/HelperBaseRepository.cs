@@ -25,7 +25,7 @@ public abstract class HelperBaseRepository<T> : IHelperBaseRepository<T> where T
         _context.Set<T>().Remove(result);
     }
 
-    public async Task<IQueryable<T>> GetByConditionAsync(Expression<Func<T, bool>> expression)
+    public IQueryable<T> GetByCondition(Expression<Func<T, bool>> expression)
     {
         return _context.Set<T>().Where(expression).AsNoTracking();
     }

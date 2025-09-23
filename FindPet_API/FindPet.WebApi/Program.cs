@@ -1,6 +1,7 @@
 using FindPet.Infrastructure;
 using FindPet.Infrastructure.Configurations.ServiceExtensions;
 using FindPet.WebApi;
+using FindPet.WebApi.Middlewares;
 using NLog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseExceptionHandlingMiddleware();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseCustomStaticFiles();

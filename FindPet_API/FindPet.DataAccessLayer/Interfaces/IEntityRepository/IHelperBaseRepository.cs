@@ -6,7 +6,7 @@ public interface IHelperBaseRepository<T> where T : class
 {
     IQueryable<T> GetAll();
 
-    Task<IQueryable<T>> GetByConditionAsync(Expression<Func<T, bool>> expression);
+    IQueryable<T> GetByCondition(Expression<Func<T, bool>> expression);
 
     Task<bool> IsExistAsync(Expression<Func<T, bool>> expression);
 

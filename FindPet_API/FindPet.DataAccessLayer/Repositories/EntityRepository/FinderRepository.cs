@@ -21,17 +21,17 @@
 
 //    //public async Task<Finder?> GetAsync(Guid userId)
 //    //{
-//    //    return await GetByConditionAsync(x => x.Id == userId).Result.FirstOrDefaultAsync();
+//    //    return await GetByCondition(x => x.Id == userId).Result.FirstOrDefaultAsync();
 //    //}
 
 //    ////public async Task<IEnumerable<Ad>?> GetAdsByOwner(Guid ownerId)
 //    ////{
-//    ////    return await GetByConditionAsync(x => x.Id == ownerId).Result.Include(x => x.Ads).SelectMany(x => x.Ads).ToListAsync();
+//    ////    return await GetByCondition(x => x.Id == ownerId).Result.Include(x => x.Ads).SelectMany(x => x.Ads).ToListAsync();
 //    ////}
 
 //    ////public async Task<IEnumerable<Pet>?> GetPetsByOwner(Guid ownerId)
 //    ////{
-//    ////    return await GetByConditionAsync(x => x.Id == ownerId).Result.Include(x => x.Pets).SelectMany(x => x.Pets).ToListAsync();
+//    ////    return await GetByCondition(x => x.Id == ownerId).Result.Include(x => x.Pets).SelectMany(x => x.Pets).ToListAsync();
 //    ////}
 
 //    //public async Task<bool> IsExistAsync(Guid userId)
@@ -46,7 +46,7 @@
 
 //    public async Task<Finder?> GetUserAsync(string finderName)
 //    {
-//        return await GetByConditionAsync(x => x.Name == finderName).Result.FirstOrDefaultAsync();
+//        return await GetByCondition(x => x.Name == finderName).Result.FirstOrDefaultAsync();
 //    }
 
 //    //public async Task DeleteAsync(Guid userId)

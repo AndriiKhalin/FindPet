@@ -20,22 +20,22 @@ public class PetRepository : BaseRepository<Pet>, IPetRepository
 
     //public async Task<Pet?> GetAsync(Guid petId)
     //{
-    //    return await GetByConditionAsync(x => x.Id == petId).Result.FirstOrDefaultAsync();
+    //    return await GetByCondition(x => x.Id == petId).Result.FirstOrDefaultAsync();
     //}
 
     ////public async Task<IEnumerable<Ad>?> GetAdsByPet(Guid petId)
     ////{
-    ////    return await GetByConditionAsync(x => x.Id == petId).Result.Include(x => x.Ads).SelectMany(x => x.Ads).ToListAsync();
+    ////    return await GetByCondition(x => x.Id == petId).Result.Include(x => x.Ads).SelectMany(x => x.Ads).ToListAsync();
     ////}
 
     ////public async Task<Finder> GetFinderByPet(Guid petId)
     ////{
-    ////    return await GetByConditionAsync(x => x.Id == petId).Result.Include(x => x.Finder).Select(x => x.Finder).FirstOrDefaultAsync();
+    ////    return await GetByCondition(x => x.Id == petId).Result.Include(x => x.Finder).Select(x => x.Finder).FirstOrDefaultAsync();
     ////}
 
     ////public async Task<Owner> GetOwnerByPet(Guid petId)
     ////{
-    ////    return await GetByConditionAsync(x => x.Id == petId).Result.Include(x => x.Owner).Select(x => x.Owner).FirstOrDefaultAsync();
+    ////    return await GetByCondition(x => x.Id == petId).Result.Include(x => x.Owner).Select(x => x.Owner).FirstOrDefaultAsync();
     ////}
 
     //public async Task<bool> IsExistAsync(Guid petId)

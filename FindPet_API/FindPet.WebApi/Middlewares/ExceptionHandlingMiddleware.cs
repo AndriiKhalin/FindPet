@@ -40,25 +40,22 @@ public class ExceptionHandlingMiddleware
     private async Task HandleHttpStatusCodesAsync(HttpContext context)
     {
         // Only handle error status codes that haven't been processed yet
-        if (context.Response.StatusCode >= 400 && !context.Response.HasStarted)
+        if (context.Response.StatusCode >= 400 && !context.Response.HasStarted &&
+            (context.Response.ContentLength == null || context.Response.ContentLength == 0))
         {
-            // Check if response body is empty (no custom error response set)
-            if (context.Response.ContentLength == null || context.Response.ContentLength == 0)
+            var errorResponse = CreateErrorResponseForStatusCode(context.Response.StatusCode, context.TraceIdentifier);
+
+            context.Response.ContentType = "application/json";
+
+            LogException(errorResponse.StatusCode, null, errorResponse.Message);
+
+            var jsonResponse = JsonSerializer.Serialize(errorResponse, new JsonSerializerOptions
             {
-                var errorResponse = CreateErrorResponseForStatusCode(context.Response.StatusCode, context.TraceIdentifier);
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = _environment.IsDevelopment()
+            });
 
-                context.Response.ContentType = "application/json";
-
-                LogException(errorResponse.StatusCode, null, errorResponse.Message);
-
-                var jsonResponse = JsonSerializer.Serialize(errorResponse, new JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    WriteIndented = _environment.IsDevelopment()
-                });
-
-                await context.Response.WriteAsync(jsonResponse);
-            }
+            await context.Response.WriteAsync(jsonResponse);
         }
     }
 
@@ -116,7 +113,7 @@ public class ExceptionHandlingMiddleware
         var errorResponse = CreateErrorResponse(exception, context.TraceIdentifier);
         context.Response.StatusCode = errorResponse.StatusCode;
 
-        LogException(errorResponse.StatusCode);
+        LogException(errorResponse.StatusCode, exception);
 
         var jsonResponse = JsonSerializer.Serialize(errorResponse, new JsonSerializerOptions
         {

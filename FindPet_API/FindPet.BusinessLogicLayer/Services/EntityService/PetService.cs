@@ -35,7 +35,7 @@ public class PetService : IPetService
 
     public async Task<Pet?> GetPetByIdAsync(Guid petId)
     {
-        if (petId == null || petId == Guid.Empty)
+        if (petId == Guid.Empty)
         {
             throw new BadRequestException("PetId must be a valid non-empty GUID");
         }
@@ -146,12 +146,12 @@ public class PetService : IPetService
             throw new BadRequestException("Invalid userId or createPetDto object.");
         }
 
-        if (String.IsNullOrWhiteSpace(createPetDto.Nickname))
+        if (string.IsNullOrWhiteSpace(createPetDto.Nickname))
         {
             exceptions.Add(new ValidationError("Nickname", "Nickname is required"));
         }
 
-        if (String.IsNullOrWhiteSpace(createPetDto.Breed))
+        if (string.IsNullOrWhiteSpace(createPetDto.Breed))
         {
             exceptions.Add(new ValidationError("Breed", "Breed is required"));
         }
@@ -171,15 +171,9 @@ public class PetService : IPetService
         pet.UserId = userId;
         pet.DateCreateUpdate = DateTime.UtcNow;
         pet.Photo = createPetDto.Photo;
-
-        if (!string.IsNullOrEmpty(pet.Photo))
-        {
-            pet.Type = await _mlService.PredictAsync(Path.Combine(@"wwwroot", Path.GetFileName(pet.Photo)));
-        }
-        else
-        {
-            pet.Type = "Unknown";
-        }
+        pet.Type = !string.IsNullOrEmpty(pet.Photo)
+            ? await _mlService.PredictAsync(Path.Join(@"wwwroot", Path.GetFileName(pet.Photo)))
+            : "Unknown";
 
         await _unitOfWorkRep.Pet.CreateAsync(pet);
 

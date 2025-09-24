@@ -16,7 +16,7 @@ public class ValidationException : BaseException
     public ValidationException(string message)
         : base(message, 400, "VALIDATION_FAILED")
     {
-        ValidationErrors = Array.Empty<ValidationError>();
+        ValidationErrors = [];
     }
 
     public IEnumerable<ValidationError> ValidationErrors { get; }

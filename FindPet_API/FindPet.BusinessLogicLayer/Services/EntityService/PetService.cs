@@ -33,8 +33,12 @@ public class PetService : IPetService
         return _unitOfWorkRep.Pet.Gets();
     }
 
-    public async Task<Pet?> GetPetAsync(Guid petId)
+    public async Task<Pet?> GetPetByIdAsync(Guid petId)
     {
+        if (petId == Guid.Empty)
+        {
+            throw new BadRequestException("PetId must be a valid non-empty GUID");
+        }
         if (!await PetExistsAsync(petId))
         {
             _logger.LogError($"Pet with id: {petId}, hasn't been found in db.");
@@ -95,7 +99,7 @@ public class PetService : IPetService
             throw new NotFoundException("Pet", petId);
         }
 
-        var petEntityForDelete = await GetPetAsync(petId);
+        var petEntityForDelete = await GetPetByIdAsync(petId);
 
         _manageImage.DeletePhoto(petEntityForDelete.Photo);
 
@@ -118,7 +122,7 @@ public class PetService : IPetService
             throw new NotFoundException("Pet", petId);
         }
 
-        var petEntity = await GetPetAsync(petId);
+        var petEntity = await GetPetByIdAsync(petId);
 
         if (pet.Photo is not null)
         {
@@ -133,26 +137,48 @@ public class PetService : IPetService
         await _unitOfWorkRep.SaveAsync();
     }
 
-    public async Task<Pet> CreatePetAsync(Guid userId, PetForCreateDto pet)
+    public async Task<Pet> CreatePetAsync(Guid userId, PetForCreateDto createPetDto)
     {
-        if (userId == Guid.Empty || pet == null)
+        var exceptions = new List<ValidationError>();
+        if (userId == Guid.Empty || createPetDto == null)
         {
             _logger.LogError("Error");
-            throw new ArgumentNullException("Invalid userId or pet object.");
+            throw new BadRequestException("Invalid userId or createPetDto object.");
         }
 
-        var userEntity = await _unitOfWorkRep.User.GetAsync(userId);
+        if (string.IsNullOrWhiteSpace(createPetDto.Nickname))
+        {
+            exceptions.Add(new ValidationError("Nickname", "Nickname is required"));
+        }
 
-        var petMap = _mapper.Map<Pet>(pet);
+        if (string.IsNullOrWhiteSpace(createPetDto.Breed))
+        {
+            exceptions.Add(new ValidationError("Breed", "Breed is required"));
+        }
 
-        petMap.UserId = userEntity.Id;
-        petMap.DateCreateUpdate = DateTime.UtcNow;
-        petMap.Photo = pet.Photo;
-        petMap.Type = await _mlService.PredictAsync(Path.Combine(@"wwwroot", Path.GetFileName(petMap.Photo!)));
-        await _unitOfWorkRep.Pet.CreateAsync(petMap);
+        if (exceptions.Any())
+        {
+            throw new ValidationException(exceptions);
+        }
+
+        if (!await _unitOfWorkRep.User.IsExistAsync(userId))
+        {
+            throw new NotFoundException("User", userId);
+        }
+
+        var pet = _mapper.Map<Pet>(createPetDto);
+
+        pet.UserId = userId;
+        pet.DateCreateUpdate = DateTime.UtcNow;
+        pet.Photo = createPetDto.Photo;
+        pet.Type = !string.IsNullOrEmpty(pet.Photo)
+            ? await _mlService.PredictAsync(Path.Join(@"wwwroot", Path.GetFileName(pet.Photo)))
+            : "Unknown";
+
+        await _unitOfWorkRep.Pet.CreateAsync(pet);
 
         await _unitOfWorkRep.SaveAsync();
 
-        return petMap;
+        return pet;
     }
 }

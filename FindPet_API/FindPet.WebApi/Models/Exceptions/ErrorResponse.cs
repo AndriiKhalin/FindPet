@@ -38,18 +38,18 @@ public class ErrorResponse
         };
     }
 
-    public static ErrorResponse CreateValidationError(IEnumerable<ValidationError> validationErrors,
-        string? traceId = null)
-    {
-        return new ErrorResponse
-        {
-            Message = "One or more validation errors occurred",
-            StatusCode = (int)HttpStatusCode.BadRequest,
-            ErrorCode = "VALIDATION_FAILED",
-            TraceId = traceId,
-            ValidationErrors = validationErrors
-        };
-    }
+    //public static ErrorResponse CreateValidationError(IEnumerable<ValidationError> validationErrors,
+    //    string? traceId = null)
+    //{
+    //    return new ErrorResponse
+    //    {
+    //        Message = "One or more validation errors occurred",
+    //        StatusCode = (int)HttpStatusCode.BadRequest,
+    //        ErrorCode = "VALIDATION_FAILED",
+    //        TraceId = traceId,
+    //        ValidationErrors = validationErrors
+    //    };
+    //}
 
     public static ErrorResponse CreateValidationError(ValidationException exception, string? traceId = null)
     {

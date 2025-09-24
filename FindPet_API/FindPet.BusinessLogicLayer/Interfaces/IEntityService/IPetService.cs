@@ -7,7 +7,7 @@ public interface IPetService
 {
     IEnumerable<Pet> GetPets();
 
-    Task<Pet?> GetPetAsync(Guid petId);
+    Task<Pet?> GetPetByIdAsync(Guid petId);
 
     //Task<IEnumerable<Ad>?> GetAdsByPetAsync(Guid petId);
 

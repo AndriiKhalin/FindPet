@@ -40,7 +40,7 @@ public class PetController : ControllerBase
     [ProducesResponseType(400)]
     public async Task<IActionResult> GetPet(Guid petId)
     {
-        var pet = _mapper.Map<PetDto>(await _petService.GetPetAsync(petId));
+        var pet = _mapper.Map<PetDto>(await _petService.GetPetByIdAsync(petId));
 
         return Ok(pet);
     }

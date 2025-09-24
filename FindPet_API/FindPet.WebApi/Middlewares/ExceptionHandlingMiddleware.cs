@@ -28,11 +28,85 @@ public class ExceptionHandlingMiddleware
         try
         {
             await _next(httpContext);
+
+            await HandleHttpStatusCodesAsync(httpContext);
         }
         catch (Exception ex)
         {
             await HandleExceptionAsync(httpContext, ex);
         }
+    }
+
+    private async Task HandleHttpStatusCodesAsync(HttpContext context)
+    {
+        // Only handle error status codes that haven't been processed yet
+        if (context.Response.StatusCode >= 400 && !context.Response.HasStarted)
+        {
+            // Check if response body is empty (no custom error response set)
+            if (context.Response.ContentLength == null || context.Response.ContentLength == 0)
+            {
+                var errorResponse = CreateErrorResponseForStatusCode(context.Response.StatusCode, context.TraceIdentifier);
+
+                context.Response.ContentType = "application/json";
+
+                LogException(errorResponse.StatusCode, null, errorResponse.Message);
+
+                var jsonResponse = JsonSerializer.Serialize(errorResponse, new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    WriteIndented = _environment.IsDevelopment()
+                });
+
+                await context.Response.WriteAsync(jsonResponse);
+            }
+        }
+    }
+
+    private ErrorResponse CreateErrorResponseForStatusCode(int statusCode, string traceId)
+    {
+        return statusCode switch
+        {
+            401 => ErrorResponse.Create(
+                "Authentication is required to access this resource. Please provide a valid JWT token.",
+                HttpStatusCode.Unauthorized,
+                "AUTHENTICATION_REQUIRED",
+                traceId,
+                new
+                {
+                    Hint = "Include 'Authorization: Bearer <your-jwt-token>' in the request headers",
+                    LoginEndpoint = "/api/Account/login"
+                }),
+
+            403 => ErrorResponse.Create(
+                "You don't have permission to access this resource",
+                HttpStatusCode.Forbidden,
+                "INSUFFICIENT_PERMISSIONS",
+                traceId),
+
+            404 => ErrorResponse.Create(
+                "The requested resource was not found",
+                HttpStatusCode.NotFound,
+                "RESOURCE_NOT_FOUND",
+                traceId),
+
+            405 => ErrorResponse.Create(
+                "The HTTP method is not allowed for this resource",
+                HttpStatusCode.MethodNotAllowed,
+                "METHOD_NOT_ALLOWED",
+                traceId),
+
+            415 => ErrorResponse.Create(
+                "The media type is not supported",
+                HttpStatusCode.UnsupportedMediaType,
+                "UNSUPPORTED_MEDIA_TYPE",
+                traceId),
+
+            _ => ErrorResponse.Create(
+                "An error occurred while processing your request",
+                (HttpStatusCode)statusCode,
+                "HTTP_ERROR",
+                traceId)
+        };
     }
 
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
@@ -42,7 +116,7 @@ public class ExceptionHandlingMiddleware
         var errorResponse = CreateErrorResponse(exception, context.TraceIdentifier);
         context.Response.StatusCode = errorResponse.StatusCode;
 
-        LogException(exception, errorResponse.StatusCode);
+        LogException(errorResponse.StatusCode);
 
         var jsonResponse = JsonSerializer.Serialize(errorResponse, new JsonSerializerOptions
         {
@@ -60,6 +134,7 @@ public class ExceptionHandlingMiddleware
             // Our custom exceptions - use their properties
             ValidationException validationEx => ErrorResponse.CreateValidationError(validationEx, traceId),
             BaseException baseEx => ErrorResponse.CreateFromException(baseEx, traceId),
+
 
             // Standard .NET exceptions
             UnauthorizedAccessException => ErrorResponse.Create(
@@ -194,9 +269,12 @@ public class ExceptionHandlingMiddleware
         };
     }
 
-    private void LogException(Exception exception, int statusCode)
+    private void LogException(int statusCode, Exception? exception = null, string? message = null)
     {
-        var message = $"Exception: {exception.GetType().Name} - {exception.Message}";
+        if (exception is not null && message is null)
+        {
+            message = $"Exception: {exception.GetType().Name} - {exception.Message}";
+        }
 
         switch (statusCode)
         {

@@ -38,7 +38,7 @@ public class UserController : ControllerBase
     [ProducesResponseType(400)]
     public async Task<IActionResult> GetUser(Guid userId)
     {
-        var user = _mapper.Map<UserDto>(await _userService.GetUserAsync(userId));
+        var user = _mapper.Map<UserDto>(await _userService.GetUserByIdAsync(userId));
 
         return Ok(user);
     }

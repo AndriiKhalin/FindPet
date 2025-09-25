@@ -93,6 +93,11 @@ public class PetService : IPetService
 
     public async Task DeletePetAsync(Guid petId)
     {
+        if (petId == Guid.Empty)
+        {
+            throw new BadRequestException("PetId must be a valid non-empty GUID");
+        }
+
         if (!await PetExistsAsync(petId))
         {
             _logger.LogError($"Pet with id: {petId}, hasn't been found in db.");
@@ -110,10 +115,15 @@ public class PetService : IPetService
 
     public async Task UpdatePetAsync(Guid petId, PetForUpdateDto pet)
     {
+        if (petId == Guid.Empty)
+        {
+            throw new BadRequestException("PetId must be a valid non-empty GUID");
+        }
+
         if (pet == null)
         {
             _logger.LogError("Pet object sent from client is null.");
-            throw new ArgumentNullException("Pet is null");
+            throw new BadRequestException("Pet is null");
         }
 
         if (!await PetExistsAsync(petId))

@@ -5,6 +5,7 @@ using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
 using FindPet.Domain.Entities;
+using FindPet.Domain.Exceptions;
 
 namespace FindPet.BusinessLogicLayer.Services.EntityService;
 
@@ -28,23 +29,33 @@ public class UserService : IUserService
         return _unitOfWorkRep.User.Gets();
     }
 
-    public async Task<User?> GetUserAsync(Guid userId)
+    public async Task<User?> GetUserByIdAsync(Guid userId)
     {
+        if (userId == Guid.Empty)
+        {
+            throw new BadRequestException("User ID must be NON-Empty");
+        }
+
         if (!await UserExistsAsync(userId))
         {
             _logger.LogError($"User with id: {userId}, hasn't been found in db.");
-            throw new ArgumentNullException("Invalid user Id");
+            throw new NotFoundException("User", userId);
         }
 
         return await _unitOfWorkRep.User.GetAsync(userId);
     }
 
-    public async Task<User?> GetUserAsync(string userName)
+    public async Task<User?> GetUserByNameAsync(string userName)
     {
+        if (string.IsNullOrWhiteSpace(userName))
+        {
+            throw new BadRequestException("UserName cannot be empty");
+        }
+
         if (!await UserExistsAsync(userName))
         {
             _logger.LogError($"User with name: {userName}, hasn't been found in db.");
-            throw new ArgumentNullException("Invalid user Name");
+            throw new NotFoundException("User", userName);
         }
 
         return await _unitOfWorkRep.User.GetUserAsync(userName);
@@ -90,7 +101,7 @@ public class UserService : IUserService
             throw new ArgumentNullException("Invalid user Id");
         }
 
-        var userEntityForDelete = await GetUserAsync(userId);
+        var userEntityForDelete = await GetUserByIdAsync(userId);
 
         _manageImage.DeletePhoto(userEntityForDelete.Photo);
 
@@ -113,7 +124,7 @@ public class UserService : IUserService
             throw new ArgumentNullException("Invalid user Id");
         }
 
-        var userEntity = await GetUserAsync(userId);
+        var userEntity = await GetUserByIdAsync(userId);
 
         if (user.Photo is not null)
         {
@@ -133,7 +144,7 @@ public class UserService : IUserService
         if (user == null)
         {
             _logger.LogError("Error");
-            throw new ArgumentNullException("Invalid  user object.");
+            throw new BadRequestException("Invalid  user object.");
         }
 
         var userMap = _mapper.Map<User>(user);

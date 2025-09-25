@@ -7,9 +7,9 @@ public interface IUserService
 {
     IEnumerable<User> GetUsers();
 
-    Task<User?> GetUserAsync(Guid UserId);
+    Task<User?> GetUserByIdAsync(Guid UserId);
 
-    Task<User?> GetUserAsync(string userName);
+    Task<User?> GetUserByNameAsync(string userName);
 
     Task<bool> UserExistsAsync(Guid UserId);
 

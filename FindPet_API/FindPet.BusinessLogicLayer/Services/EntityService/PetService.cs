@@ -35,10 +35,7 @@ public class PetService : IPetService
 
     public async Task<Pet?> GetPetByIdAsync(Guid petId)
     {
-        if (petId == Guid.Empty)
-        {
-            throw new BadRequestException("PetId must be a valid non-empty GUID");
-        }
+        if (petId == Guid.Empty) throw new BadRequestException("PetId must be a valid non-empty GUID");
         if (!await PetExistsAsync(petId))
         {
             _logger.LogError($"Pet with id: {petId}, hasn't been found in db.");
@@ -93,10 +90,7 @@ public class PetService : IPetService
 
     public async Task DeletePetAsync(Guid petId)
     {
-        if (petId == Guid.Empty)
-        {
-            throw new BadRequestException("PetId must be a valid non-empty GUID");
-        }
+        if (petId == Guid.Empty) throw new BadRequestException("PetId must be a valid non-empty GUID");
 
         if (!await PetExistsAsync(petId))
         {
@@ -115,10 +109,7 @@ public class PetService : IPetService
 
     public async Task UpdatePetAsync(Guid petId, PetForUpdateDto pet)
     {
-        if (petId == Guid.Empty)
-        {
-            throw new BadRequestException("PetId must be a valid non-empty GUID");
-        }
+        if (petId == Guid.Empty) throw new BadRequestException("PetId must be a valid non-empty GUID");
 
         if (pet == null)
         {
@@ -157,24 +148,14 @@ public class PetService : IPetService
         }
 
         if (string.IsNullOrWhiteSpace(createPetDto.Nickname))
-        {
             exceptions.Add(new ValidationError("Nickname", "Nickname is required"));
-        }
 
         if (string.IsNullOrWhiteSpace(createPetDto.Breed))
-        {
             exceptions.Add(new ValidationError("Breed", "Breed is required"));
-        }
 
-        if (exceptions.Any())
-        {
-            throw new ValidationException(exceptions);
-        }
+        if (exceptions.Any()) throw new ValidationException(exceptions);
 
-        if (!await _unitOfWorkRep.User.IsExistAsync(userId))
-        {
-            throw new NotFoundException("User", userId);
-        }
+        if (!await _unitOfWorkRep.User.IsExistAsync(userId)) throw new NotFoundException("User", userId);
 
         var pet = _mapper.Map<Pet>(createPetDto);
 

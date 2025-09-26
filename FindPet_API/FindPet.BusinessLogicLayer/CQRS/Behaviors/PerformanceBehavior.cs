@@ -1,8 +1,6 @@
-﻿using MediatR;
-using Microsoft.Extensions.Logging;
+﻿using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
+using MediatR;
 using System.Diagnostics;
-using Azure.Core;
-using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
 
 namespace FindPet.BusinessLogicLayer.CQRS.Behaviors;
 
@@ -12,7 +10,8 @@ public class PerformanceBehavior<TRequest, TResponse>(ILoggerManager logger)
 {
     private readonly Stopwatch _timer = new();
 
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken)
     {
         _timer.Start();
 
@@ -26,7 +25,8 @@ public class PerformanceBehavior<TRequest, TResponse>(ILoggerManager logger)
         {
             var requestName = typeof(TRequest).Name;
 
-            logger.LogWarn($"FindPet Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds) {request}");
+            logger.LogWarn(
+                $"FindPet Long Running Request: {requestName} ({elapsedMilliseconds} milliseconds) {request}");
         }
 
         return response;

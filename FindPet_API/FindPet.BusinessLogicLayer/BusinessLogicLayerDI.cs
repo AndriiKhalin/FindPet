@@ -2,7 +2,6 @@
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
 using FindPet.BusinessLogicLayer.Interfaces.IMLService;
-using FindPet.BusinessLogicLayer.Mappings;
 using FindPet.BusinessLogicLayer.Services.EntityService;
 using FindPet.BusinessLogicLayer.Services.ImageService;
 using FindPet.BusinessLogicLayer.Services.MLService;
@@ -41,10 +40,7 @@ public static class BusinessLogicLayerDI
         var assembly = Assembly.GetExecutingAssembly();
 
         // Register MediatR
-        services.AddMediatR(cfg =>
-        {
-            cfg.RegisterServicesFromAssembly(assembly);
-        });
+        services.AddMediatR(cfg => { cfg.RegisterServicesFromAssembly(assembly); });
 
         // Register AutoMapper
         services.AddAutoMapper(assembly);

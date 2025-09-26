@@ -1,8 +1,8 @@
-﻿using System.Net;
-using System.Text.Json;
-using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
+﻿using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
 using FindPet.Domain.Exceptions;
 using FindPet.WebApi.Models.Exceptions;
+using System.Net;
+using System.Text.Json;
 
 namespace FindPet.WebApi.Middlewares;
 
@@ -132,7 +132,6 @@ public class ExceptionHandlingMiddleware
             ValidationException validationEx => ErrorResponse.CreateValidationError(validationEx, traceId),
             BaseException baseEx => ErrorResponse.CreateFromException(baseEx, traceId),
 
-
             // Standard .NET exceptions
             UnauthorizedAccessException => ErrorResponse.Create(
                 "Authentication required",
@@ -245,7 +244,7 @@ public class ExceptionHandlingMiddleware
                 "NULL_REFERENCE",
                 traceId,
                 _environment.IsDevelopment()
-                    ? new { OriginalMessage = nullRefEx.Message, StackTrace = nullRefEx.StackTrace }
+                    ? new { OriginalMessage = nullRefEx.Message, nullRefEx.StackTrace }
                     : null),
 
             // Fallback for all other exceptions
@@ -259,7 +258,7 @@ public class ExceptionHandlingMiddleware
                     {
                         ExceptionType = exception.GetType().Name,
                         OriginalMessage = exception.Message,
-                        StackTrace = exception.StackTrace,
+                        exception.StackTrace,
                         InnerException = exception.InnerException?.Message
                     }
                     : null)
@@ -269,18 +268,18 @@ public class ExceptionHandlingMiddleware
     private void LogException(int statusCode, Exception? exception = null, string? message = null)
     {
         if (exception is not null && message is null)
-        {
             message = $"Exception: {exception.GetType().Name} - {exception.Message}";
-        }
 
         switch (statusCode)
         {
             case >= 500:
                 _logger.LogError(message);
                 break;
+
             case >= 400:
                 _logger.LogWarn(message);
                 break;
+
             default:
                 _logger.LogInfo(message);
                 break;

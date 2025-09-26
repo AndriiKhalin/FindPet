@@ -31,10 +31,7 @@ public class UserService : IUserService
 
     public async Task<User?> GetUserByIdAsync(Guid userId)
     {
-        if (userId == Guid.Empty)
-        {
-            throw new BadRequestException("User ID must be NON-Empty");
-        }
+        if (userId == Guid.Empty) throw new BadRequestException("User ID must be NON-Empty");
 
         if (!await UserExistsAsync(userId))
         {
@@ -47,10 +44,7 @@ public class UserService : IUserService
 
     public async Task<User?> GetUserByNameAsync(string userName)
     {
-        if (string.IsNullOrWhiteSpace(userName))
-        {
-            throw new BadRequestException("UserName cannot be empty");
-        }
+        if (string.IsNullOrWhiteSpace(userName)) throw new BadRequestException("UserName cannot be empty");
 
         if (!await UserExistsAsync(userName))
         {

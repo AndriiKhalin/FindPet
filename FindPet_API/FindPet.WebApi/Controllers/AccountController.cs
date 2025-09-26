@@ -1,7 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using FindPet.BusinessLogicLayer.Helpers.UrlHelper;
+﻿using FindPet.BusinessLogicLayer.Helpers.UrlHelper;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 using FindPet.Domain.DTOs.AuthDTOs;
 using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
@@ -12,6 +9,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace FindPet.WebApi.Controllers;
 

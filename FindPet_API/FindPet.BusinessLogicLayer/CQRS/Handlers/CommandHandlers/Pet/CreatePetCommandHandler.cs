@@ -2,9 +2,7 @@
 using FindPet.BusinessLogicLayer.CQRS.Commands.Pet;
 using FindPet.BusinessLogicLayer.CQRS.Common;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
-using FindPet.BusinessLogicLayer.Services.EntityService;
 using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
-using MediatR;
 
 namespace FindPet.BusinessLogicLayer.CQRS.Handlers.CommandHandlers.Pet;
 

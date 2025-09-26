@@ -1,6 +1,6 @@
-﻿using MediatR;
+﻿using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
+using MediatR;
 using System.Diagnostics;
-using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
 
 namespace FindPet.BusinessLogicLayer.CQRS.Behaviors;
 
@@ -8,7 +8,8 @@ public class LoggingBehavior<TRequest, TResponse>(ILoggerManager logger)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken)
     {
         var requestName = typeof(TRequest).Name;
         var stopwatch = Stopwatch.StartNew();

@@ -1,8 +1,9 @@
-﻿using AutoMapper;
-using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
+﻿using FindPet.BusinessLogicLayer.CQRS.Commands.Pet;
+using FindPet.BusinessLogicLayer.CQRS.Queries.Pet;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
 using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
 using FindPet.Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,14 +15,12 @@ namespace FindPet.WebApi.Controllers;
 public class PetController : ControllerBase
 {
     private readonly IManageImage<Pet> _manageImage;
-    private readonly IMapper _mapper;
-    private readonly IPetService _petService;
+    private readonly IMediator _mediator;
 
-    public PetController(IPetService petService, IMapper mapper, IManageImage<Pet> manageImage)
+    public PetController(IManageImage<Pet> manageImage, IMediator mediator)
     {
-        _petService = petService;
-        _mapper = mapper;
         _manageImage = manageImage;
+        _mediator = mediator;
     }
 
     [AllowAnonymous]
@@ -29,8 +28,7 @@ public class PetController : ControllerBase
     [ProducesResponseType(200, Type = typeof(IEnumerable<PetDto>))]
     public async Task<IActionResult> GetPets()
     {
-        var pets = _mapper.Map<IEnumerable<PetDto>>(_petService.GetPets());
-
+        var pets = await _mediator.Send(new GetAllPetsQuery());
         return Ok(pets);
     }
 
@@ -40,8 +38,7 @@ public class PetController : ControllerBase
     [ProducesResponseType(400)]
     public async Task<IActionResult> GetPet(Guid petId)
     {
-        var pet = _mapper.Map<PetDto>(await _petService.GetPetByIdAsync(petId));
-
+        var pet = await _mediator.Send(new GetPetByIdQuery(petId));
         return Ok(pet);
     }
 
@@ -69,10 +66,7 @@ public class PetController : ControllerBase
     [ProducesResponseType(400)]
     public async Task<IActionResult> CreatePet([FromQuery] Guid userId, PetForCreateDto petCreate)
     {
-        var petMap = await _petService.CreatePetAsync(userId, petCreate);
-
-        var createdPet = _mapper.Map<PetDto>(petMap);
-
+        var createdPet = await _mediator.Send(new CreatePetCommand(userId, petCreate));
         return CreatedAtAction(nameof(GetPet), new { petId = createdPet.Id }, createdPet);
     }
 
@@ -82,16 +76,14 @@ public class PetController : ControllerBase
     [ProducesResponseType(404)]
     public async Task<IActionResult> UpdatePet(Guid petId, [FromForm] PetForUpdateDto petUpdate)
     {
-        await _petService.UpdatePetAsync(petId, petUpdate);
-
+        await _mediator.Send(new UpdatePetCommand(petId, petUpdate));
         return NoContent();
     }
 
     [HttpDelete("{petId}")]
     public async Task<IActionResult> DeletePet(Guid petId)
     {
-        await _petService.DeletePetAsync(petId);
-
+        await _mediator.Send(new DeletePetCommand(petId));
         return NoContent();
     }
 

@@ -10,9 +10,6 @@
   <ItemGroup>
     <Folder Include="Exceptions\" />
     <Folder Include="Helpers\UrlHelper\" />
-    <Folder Include="Commands\" />
-    <Folder Include="Validators\" />
-    <Folder Include="Queries\" />
     <Folder Include="Services\MLService\" />
     <Folder Include="Utilts\" />
   </ItemGroup>
@@ -20,6 +17,9 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="FluentValidation" Version="12.0.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
+    <PackageReference Include="MediatR" Version="13.0.0" />
     <PackageReference Include="Microsoft.Extensions.ML" Version="3.0.1" />
     <PackageReference Include="Microsoft.ML" Version="3.0.1" />
     <PackageReference Include="Microsoft.ML.DataView" Version="3.0.1" />

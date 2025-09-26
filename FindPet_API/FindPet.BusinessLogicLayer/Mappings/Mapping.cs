@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FindPet.BusinessLogicLayer.CQRS.Commands.Pet;
 using FindPet.BusinessLogicLayer.Helpers.UrlResolver;
 using FindPet.Domain.DTOs.EntitiesDTOs.AdDTO;
 using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
@@ -24,7 +25,7 @@ public class Mapping : Profile
 
         //CreateMap<Finder, FinderDto>().ReverseMap();
         //CreateMap<Finder, FinderForCreateDto>().ReverseMap();
-        //CreateMap<Finder, FinderForUpdateDto>().ReverseMap();S
+        //CreateMap<Finder, FinderForUpdateDto>().ReverseMap();
 
         CreateMap<Pet, PetDto>().ForMember(d => d.Photo, o => o.MapFrom<PetResolver>()).ReverseMap();
         CreateMap<Pet, PetForCreateDto>().ReverseMap();
@@ -33,5 +34,16 @@ public class Mapping : Profile
         CreateMap<Ad, AdDto>().ReverseMap();
         CreateMap<Ad, AdForCreateDto>().ReverseMap();
         CreateMap<Ad, AdForUpdateDto>().ReverseMap();
+
+        CreateMap<CreatePetCommand, PetDto>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.DateCreateUpdate, opt => opt.MapFrom(src => DateTime.UtcNow));
+
+        CreateMap<UpdatePetCommand, PetForUpdateDto>()
+            .ForMember(dest => dest, opt => opt.Ignore()); // Don't update UserId
+
+        // Entity to DTO mappings
+        CreateMap<Pet, PetDto>()
+            .ReverseMap();
     }
 }

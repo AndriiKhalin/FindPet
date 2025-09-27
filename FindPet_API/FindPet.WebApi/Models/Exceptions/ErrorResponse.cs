@@ -1,5 +1,5 @@
-﻿using FindPet.Domain.Exceptions;
-using System.Net;
+﻿using System.Net;
+using FindPet.Domain.Exceptions;
 
 namespace FindPet.WebApi.Models.Exceptions;
 

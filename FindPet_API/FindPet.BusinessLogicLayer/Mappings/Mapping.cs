@@ -35,12 +35,30 @@ public class Mapping : Profile
         CreateMap<Ad, AdForCreateDto>().ReverseMap();
         CreateMap<Ad, AdForUpdateDto>().ReverseMap();
 
-        CreateMap<CreatePetCommand, PetDto>()
+        CreateMap<CreatePetCommand, Pet>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
-            .ForMember(dest => dest.DateCreateUpdate, opt => opt.MapFrom(src => DateTime.UtcNow));
+            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+            .ForMember(dest => dest.DateCreateUpdate, opt => opt.MapFrom(src => DateTime.UtcNow))
+            .ForPath(dest => dest.Nickname, opt => opt.MapFrom(src => src.PetCreate.Nickname))
+            .ForPath(dest => dest.Breed, opt => opt.MapFrom(src => src.PetCreate.Breed))
+            .ForPath(dest => dest.Color, opt => opt.MapFrom(src => src.PetCreate.Color))
+            .ForPath(dest => dest.Size, opt => opt.MapFrom(src => src.PetCreate.Size))
+            .ForPath(dest => dest.Gender, opt => opt.MapFrom(src => src.PetCreate.Gender))
+            .ForPath(dest => dest.Description, opt => opt.MapFrom(src => src.PetCreate.Description))
+            .ForPath(dest => dest.LostDate, opt => opt.MapFrom(src => src.PetCreate.LostDate))
+            .ForPath(dest => dest.Photo, opt => opt.MapFrom(src => src.PetCreate.Photo));
 
-        CreateMap<UpdatePetCommand, PetForUpdateDto>()
-            .ForMember(dest => dest, opt => opt.Ignore()); // Don't update UserId
+        CreateMap<UpdatePetCommand, Pet>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PetId))
+            .ForMember(dest => dest.DateCreateUpdate, opt => opt.MapFrom(src => DateTime.UtcNow))
+            .ForPath(dest => dest.Nickname, opt => opt.MapFrom(src => src.PetUpdate.Nickname))
+            .ForPath(dest => dest.Breed, opt => opt.MapFrom(src => src.PetUpdate.Breed))
+            .ForPath(dest => dest.Color, opt => opt.MapFrom(src => src.PetUpdate.Color))
+            .ForPath(dest => dest.Size, opt => opt.MapFrom(src => src.PetUpdate.Size))
+            .ForPath(dest => dest.Gender, opt => opt.MapFrom(src => src.PetUpdate.Gender))
+            .ForPath(dest => dest.Description, opt => opt.MapFrom(src => src.PetUpdate.Description))
+            .ForPath(dest => dest.LostDate, opt => opt.MapFrom(src => src.PetUpdate.LostDate))
+            .ForPath(dest => dest.Photo, opt => opt.MapFrom(src => src.PetUpdate.Photo));
 
         // Entity to DTO mappings
         CreateMap<Pet, PetDto>()

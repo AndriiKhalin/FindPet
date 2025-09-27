@@ -1,6 +1,7 @@
 ﻿using FindPet.BusinessLogicLayer.CQRS.Commands.Pet;
 using FindPet.BusinessLogicLayer.CQRS.Queries.Pet;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
+using FindPet.Domain.DTOs;
 using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
 using FindPet.Domain.Entities;
 using MediatR;
@@ -9,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FindPet.WebApi.Controllers;
 
-[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class PetController : ControllerBase
@@ -74,7 +74,7 @@ public class PetController : ControllerBase
     [ProducesResponseType(204)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> UpdatePet(Guid petId, [FromForm] PetForUpdateDto petUpdate)
+    public async Task<IActionResult> UpdatePet(Guid petId, PetForUpdateDto petUpdate)
     {
         await _mediator.Send(new UpdatePetCommand(petId, petUpdate));
         return NoContent();
@@ -90,28 +90,19 @@ public class PetController : ControllerBase
     [AllowAnonymous]
     [HttpPost("uploadImage")]
     [DisableRequestSizeLimit]
-    public async Task<IActionResult> UploadImage()
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UploadImage([FromForm] FileUploadDto file)
     {
-        try
-        {
-            var formCollection = await Request.ReadFormAsync();
-            var file = formCollection.Files.First();
-            if (file.Length > 0)
-            {
-                // Сохранить изображение
-                var uniqueId = Guid.NewGuid();
-                var filePath = await _manageImage.UploadPhotoAsync(file, uniqueId);
+        if (file == null || file.ImageFile.Length == 0)
+            return BadRequest(new { error = "No file provided or file is empty" });
 
-                // Вы можете добавить здесь обработку предсказания, например, сохранить результат в базу данных и т.д.
+        var allowedTypes = new[] { "image/jpeg", "image/jpg", "image/png", "image/gif" };
+        if (!allowedTypes.Contains(file.ImageFile.ContentType.ToLower()))
+            return BadRequest(new { error = "Invalid file type. Only JPEG, PNG, and GIF are allowed." });
 
-                return Ok(new { filePath });
-            }
+        var uniqueId = Guid.NewGuid();
+        var filePath = await _manageImage.UploadPhotoAsync(file.ImageFile, uniqueId);
 
-            return BadRequest();
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex}");
-        }
+        return Ok(new { filePath, fileName = file.ImageFile.FileName });
     }
 }

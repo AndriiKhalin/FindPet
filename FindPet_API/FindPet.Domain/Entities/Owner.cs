@@ -9,3 +9,4 @@
 //    public List<Ad>? Ads { get; set; } = new();
 
 //}
+

@@ -163,7 +163,7 @@ public class PetService : IPetService
         pet.DateCreateUpdate = DateTime.UtcNow;
         pet.Photo = createPetDto.Photo;
         pet.Type = !string.IsNullOrEmpty(pet.Photo)
-            ? await _mlService.PredictAsync(Path.Join(@"wwwroot", Path.GetFileName(pet.Photo)))
+            ? await _mlService.PredictAsync(Path.Join(@"wwwroot", pet.Photo.TrimStart('/', '\\')))
             : "Unknown";
 
         await _unitOfWorkRep.Pet.CreateAsync(pet);

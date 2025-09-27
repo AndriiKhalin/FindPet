@@ -1,6 +1,6 @@
-﻿using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
+﻿using System.Diagnostics;
+using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
 using MediatR;
-using System.Diagnostics;
 
 namespace FindPet.BusinessLogicLayer.CQRS.Behaviors;
 

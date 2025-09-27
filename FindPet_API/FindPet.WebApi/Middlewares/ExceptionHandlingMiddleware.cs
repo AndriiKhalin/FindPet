@@ -1,8 +1,10 @@
-﻿using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
+﻿using System.Net;
+using System.Reflection;
+using System.Text.Json;
+using AutoMapper;
+using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
 using FindPet.Domain.Exceptions;
 using FindPet.WebApi.Models.Exceptions;
-using System.Net;
-using System.Text.Json;
 
 namespace FindPet.WebApi.Middlewares;
 
@@ -131,6 +133,18 @@ public class ExceptionHandlingMiddleware
             // Our custom exceptions - use their properties
             ValidationException validationEx => ErrorResponse.CreateValidationError(validationEx, traceId),
             BaseException baseEx => ErrorResponse.CreateFromException(baseEx, traceId),
+
+            // Handle TargetInvocationException specifically
+            TargetInvocationException targetEx when targetEx.InnerException != null =>
+                CreateErrorResponse(targetEx.InnerException, traceId),
+
+            // Handle AutoMapper exceptions
+            AutoMapperMappingException mappingEx => ErrorResponse.Create(
+                "Data mapping error occurred",
+                HttpStatusCode.InternalServerError,
+                "MAPPING_ERROR",
+                traceId,
+                _environment.IsDevelopment() ? new { OriginalMessage = mappingEx.Message } : null),
 
             // Standard .NET exceptions
             UnauthorizedAccessException => ErrorResponse.Create(

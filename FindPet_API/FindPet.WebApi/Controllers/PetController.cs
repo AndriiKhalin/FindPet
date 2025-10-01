@@ -1,9 +1,9 @@
-﻿using FindPet.BusinessLogicLayer.CQRS.Commands.Pet;
+﻿using FindPet.BusinessLogicLayer.CQRS.Commands.Image;
+using FindPet.BusinessLogicLayer.CQRS.Commands.Pet;
 using FindPet.BusinessLogicLayer.CQRS.Queries.Pet;
-using FindPet.BusinessLogicLayer.Interfaces.IImageService;
 using FindPet.Domain.DTOs;
 using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
-using FindPet.Domain.Entities;
+using FindPet.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,12 +14,10 @@ namespace FindPet.WebApi.Controllers;
 [ApiController]
 public class PetController : ControllerBase
 {
-    private readonly IManageImage<Pet> _manageImage;
     private readonly IMediator _mediator;
 
-    public PetController(IManageImage<Pet> manageImage, IMediator mediator)
+    public PetController(IMediator mediator)
     {
-        _manageImage = manageImage;
         _mediator = mediator;
     }
 
@@ -91,18 +89,11 @@ public class PetController : ControllerBase
     [HttpPost("uploadImage")]
     [DisableRequestSizeLimit]
     [Consumes("multipart/form-data")]
+    [ProducesResponseType(200, Type = typeof(UploadImageResponse))]
+    [ProducesResponseType(400)]
     public async Task<IActionResult> UploadImage([FromForm] FileUploadDto file)
     {
-        if (file == null || file.ImageFile.Length == 0)
-            return BadRequest(new { error = "No file provided or file is empty" });
-
-        var allowedTypes = new[] { "image/jpeg", "image/jpg", "image/png", "image/gif" };
-        if (!allowedTypes.Contains(file.ImageFile.ContentType.ToLower()))
-            return BadRequest(new { error = "Invalid file type. Only JPEG, PNG, and GIF are allowed." });
-
-        var uniqueId = Guid.NewGuid();
-        var filePath = await _manageImage.UploadPhotoAsync(file.ImageFile, uniqueId);
-
-        return Ok(new { filePath, fileName = file.ImageFile.FileName });
+        var response = await _mediator.Send(new UploadImageCommand(file.ImageFile, EntityType.Pet));
+        return Ok(response);
     }
 }

@@ -10,7 +10,7 @@ public class CreatePetCommandHandler(IPetService petService, IMapper mapper) : I
 {
     public async Task<PetDto> Handle(CreatePetCommand request, CancellationToken cancellationToken)
     {
-        var pet = await petService.CreatePetAsync(request.UserId, request.PetCreate);
+        var pet = await petService.CreatePetAsync(request.UserId, request.Pet);
         return mapper.Map<PetDto>(pet);
     }
 }

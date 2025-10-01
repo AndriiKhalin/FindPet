@@ -15,6 +15,10 @@ public interface IUserService
 
     Task<bool> UserExistsAsync(string UserFirstName);
 
+    Task<bool> IsEmailRegisteredAsync(string email);
+
+    Task<bool> IsPhoneNumberRegisteredAsync(string phoneNumber);
+
     Task DeleteUserAsync(Guid UserId);
 
     Task UpdateUserAsync(Guid UserId, UserForUpdateDto User);

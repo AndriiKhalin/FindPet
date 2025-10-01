@@ -1,34 +1,24 @@
-﻿using AutoMapper;
-using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
-using FindPet.BusinessLogicLayer.Interfaces.IImageService;
+﻿using FindPet.BusinessLogicLayer.CQRS.Commands.Image;
+using FindPet.BusinessLogicLayer.CQRS.Commands.User;
+using FindPet.BusinessLogicLayer.CQRS.Queries.User;
+using FindPet.Domain.DTOs;
 using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
-using FindPet.Domain.Entities;
+using FindPet.Domain.Enums;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FindPet.WebApi.Controllers;
 
-[Authorize]
 [Route("api/[controller]")]
 [ApiController]
-public class UserController : ControllerBase
+public class UserController(IMediator mediator) : ControllerBase
 {
-    private readonly IManageImage<User> _manageImage;
-    private readonly IMapper _mapper;
-    private readonly IUserService _userService;
-
-    public UserController(IUserService userService, IMapper mapper, IManageImage<User> manageImage)
-    {
-        _userService = userService;
-        _mapper = mapper;
-        _manageImage = manageImage;
-    }
-
     [HttpGet]
     [ProducesResponseType(200, Type = typeof(IEnumerable<UserDto>))]
     public async Task<IActionResult> GetUsers()
     {
-        var users = _mapper.Map<IEnumerable<UserDto>>(_userService.GetUsers());
+        var users = await mediator.Send(new GetAllUsersQuery());
 
         return Ok(users);
     }
@@ -38,7 +28,7 @@ public class UserController : ControllerBase
     [ProducesResponseType(400)]
     public async Task<IActionResult> GetUser(Guid userId)
     {
-        var user = _mapper.Map<UserDto>(await _userService.GetUserByIdAsync(userId));
+        var user = await mediator.Send(new GetUserByIdQuery(userId));
 
         return Ok(user);
     }
@@ -65,11 +55,9 @@ public class UserController : ControllerBase
     [HttpPost]
     [ProducesResponseType(201, Type = typeof(UserDto))]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> CreateUser([FromForm] UserForCreateDto userCreate)
+    public async Task<IActionResult> CreateUser(UserForCreateDto userCreate)
     {
-        var userMap = await _userService.CreateUserAsync(userCreate);
-
-        var createdUser = _mapper.Map<UserDto>(userMap);
+        var createdUser = await mediator.Send(new CreateUserCommand(userCreate));
 
         return CreatedAtAction(nameof(GetUser), new { userId = createdUser.Id }, createdUser);
     }
@@ -78,9 +66,9 @@ public class UserController : ControllerBase
     [ProducesResponseType(204)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> UpdateUser(Guid userId, [FromForm] UserForUpdateDto userUpdate)
+    public async Task<IActionResult> UpdateUser(Guid userId, UserForUpdateDto userUpdate)
     {
-        await _userService.UpdateUserAsync(userId, userUpdate);
+        await mediator.Send(new UpdateUserCommand(userId, userUpdate));
 
         return NoContent();
     }
@@ -88,7 +76,7 @@ public class UserController : ControllerBase
     [HttpDelete("{userId}")]
     public async Task<IActionResult> DeleteUser(Guid userId)
     {
-        await _userService.DeleteUserAsync(userId);
+        await mediator.Send(new DeleteUserCommand(userId));
 
         return NoContent();
     }
@@ -96,28 +84,10 @@ public class UserController : ControllerBase
     [AllowAnonymous]
     [HttpPost("uploadImage")]
     [DisableRequestSizeLimit]
-    public async Task<IActionResult> UploadImage()
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UploadImage([FromForm] FileUploadDto file)
     {
-        try
-        {
-            var formCollection = await Request.ReadFormAsync();
-            var file = formCollection.Files.First();
-            if (file.Length > 0)
-            {
-                // Сохранить изображение
-                var uniqueId = Guid.NewGuid();
-                var filePath = await _manageImage.UploadPhotoAsync(file, uniqueId);
-
-                // Вы можете добавить здесь обработку предсказания, например, сохранить результат в базу данных и т.д.
-
-                return Ok(new { filePath });
-            }
-
-            return BadRequest();
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex}");
-        }
+        var response = await mediator.Send(new UploadImageCommand(file.ImageFile, EntityType.User));
+        return Ok(response);
     }
 }

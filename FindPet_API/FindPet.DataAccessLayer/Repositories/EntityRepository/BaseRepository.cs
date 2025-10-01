@@ -1,4 +1,5 @@
-﻿using FindPet.DataAccessLayer.Data;
+﻿using System.Linq.Expressions;
+using FindPet.DataAccessLayer.Data;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using FindPet.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +29,11 @@ public class BaseRepository<T> : HelperBaseRepository<T>, IBaseRepository<T> whe
     public async Task<bool> IsExistAsync(Guid Id)
     {
         return await IsExistAsync(x => x.Id == Id);
+    }
+
+    public new async Task<bool> IsExistAsync(Expression<Func<T, bool>> expression)
+    {
+        return await base.IsExistAsync(expression);
     }
 
     public new async Task DeleteAsync(Guid entityId)

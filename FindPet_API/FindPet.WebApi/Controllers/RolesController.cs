@@ -1,6 +1,9 @@
-﻿using FindPet.Domain.DTOs.AuthDTOs;
+﻿using FindPet.BusinessLogicLayer.CQRS.Commands.Role;
+using FindPet.BusinessLogicLayer.CQRS.Queries.Role;
+using FindPet.Domain.DTOs.AuthDTOs;
 using FindPet.Domain.Entities;
 using FindPet.Domain.ValueObjects;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,69 +11,40 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FindPet.WebApi.Controllers;
 
-[Authorize]
 [Route("api/[controller]")]
 [ApiController]
-public class RolesController : ControllerBase
+public class RolesController(IMediator mediator) : ControllerBase
 {
-    private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly UserManager<AuthUser> _userManager;
-
-    public RolesController(RoleManager<IdentityRole> roleManager, UserManager<AuthUser> userManager)
-    {
-        _roleManager = roleManager;
-        _userManager = userManager;
-    }
-
     [HttpPost]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
     public async Task<IActionResult> CreateRole([FromBody] CreateRoleDto createRoleDto)
     {
-        if (string.IsNullOrEmpty(createRoleDto.RoleName)) return BadRequest("Role name is required");
+        var result = await mediator.Send(new CreateRoleCommand(createRoleDto));
 
-        var roleExist = await _roleManager.RoleExistsAsync(createRoleDto.RoleName);
-
-        if (roleExist) return BadRequest("Role already exist");
-
-        var roleResult = await _roleManager.CreateAsync(new IdentityRole(createRoleDto.RoleName));
-
-        if (roleResult.Succeeded) return Ok(new { message = "Role Created successfully" });
+        if (result.Succeeded) return Ok(new { message = "Role Created successfully" });
 
         return BadRequest("Role creation failed.");
     }
 
     [AllowAnonymous]
     [HttpGet]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<RoleResponseDto>))]
     public async Task<IActionResult> GetRoles()
     {
-        var roles = await _roleManager.Roles.ToListAsync();
+        var roles = await mediator.Send(new GetAllRolesQuery());
 
-        var roleDtos = new List<RoleResponseDto>();
-
-        foreach (var role in roles)
-        {
-            var usersInRole = await _userManager.GetUsersInRoleAsync(role.Name!);
-            roleDtos.Add(new RoleResponseDto
-            {
-                Id = role.Id,
-                Name = role.Name,
-                TotalUsers = usersInRole.Count
-            });
-        }
-
-        return Ok(roleDtos);
+        return Ok(roles);
     }
 
-    [Authorize(Roles = UserRoles.Admin)]
+    //[Authorize(Roles = UserRoles.Admin)]
     [HttpDelete("{id}")]
+    [ProducesResponseType(200, Type = typeof(object))]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(400)]
     public async Task<IActionResult> DeleteRole(string id)
     {
-        // find role by their id
-
-        var role = await _roleManager.FindByIdAsync(id);
-
-        if (role is null) return NotFound("Role not found.");
-
-        var result = await _roleManager.DeleteAsync(role);
+        var result = await mediator.Send(new DeleteRoleCommand(id));
 
         if (result.Succeeded) return Ok(new { message = "Role deleted successfully." });
 
@@ -78,17 +52,12 @@ public class RolesController : ControllerBase
     }
 
     [HttpPost("assign")]
+    [ProducesResponseType(200, Type = typeof(object))]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(400)]
     public async Task<IActionResult> AssignRole([FromBody] RoleAssignDto roleAssignDto)
     {
-        var user = await _userManager.FindByIdAsync(roleAssignDto.UserId);
-
-        if (user is null) return NotFound("User not found.");
-
-        var role = await _roleManager.FindByIdAsync(roleAssignDto.RoleId);
-
-        if (role is null) return NotFound("Role not found.");
-
-        var result = await _userManager.AddToRoleAsync(user, role.Name!);
+        var result = await mediator.Send(new AssignRoleCommand(roleAssignDto));
 
         if (result.Succeeded) return Ok(new { message = "Role assigned successfully" });
 

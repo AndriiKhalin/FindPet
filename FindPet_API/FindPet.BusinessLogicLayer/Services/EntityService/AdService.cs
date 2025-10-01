@@ -5,6 +5,7 @@ using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using FindPet.Domain.DTOs.EntitiesDTOs.AdDTO;
 using FindPet.Domain.Entities;
+using FindPet.Domain.Exceptions;
 
 namespace FindPet.BusinessLogicLayer.Services.EntityService;
 
@@ -30,10 +31,12 @@ public class AdService : IAdService
 
     public async Task<Ad?> GetAdAsync(Guid adId)
     {
+        if (adId == Guid.Empty) throw new BadRequestException("AdId must be a valid non-empty GUID");
+
         if (!await AdExistsAsync(adId))
         {
             _logger.LogError($"Ad with id: {adId}, hasn't been found in db.");
-            throw new ArgumentNullException("Invalid ad Id");
+            throw new NotFoundException("Ad", adId);
         }
 
         return await _unitOfWorkRep.Ad.GetAsync(adId);

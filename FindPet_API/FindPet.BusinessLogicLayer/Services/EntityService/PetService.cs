@@ -140,20 +140,11 @@ public class PetService : IPetService
 
     public async Task<Pet> CreatePetAsync(Guid userId, PetForCreateDto createPetDto)
     {
-        var exceptions = new List<ValidationError>();
         if (userId == Guid.Empty || createPetDto == null)
         {
             _logger.LogError("Error");
             throw new BadRequestException("Invalid userId or createPetDto object.");
         }
-
-        if (string.IsNullOrWhiteSpace(createPetDto.Nickname))
-            exceptions.Add(new ValidationError("Nickname", "Nickname is required"));
-
-        if (string.IsNullOrWhiteSpace(createPetDto.Breed))
-            exceptions.Add(new ValidationError("Breed", "Breed is required"));
-
-        if (exceptions.Any()) throw new ValidationException(exceptions);
 
         if (!await _unitOfWorkRep.User.IsExistAsync(userId)) throw new NotFoundException("User", userId);
 

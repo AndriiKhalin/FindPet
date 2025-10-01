@@ -1,27 +1,24 @@
-﻿using AutoMapper;
-using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
-using FindPet.BusinessLogicLayer.Interfaces.IImageService;
+﻿using FindPet.BusinessLogicLayer.CQRS.Commands.Image;
+using FindPet.BusinessLogicLayer.CQRS.Commands.Pet;
+using FindPet.BusinessLogicLayer.CQRS.Queries.Pet;
+using FindPet.Domain.DTOs;
 using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
-using FindPet.Domain.Entities;
+using FindPet.Domain.Enums;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FindPet.WebApi.Controllers;
 
-[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class PetController : ControllerBase
 {
-    private readonly IManageImage<Pet> _manageImage;
-    private readonly IMapper _mapper;
-    private readonly IPetService _petService;
+    private readonly IMediator _mediator;
 
-    public PetController(IPetService petService, IMapper mapper, IManageImage<Pet> manageImage)
+    public PetController(IMediator mediator)
     {
-        _petService = petService;
-        _mapper = mapper;
-        _manageImage = manageImage;
+        _mediator = mediator;
     }
 
     [AllowAnonymous]
@@ -29,8 +26,7 @@ public class PetController : ControllerBase
     [ProducesResponseType(200, Type = typeof(IEnumerable<PetDto>))]
     public async Task<IActionResult> GetPets()
     {
-        var pets = _mapper.Map<IEnumerable<PetDto>>(_petService.GetPets());
-
+        var pets = await _mediator.Send(new GetAllPetsQuery());
         return Ok(pets);
     }
 
@@ -40,8 +36,7 @@ public class PetController : ControllerBase
     [ProducesResponseType(400)]
     public async Task<IActionResult> GetPet(Guid petId)
     {
-        var pet = _mapper.Map<PetDto>(await _petService.GetPetByIdAsync(petId));
-
+        var pet = await _mediator.Send(new GetPetByIdQuery(petId));
         return Ok(pet);
     }
 
@@ -69,10 +64,7 @@ public class PetController : ControllerBase
     [ProducesResponseType(400)]
     public async Task<IActionResult> CreatePet([FromQuery] Guid userId, PetForCreateDto petCreate)
     {
-        var petMap = await _petService.CreatePetAsync(userId, petCreate);
-
-        var createdPet = _mapper.Map<PetDto>(petMap);
-
+        var createdPet = await _mediator.Send(new CreatePetCommand(userId, petCreate));
         return CreatedAtAction(nameof(GetPet), new { petId = createdPet.Id }, createdPet);
     }
 
@@ -80,46 +72,28 @@ public class PetController : ControllerBase
     [ProducesResponseType(204)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> UpdatePet(Guid petId, [FromForm] PetForUpdateDto petUpdate)
+    public async Task<IActionResult> UpdatePet(Guid petId, PetForUpdateDto petUpdate)
     {
-        await _petService.UpdatePetAsync(petId, petUpdate);
-
+        await _mediator.Send(new UpdatePetCommand(petId, petUpdate));
         return NoContent();
     }
 
     [HttpDelete("{petId}")]
     public async Task<IActionResult> DeletePet(Guid petId)
     {
-        await _petService.DeletePetAsync(petId);
-
+        await _mediator.Send(new DeletePetCommand(petId));
         return NoContent();
     }
 
     [AllowAnonymous]
     [HttpPost("uploadImage")]
     [DisableRequestSizeLimit]
-    public async Task<IActionResult> UploadImage()
+    [Consumes("multipart/form-data")]
+    [ProducesResponseType(200, Type = typeof(UploadImageResponse))]
+    [ProducesResponseType(400)]
+    public async Task<IActionResult> UploadImage([FromForm] FileUploadDto file)
     {
-        try
-        {
-            var formCollection = await Request.ReadFormAsync();
-            var file = formCollection.Files.First();
-            if (file.Length > 0)
-            {
-                // Сохранить изображение
-                var uniqueId = Guid.NewGuid();
-                var filePath = await _manageImage.UploadPhotoAsync(file, uniqueId);
-
-                // Вы можете добавить здесь обработку предсказания, например, сохранить результат в базу данных и т.д.
-
-                return Ok(new { filePath });
-            }
-
-            return BadRequest();
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex}");
-        }
+        var response = await _mediator.Send(new UploadImageCommand(file.ImageFile, EntityType.Pet));
+        return Ok(response);
     }
 }

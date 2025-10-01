@@ -41,8 +41,7 @@ export class UploadComponent{
 
       formData.append('file', fileToUpload, fileToUpload.name);
 
-      const url = this.uploadType === 'pet' ? `${this.apiUrl}Pet/uploadImage` : `${this.apiUrl}User/uploadImage`;
-
+      const url = `${this.apiUrl}Image/upload/${this.uploadType}`;
       // this.authService.upload(formData).subscribe({
       //   next:(response:any)=>{
       //     this.onUploadFinished.emit({ filePath: response.filePath });

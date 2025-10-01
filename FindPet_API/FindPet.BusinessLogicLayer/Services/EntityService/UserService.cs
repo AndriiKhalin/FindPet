@@ -6,59 +6,46 @@ using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
 using FindPet.Domain.Entities;
 using FindPet.Domain.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace FindPet.BusinessLogicLayer.Services.EntityService;
 
-public class UserService : IUserService
+public class UserService(
+    IUnitOfWork unitOfWorkRep,
+    IMapper mapper,
+    IManageImage<User> manageImage,
+    ILoggerManager logger)
+    : IUserService
 {
-    private readonly ILoggerManager _logger;
-    private readonly IManageImage<User> _manageImage;
-    private readonly IMapper _mapper;
-    private readonly IUnitOfWork _unitOfWorkRep;
-
-    public UserService(IUnitOfWork unitOfWorkRep, IMapper mapper, IManageImage<User> manageImage, ILoggerManager logger)
-    {
-        _unitOfWorkRep = unitOfWorkRep;
-        _mapper = mapper;
-        _manageImage = manageImage;
-        _logger = logger;
-    }
-
     public IEnumerable<User> GetUsers()
     {
-        return _unitOfWorkRep.User.Gets();
+        return unitOfWorkRep.User.Gets();
     }
 
     public async Task<User?> GetUserByIdAsync(Guid userId)
     {
-        if (userId == Guid.Empty)
-        {
-            throw new BadRequestException("User ID must be NON-Empty");
-        }
+        if (userId == Guid.Empty) throw new BadRequestException("User ID must be NON-Empty");
 
         if (!await UserExistsAsync(userId))
         {
-            _logger.LogError($"User with id: {userId}, hasn't been found in db.");
+            logger.LogError($"User with id: {userId}, hasn't been found in db.");
             throw new NotFoundException("User", userId);
         }
 
-        return await _unitOfWorkRep.User.GetAsync(userId);
+        return await unitOfWorkRep.User.GetAsync(userId);
     }
 
     public async Task<User?> GetUserByNameAsync(string userName)
     {
-        if (string.IsNullOrWhiteSpace(userName))
-        {
-            throw new BadRequestException("UserName cannot be empty");
-        }
+        if (string.IsNullOrWhiteSpace(userName)) throw new BadRequestException("UserName cannot be empty");
 
         if (!await UserExistsAsync(userName))
         {
-            _logger.LogError($"User with name: {userName}, hasn't been found in db.");
+            logger.LogError($"User with name: {userName}, hasn't been found in db.");
             throw new NotFoundException("User", userName);
         }
 
-        return await _unitOfWorkRep.User.GetUserAsync(userName);
+        return await unitOfWorkRep.User.GetUserAsync(userName);
     }
 
     //public async Task<IEnumerable<Ad>?> GetAdsByUserAsync(Guid userId)
@@ -82,45 +69,55 @@ public class UserService : IUserService
 
     //    return await _unitOfWorkRep.User.GetPetsByUser(userId);
     //}
+    public async Task<bool> IsEmailRegisteredAsync(string email)
+    {
+        return await unitOfWorkRep.User.IsExistAsync(x => x.Email != null && EF.Functions.Like(x.Email, email));
+    }
+
+    public async Task<bool> IsPhoneNumberRegisteredAsync(string phoneNumber)
+    {
+        return await unitOfWorkRep.User.IsExistAsync(x =>
+            x.PhoneNumber != null && EF.Functions.Like(x.PhoneNumber, phoneNumber));
+    }
 
     public async Task<bool> UserExistsAsync(Guid userId)
     {
-        return await _unitOfWorkRep.User.IsExistAsync(userId);
+        return await unitOfWorkRep.User.IsExistAsync(userId);
     }
 
     public async Task<bool> UserExistsAsync(string userName)
     {
-        return await _unitOfWorkRep.User.IsExistAsync(userName);
+        return await unitOfWorkRep.User.IsExistAsync(userName);
     }
 
     public async Task DeleteUserAsync(Guid userId)
     {
         if (!await UserExistsAsync(userId))
         {
-            _logger.LogError($"User with id: {userId}, hasn't been found in db.");
+            logger.LogError($"User with id: {userId}, hasn't been found in db.");
             throw new ArgumentNullException("Invalid user Id");
         }
 
         var userEntityForDelete = await GetUserByIdAsync(userId);
 
-        _manageImage.DeletePhoto(userEntityForDelete.Photo);
+        manageImage.DeletePhoto(userEntityForDelete.Photo);
 
-        await _unitOfWorkRep.User.DeleteAsync(userId);
+        await unitOfWorkRep.User.DeleteAsync(userId);
 
-        await _unitOfWorkRep.SaveAsync();
+        await unitOfWorkRep.SaveAsync();
     }
 
     public async Task UpdateUserAsync(Guid userId, UserForUpdateDto user)
     {
         if (user == null)
         {
-            _logger.LogError("User object sent from client is null.");
+            logger.LogError("User object sent from client is null.");
             throw new ArgumentNullException("User is null");
         }
 
         if (!await UserExistsAsync(userId))
         {
-            _logger.LogError($"User with id: {userId}, hasn't been found in db.");
+            logger.LogError($"User with id: {userId}, hasn't been found in db.");
             throw new ArgumentNullException("Invalid user Id");
         }
 
@@ -128,33 +125,33 @@ public class UserService : IUserService
 
         if (user.Photo is not null)
         {
-            _manageImage.DeletePhoto(userEntity.Photo);
-            await _manageImage.UploadPhotoAsync(user.Photo, userId);
+            manageImage.DeletePhoto(userEntity.Photo);
+            await manageImage.UploadPhotoAsync(user.Photo, userId);
         }
 
-        _mapper.Map(user, userEntity);
+        mapper.Map(user, userEntity);
 
-        await _unitOfWorkRep.User.UpdateAsync(userEntity);
+        await unitOfWorkRep.User.UpdateAsync(userEntity);
 
-        await _unitOfWorkRep.SaveAsync();
+        await unitOfWorkRep.SaveAsync();
     }
 
     public async Task<User> CreateUserAsync(UserForCreateDto user)
     {
         if (user == null)
         {
-            _logger.LogError("Error");
+            logger.LogError("Error");
             throw new BadRequestException("Invalid  user object.");
         }
 
-        var userMap = _mapper.Map<User>(user);
+        var userMap = mapper.Map<User>(user);
 
         userMap.DateCreateUpdate = DateTime.UtcNow;
         userMap.Photo = user.Photo;
 
-        await _unitOfWorkRep.User.CreateAsync(userMap);
+        await unitOfWorkRep.User.CreateAsync(userMap);
 
-        await _unitOfWorkRep.SaveAsync();
+        await unitOfWorkRep.SaveAsync();
 
         return userMap;
     }

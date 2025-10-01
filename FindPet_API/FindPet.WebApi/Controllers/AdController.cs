@@ -1,30 +1,28 @@
-﻿using AutoMapper;
-using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
+﻿using FindPet.BusinessLogicLayer.CQRS.Commands.Ad;
+using FindPet.BusinessLogicLayer.CQRS.Queries.Ad;
 using FindPet.Domain.DTOs.EntitiesDTOs.AdDTO;
-using Microsoft.AspNetCore.Authorization;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FindPet.WebApi.Controllers;
 
-[Authorize(Roles = "Admin")]
+//[Authorize(Roles = "Admin")]
 [Route("api/[controller]")]
 [ApiController]
 public class AdController : ControllerBase
 {
-    private readonly IAdService _adService;
-    private readonly IMapper _mapper;
+    private readonly IMediator _mediator;
 
-    public AdController(IAdService adService, IMapper mapper)
+    public AdController(IMediator mediator)
     {
-        _adService = adService;
-        _mapper = mapper;
+        _mediator = mediator;
     }
 
     [HttpGet]
     [ProducesResponseType(200, Type = typeof(IEnumerable<AdDto>))]
     public async Task<IActionResult> GetAds()
     {
-        var ads = _mapper.Map<IEnumerable<AdDto>>(_adService.GetAds());
+        var ads = await _mediator.Send(new GetAllAdsQuery());
 
         return Ok(ads);
     }
@@ -34,7 +32,7 @@ public class AdController : ControllerBase
     [ProducesResponseType(400)]
     public async Task<IActionResult> GetAd(Guid adId)
     {
-        var ad = _mapper.Map<AdDto>(await _adService.GetAdAsync(adId));
+        var ad = await _mediator.Send(new GetAdByIdQuery(adId));
 
         return Ok(ad);
     }
@@ -64,9 +62,7 @@ public class AdController : ControllerBase
     public async Task<IActionResult> CreateAd([FromQuery] Guid petId, [FromQuery] Guid userId,
         [FromForm] AdForCreateDto adCreate)
     {
-        var adMap = await _adService.CreateAdAsync(petId, userId, adCreate);
-
-        var createdAd = _mapper.Map<AdDto>(adMap);
+        var createdAd = await _mediator.Send(new CreateAdCommand(petId, userId, adCreate));
 
         return CreatedAtAction(nameof(GetAd), new { adId = createdAd.Id }, createdAd);
     }
@@ -77,7 +73,7 @@ public class AdController : ControllerBase
     [ProducesResponseType(404)]
     public async Task<IActionResult> UpdateAd(Guid adId, [FromForm] AdForUpdateDto adUpdate)
     {
-        await _adService.UpdateAdAsync(adId, adUpdate);
+        await _mediator.Send(new UpdateAdCommand(adId, adUpdate));
 
         return NoContent();
     }
@@ -85,7 +81,7 @@ public class AdController : ControllerBase
     [HttpDelete("{adId}")]
     public async Task<IActionResult> DeleteAd(Guid adId)
     {
-        await _adService.DeleteAdAsync(adId);
+        await _mediator.Send(new DeleteAdCommand(adId));
 
         return NoContent();
     }

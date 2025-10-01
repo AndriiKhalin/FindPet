@@ -7,11 +7,13 @@ using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
 using FindPet.Domain.Entities;
 using FindPet.Domain.Exceptions;
+using Microsoft.AspNetCore.Hosting;
 
 namespace FindPet.BusinessLogicLayer.Services.EntityService;
 
 public class PetService : IPetService
 {
+    private readonly IWebHostEnvironment _hostingEnvironment;
     private readonly ILoggerManager _logger;
     private readonly IManageImage<Pet> _manageImage;
     private readonly IMapper _mapper;
@@ -19,13 +21,14 @@ public class PetService : IPetService
     private readonly IUnitOfWork _unitOfWorkRep;
 
     public PetService(IUnitOfWork unitOfWorkRep, IMapper mapper, IManageImage<Pet> manageImage, IMLService mlService,
-        ILoggerManager logger)
+        ILoggerManager logger, IWebHostEnvironment hostingEnvironment)
     {
         _unitOfWorkRep = unitOfWorkRep;
         _mapper = mapper;
         _manageImage = manageImage;
         _mlService = mlService;
         _logger = logger;
+        _hostingEnvironment = hostingEnvironment;
     }
 
     public IEnumerable<Pet> GetPets()
@@ -35,10 +38,7 @@ public class PetService : IPetService
 
     public async Task<Pet?> GetPetByIdAsync(Guid petId)
     {
-        if (petId == Guid.Empty)
-        {
-            throw new BadRequestException("PetId must be a valid non-empty GUID");
-        }
+        if (petId == Guid.Empty) throw new BadRequestException("PetId must be a valid non-empty GUID");
         if (!await PetExistsAsync(petId))
         {
             _logger.LogError($"Pet with id: {petId}, hasn't been found in db.");
@@ -93,10 +93,7 @@ public class PetService : IPetService
 
     public async Task DeletePetAsync(Guid petId)
     {
-        if (petId == Guid.Empty)
-        {
-            throw new BadRequestException("PetId must be a valid non-empty GUID");
-        }
+        if (petId == Guid.Empty) throw new BadRequestException("PetId must be a valid non-empty GUID");
 
         if (!await PetExistsAsync(petId))
         {
@@ -115,10 +112,7 @@ public class PetService : IPetService
 
     public async Task UpdatePetAsync(Guid petId, PetForUpdateDto pet)
     {
-        if (petId == Guid.Empty)
-        {
-            throw new BadRequestException("PetId must be a valid non-empty GUID");
-        }
+        if (petId == Guid.Empty) throw new BadRequestException("PetId must be a valid non-empty GUID");
 
         if (pet == null)
         {
@@ -149,32 +143,13 @@ public class PetService : IPetService
 
     public async Task<Pet> CreatePetAsync(Guid userId, PetForCreateDto createPetDto)
     {
-        var exceptions = new List<ValidationError>();
         if (userId == Guid.Empty || createPetDto == null)
         {
             _logger.LogError("Error");
             throw new BadRequestException("Invalid userId or createPetDto object.");
         }
 
-        if (string.IsNullOrWhiteSpace(createPetDto.Nickname))
-        {
-            exceptions.Add(new ValidationError("Nickname", "Nickname is required"));
-        }
-
-        if (string.IsNullOrWhiteSpace(createPetDto.Breed))
-        {
-            exceptions.Add(new ValidationError("Breed", "Breed is required"));
-        }
-
-        if (exceptions.Any())
-        {
-            throw new ValidationException(exceptions);
-        }
-
-        if (!await _unitOfWorkRep.User.IsExistAsync(userId))
-        {
-            throw new NotFoundException("User", userId);
-        }
+        if (!await _unitOfWorkRep.User.IsExistAsync(userId)) throw new NotFoundException("User", userId);
 
         var pet = _mapper.Map<Pet>(createPetDto);
 
@@ -182,7 +157,7 @@ public class PetService : IPetService
         pet.DateCreateUpdate = DateTime.UtcNow;
         pet.Photo = createPetDto.Photo;
         pet.Type = !string.IsNullOrEmpty(pet.Photo)
-            ? await _mlService.PredictAsync(Path.Join(@"wwwroot", Path.GetFileName(pet.Photo)))
+            ? await _mlService.PredictAsync(Path.Join(_hostingEnvironment.WebRootPath, pet.Photo.TrimStart('/', '\\')))
             : "Unknown";
 
         await _unitOfWorkRep.Pet.CreateAsync(pet);

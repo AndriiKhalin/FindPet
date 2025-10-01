@@ -59,6 +59,6 @@ public class AssignRoleCommandValidator : AbstractValidator<AssignRoleCommand>
         if (user == null || role == null)
             return true; // This will be caught by the other validators
 
-        return !(await _userManager.IsInRoleAsync(user, role.Name!));
+        return !await _userManager.IsInRoleAsync(user, role.Name!);
     }
 }

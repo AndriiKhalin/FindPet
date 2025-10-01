@@ -7,11 +7,13 @@ using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
 using FindPet.Domain.Entities;
 using FindPet.Domain.Exceptions;
+using Microsoft.AspNetCore.Hosting;
 
 namespace FindPet.BusinessLogicLayer.Services.EntityService;
 
 public class PetService : IPetService
 {
+    private readonly IWebHostEnvironment _hostingEnvironment;
     private readonly ILoggerManager _logger;
     private readonly IManageImage<Pet> _manageImage;
     private readonly IMapper _mapper;
@@ -19,13 +21,14 @@ public class PetService : IPetService
     private readonly IUnitOfWork _unitOfWorkRep;
 
     public PetService(IUnitOfWork unitOfWorkRep, IMapper mapper, IManageImage<Pet> manageImage, IMLService mlService,
-        ILoggerManager logger)
+        ILoggerManager logger, IWebHostEnvironment hostingEnvironment)
     {
         _unitOfWorkRep = unitOfWorkRep;
         _mapper = mapper;
         _manageImage = manageImage;
         _mlService = mlService;
         _logger = logger;
+        _hostingEnvironment = hostingEnvironment;
     }
 
     public IEnumerable<Pet> GetPets()
@@ -154,7 +157,7 @@ public class PetService : IPetService
         pet.DateCreateUpdate = DateTime.UtcNow;
         pet.Photo = createPetDto.Photo;
         pet.Type = !string.IsNullOrEmpty(pet.Photo)
-            ? await _mlService.PredictAsync(Path.Join(@"wwwroot", pet.Photo.TrimStart('/', '\\')))
+            ? await _mlService.PredictAsync(Path.Join(_hostingEnvironment.WebRootPath, pet.Photo.TrimStart('/', '\\')))
             : "Unknown";
 
         await _unitOfWorkRep.Pet.CreateAsync(pet);

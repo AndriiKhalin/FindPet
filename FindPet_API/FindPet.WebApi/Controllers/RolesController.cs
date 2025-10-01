@@ -1,13 +1,9 @@
 ﻿using FindPet.BusinessLogicLayer.CQRS.Commands.Role;
 using FindPet.BusinessLogicLayer.CQRS.Queries.Role;
 using FindPet.Domain.DTOs.AuthDTOs;
-using FindPet.Domain.Entities;
-using FindPet.Domain.ValueObjects;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace FindPet.WebApi.Controllers;
 

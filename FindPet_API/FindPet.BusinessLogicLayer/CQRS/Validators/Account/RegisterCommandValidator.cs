@@ -4,8 +4,6 @@ using FindPet.Domain.Entities;
 using FindPet.Domain.ValueObjects;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using System.Numerics;
 
 namespace FindPet.BusinessLogicLayer.CQRS.Validators.Account;
 
@@ -44,7 +42,7 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
                 .WithMessage("Email cannot exceed 256 characters")
                 .MustAsync(async (email, _) => await _userManager.FindByEmailAsync(email) == null)
                 .WithMessage("Email address is already registered")
-                .MustAsync(async (email, _) => !(await _userService.IsEmailRegisteredAsync(email)))
+                .MustAsync(async (email, _) => !await _userService.IsEmailRegisteredAsync(email))
                 .WithMessage("Email is already registered");
 
             RuleFor(x => x.RegisterDto.Password)
@@ -69,7 +67,7 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
                 .Matches(@"^\+?[1-9]\d{1,14}$")
                 .WithMessage("Invalid phone number format")
                 .MustAsync(async (phoneNumber, _) =>
-                    !(await _userService.IsPhoneNumberRegisteredAsync(phoneNumber)))
+                    !await _userService.IsPhoneNumberRegisteredAsync(phoneNumber))
                 .WithMessage("Phone number is already registered");
 
             RuleFor(x => x.RegisterDto.BirthDate)

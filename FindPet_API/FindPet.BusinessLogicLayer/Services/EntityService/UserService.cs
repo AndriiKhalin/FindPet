@@ -76,7 +76,8 @@ public class UserService(
 
     public async Task<bool> IsPhoneNumberRegisteredAsync(string phoneNumber)
     {
-        return await unitOfWorkRep.User.IsExistAsync(x => x.PhoneNumber != null && EF.Functions.Like(x.PhoneNumber, phoneNumber));
+        return await unitOfWorkRep.User.IsExistAsync(x =>
+            x.PhoneNumber != null && EF.Functions.Like(x.PhoneNumber, phoneNumber));
     }
 
     public async Task<bool> UserExistsAsync(Guid userId)

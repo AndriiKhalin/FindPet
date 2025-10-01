@@ -16,7 +16,8 @@ public class GetAllAuthUsersQueryHandler : IQueryHandler<GetAllAuthUsersQuery, I
         _userManager = userManager;
     }
 
-    public async Task<IEnumerable<UserDetailDto>> Handle(GetAllAuthUsersQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<UserDetailDto>> Handle(GetAllAuthUsersQuery request,
+        CancellationToken cancellationToken)
     {
         var users = await _userManager.Users.ToListAsync(cancellationToken);
         var userDtos = new List<UserDetailDto>();

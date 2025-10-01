@@ -12,8 +12,8 @@ namespace FindPet.BusinessLogicLayer.CQRS.Handlers.CommandHandlers.Account;
 
 public class RegisterCommandHandler : ICommandHandler<RegisterCommand, AuthResponse>
 {
-    private readonly UserManager<AuthUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly UserManager<AuthUser> _userManager;
     private readonly IUserService _userService;
 
     public RegisterCommandHandler(

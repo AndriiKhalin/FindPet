@@ -3,6 +3,7 @@ using FindPet.BusinessLogicLayer.CQRS.Common;
 using FindPet.BusinessLogicLayer.CQRS.Queries.Pet;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
+using FindPet.Domain.Exceptions;
 
 namespace FindPet.BusinessLogicLayer.CQRS.Handlers.QueryHandlers.Pet;
 
@@ -12,6 +13,9 @@ public class GetPetByIdQueryHandler(IPetService petService, IMapper mapper) : IQ
     {
         var pet = await petService.GetPetByIdAsync(request.PetId);
 
-        return pet != null ? mapper.Map<PetDto>(pet) : null;
+        if (pet == null)
+            throw new NotFoundException("Pet", request.PetId);
+
+        return mapper.Map<PetDto>(pet);
     }
 }

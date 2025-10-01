@@ -1,20 +1,20 @@
-﻿using FindPet.BusinessLogicLayer.CQRS.Commands.Account;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using FindPet.BusinessLogicLayer.CQRS.Commands.Account;
 using FindPet.BusinessLogicLayer.CQRS.Common;
 using FindPet.Domain.Exceptions;
 using FindPet.Domain.ValueObjects;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace FindPet.BusinessLogicLayer.CQRS.Handlers.CommandHandlers.Account;
 
 public class LoginCommandHandler : ICommandHandler<LoginCommand, AuthResponse>
 {
-    private readonly UserManager<AuthUser> _userManager;
     private readonly IConfiguration _configuration;
+    private readonly UserManager<AuthUser> _userManager;
 
     public LoginCommandHandler(
         UserManager<AuthUser> userManager,

@@ -3,6 +3,7 @@ using FindPet.BusinessLogicLayer.CQRS.Common;
 using FindPet.BusinessLogicLayer.CQRS.Queries.Ad;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 using FindPet.Domain.DTOs.EntitiesDTOs.AdDTO;
+using FindPet.Domain.Exceptions;
 
 namespace FindPet.BusinessLogicLayer.CQRS.Handlers.QueryHandlers.Ad;
 
@@ -12,6 +13,9 @@ public class GetAdByIdQueryHandler(IAdService adService, IMapper mapper) : IQuer
     {
         var ad = await adService.GetAdAsync(request.AdId);
 
-        return ad != null ? mapper.Map<AdDto>(ad) : null!;
+        if (ad == null)
+            throw new NotFoundException("Ad", request.AdId);
+
+        return mapper.Map<AdDto>(ad);
     }
 }

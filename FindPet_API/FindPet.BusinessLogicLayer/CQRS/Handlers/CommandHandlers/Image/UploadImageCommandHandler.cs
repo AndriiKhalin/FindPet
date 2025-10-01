@@ -31,9 +31,11 @@ public class UploadImageCommandHandler : ICommandHandler<UploadImageCommand, Upl
             case EntityType.User:
                 filePath = await _userImageManager.UploadPhotoAsync(request.ImageFile, uniqueId);
                 break;
+
             case EntityType.Pet:
                 filePath = await _petImageManager.UploadPhotoAsync(request.ImageFile, uniqueId);
                 break;
+
             default:
                 throw new BadRequestException($"Unsupported entity type: {request.EntityType}");
         }

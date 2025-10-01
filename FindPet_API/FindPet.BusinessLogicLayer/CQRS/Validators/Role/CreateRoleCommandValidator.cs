@@ -34,6 +34,6 @@ public class CreateRoleCommandValidator : AbstractValidator<CreateRoleCommand>
 
     private async Task<bool> BeUniqueRoleName(string roleName, CancellationToken cancellationToken)
     {
-        return !(await _roleManager.RoleExistsAsync(roleName));
+        return !await _roleManager.RoleExistsAsync(roleName);
     }
 }

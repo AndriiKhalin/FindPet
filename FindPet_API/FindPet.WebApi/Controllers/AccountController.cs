@@ -1,18 +1,11 @@
-﻿using FindPet.BusinessLogicLayer.CQRS.Commands.Account;
+﻿using System.Security.Claims;
+using FindPet.BusinessLogicLayer.CQRS.Commands.Account;
 using FindPet.BusinessLogicLayer.CQRS.Queries.Account;
-using FindPet.BusinessLogicLayer.Helpers.UrlHelper;
 using FindPet.Domain.DTOs.AuthDTOs;
-using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
-using FindPet.Domain.Entities;
 using FindPet.Domain.ValueObjects;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace FindPet.WebApi.Controllers;
 

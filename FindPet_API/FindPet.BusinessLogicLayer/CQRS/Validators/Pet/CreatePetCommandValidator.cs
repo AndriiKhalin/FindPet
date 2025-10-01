@@ -33,11 +33,7 @@ public class CreatePetCommandValidator : AbstractValidator<CreatePetCommand>
                 .NotEmpty()
                 .WithMessage("Pet type is required")
                 .Must(BeValidPetType)
-                .WithMessage("Pet type must be Dog, Cat, Bird, or Other");
-
-            RuleFor(x => x.Pet.Breed)
-                .NotEmpty()
-                .WithMessage("Breed is required")
+                .WithMessage("Pet type must be Dog, Cat, Bird, or Other")
                 .MaximumLength(50)
                 .WithMessage("Breed cannot exceed 50 characters");
 

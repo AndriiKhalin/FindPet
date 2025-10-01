@@ -31,7 +31,7 @@ public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
                 .WithMessage("Invalid email format")
                 .MaximumLength(256)
                 .WithMessage("Email cannot exceed 256 characters")
-                .MustAsync(async (email, cancellation) => await userService.IsEmailRegisteredAsync(email))
+                .MustAsync(async (email, cancellation) => !await userService.IsEmailRegisteredAsync(email))
                 .WithMessage("Email address is already registered");
 
             RuleFor(x => x.User.Password)
@@ -49,7 +49,7 @@ public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
                 .Matches(@"^\+?[1-9]\d{1,14}$")
                 .WithMessage("Invalid phone number format")
                 .MustAsync(async (phoneNumber, cancellation) =>
-                    await userService.IsPhoneNumberRegisteredAsync(phoneNumber))
+                    !await userService.IsPhoneNumberRegisteredAsync(phoneNumber))
                 .WithMessage("Phone number is already registered");
 
             RuleFor(x => x.User.BirthDate)

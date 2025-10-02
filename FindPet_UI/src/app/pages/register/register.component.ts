@@ -130,6 +130,13 @@ register() {
   );
   }
 
+onPhotoSelected(event: Event) {
+  const file = (event.target as HTMLInputElement).files?.[0];
+  if (file) {
+    this.form.patchValue({ photo: file });
+    this.form.get('photo')?.updateValueAndValidity();
+  }
+}
 // private passwordMatchValidator(
 //     control: AbstractControl
 //   ): { [key: string]: boolean } | null {

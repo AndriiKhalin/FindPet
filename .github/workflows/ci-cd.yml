@@ -45,7 +45,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
@@ -56,7 +56,7 @@ jobs:
         working-directory: FindPet_UI
 
       - name: Build Angular app
-        run: npm run build --prod
+        run: npm run build -- --configuration=production
         working-directory: FindPet_UI
 
       - name: Upload build artifacts
@@ -79,10 +79,10 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Run Unit Tests
-        run: dotnet test FindPet_API/FindPet.Tests/ --no-restore --logger trx --results-directory "TestResults"
+        run: dotnet test FindPet_API/FindPet_API.sln --no-restore --logger "trx;LogFileName=test-results.trx" --results-directory "TestResults"
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
 
@@ -104,7 +104,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
 
       - name: Deploy to staging
         run: echo "Deploying to staging environment..."

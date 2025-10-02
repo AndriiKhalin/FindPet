@@ -78,9 +78,6 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Restore dependencies
-        run: dotnet restore
-
       - name: Run Unit Tests
         run: dotnet test FindPet_API/FindPet.Tests/ --no-restore --logger trx --results-directory "TestResults"
 

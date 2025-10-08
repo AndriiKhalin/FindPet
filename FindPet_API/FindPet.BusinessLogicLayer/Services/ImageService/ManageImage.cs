@@ -56,7 +56,7 @@ public class ManageImage<T> : IManageImage<T> where T : class
 
     public async Task<string> UploadPhotoAsync(string fileName, Guid? id)
     {
-        if (string.IsNullOrEmpty(fileName)) return null;
+        if (string.IsNullOrWhiteSpace(fileName)) return null;
         // Путь к папке, где будут сохраняться изображения
         var rootImg = $"\\Stuff\\Images\\Upload\\{typeof(T).Name}\\";
         var directoryPath = ImgPath + rootImg;
@@ -78,16 +78,26 @@ public class ManageImage<T> : IManageImage<T> where T : class
 
     public async Task<IFormFile> UploadPhotoIFormFileAsync(string fileName, Guid? id)
     {
-        if (string.IsNullOrEmpty(fileName)) return null;
+        if (string.IsNullOrWhiteSpace(fileName)) return null;
 
-        var filePath = await UploadPhotoAsync(fileName, id);
+        var relativePath = await UploadPhotoAsync(fileName, id);
+        if (relativePath == null) return null;
 
-        // Пример чтения файла в MemoryStream
-        var fileBytes = await File.ReadAllBytesAsync(filePath);
-        using var memoryStream = new MemoryStream(fileBytes);
+        // Convert relative path to absolute path
+        var absolutePath = Path.Combine(ImgPath, relativePath.TrimStart('\\', '/'));
 
-        // Создание объекта FormFile
-        IFormFile formFile = new FormFile(memoryStream, 0, fileBytes.Length, fileName, fileName);
+        // Read file and create FormFile
+        var fileBytes = await File.ReadAllBytesAsync(absolutePath);
+        var stream = new MemoryStream(fileBytes);
+
+        // Create FormFile with proper parameters
+        var formFile = new FormFile(stream, 0, fileBytes.Length,
+            Path.GetFileNameWithoutExtension(fileName),
+            Path.GetFileName(fileName))
+        {
+            Headers = new HeaderDictionary(),
+            ContentType = GetContentType(fileName)
+        };
 
         return formFile;
     }
@@ -114,5 +124,21 @@ public class ManageImage<T> : IManageImage<T> where T : class
             currentPath = Path.GetFullPath(Path.Combine(currentPath, ".."));
 
         return currentPath;
+    }
+
+    private static string GetContentType(string fileName)
+    {
+        var extension = Path.GetExtension(fileName).ToLowerInvariant();
+        return extension switch
+        {
+            ".jpg" or ".jpeg" => "image/jpeg",
+            ".png" => "image/png",
+            ".gif" => "image/gif",
+            ".bmp" => "image/bmp",
+            ".webp" => "image/webp",
+            ".pdf" => "application/pdf",
+            ".txt" => "text/plain",
+            _ => "application/octet-stream"
+        };
     }
 }

@@ -72,7 +72,7 @@ public class AdService : IAdService
         if (!await AdExistsAsync(adId))
         {
             _logger.LogError($"Ad with id: {adId}, hasn't been found in db.");
-            throw new ArgumentNullException("Invalid ad Id");
+            throw new NotFoundException("Ad", adId);
         }
 
         var adEntityForDelete = await GetAdAsync(adId);
@@ -86,16 +86,22 @@ public class AdService : IAdService
 
     public async Task UpdateAdAsync(Guid adId, AdForUpdateDto ad)
     {
+        if (adId == Guid.Empty)
+        {
+            _logger.LogError("AdId is empty.");
+            throw new BadRequestException("AdId must be a valid non-empty GUID");
+        }
+
         if (ad == null)
         {
             _logger.LogError("Ad object sent from client is null.");
-            throw new ArgumentNullException("Ad is null");
+            throw new BadRequestException("Ad is null");
         }
 
         if (!await AdExistsAsync(adId))
         {
             _logger.LogError($"Ad with id: {adId}, hasn't been found in db.");
-            throw new ArgumentNullException("Invalid ad Id");
+            throw new NotFoundException("Ad", adId);
         }
 
         var adEntity = await GetAdAsync(adId);
@@ -104,11 +110,7 @@ public class AdService : IAdService
         {
             _manageImage.DeletePhoto(adEntity.Photo);
             var photoPath = await _manageImage.UploadPhotoAsync(ad.Photo, adId);
-        }
-        else
-        {
-            _logger.LogError("Photo is null");
-            throw new ArgumentException("Photo cannot be null.");
+            adEntity.Photo = photoPath;
         }
 
         _mapper.Map(ad, adEntity);
@@ -122,8 +124,8 @@ public class AdService : IAdService
     {
         if (petId == Guid.Empty || userId == Guid.Empty || ad == null)
         {
-            _logger.LogError("Error");
-            throw new ArgumentNullException("Invalid petId,userId or ad object.");
+            _logger.LogError("Invalid petId,userId or ad object.");
+            throw new BadRequestException("Invalid petId,userId or ad object.");
         }
 
         var petEntity = await _unitOfWorkRep.Pet.GetAsync(petId);

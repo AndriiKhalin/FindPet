@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <Folder Include="FunctionalTests\" />
-    <Folder Include="UnitTests\BusinessLogicLayer\CQRS\Handlers\QueryHandlers\User\" />
   </ItemGroup>
 
   <ItemGroup>

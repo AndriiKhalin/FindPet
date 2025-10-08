@@ -48,7 +48,7 @@ public class UserServiceTests
     public void GetUsers_WhenCalled_ShouldReturnAllUsers()
     {
         // Arrange
-        var expectedUsers = TestDataBuilder.CreateUserList(3);
+        var expectedUsers = TestDataBuilder.BuildUserList(3);
         _userRepositoryMock.SetupGetUsers(expectedUsers);
 
         // Act
@@ -85,7 +85,7 @@ public class UserServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var expectedUser = TestDataBuilder.CreateValidUser(userId);
+        var expectedUser = TestDataBuilder.BuildBasicUser(userId);
 
         _userRepositoryMock.SetupUserExists(userId, true);
         _userRepositoryMock.SetupGetUser(userId, expectedUser);
@@ -139,7 +139,7 @@ public class UserServiceTests
     {
         // Arrange
         var userName = "testuser";
-        var expectedUser = TestDataBuilder.CreateValidUser();
+        var expectedUser = TestDataBuilder.BuildBasicUser();
         expectedUser.Name = userName;
 
         _userRepositoryMock.SetupUserExists(userName, true);
@@ -290,7 +290,7 @@ public class UserServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var user = TestDataBuilder.CreateValidUser(userId);
+        var user = TestDataBuilder.BuildBasicUser(userId);
 
         _userRepositoryMock.SetupUserExists(userId, true);
         _userRepositoryMock.SetupGetUser(userId, user);
@@ -305,17 +305,17 @@ public class UserServiceTests
     }
 
     [Fact]
-    public async Task DeleteUserAsync_WithNonExistentId_ShouldThrowArgumentNullException()
+    public async Task DeleteUserAsync_WithNonExistentId_ShouldThrowNotFoundException()
     {
         // Arrange
         var userId = Guid.NewGuid();
         _userRepositoryMock.SetupUserExists(userId, false);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ArgumentNullException>(
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => _userService.DeleteUserAsync(userId));
 
-        exception.Message.Should().Contain("Invalid user Id");
+        exception.Message.Should().Contain($"User with ID '{userId}' was not found");
         _loggerMock.VerifyLogError($"User with id: {userId}, hasn't been found in db.");
         _userRepositoryMock.Verify(x => x.DeleteAsync(It.IsAny<Guid>()), Times.Never);
     }
@@ -329,8 +329,8 @@ public class UserServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var updateDto = TestDataBuilder.CreateValidUserForUpdateDto();
-        var existingUser = TestDataBuilder.CreateValidUser(userId);
+        var updateDto = TestDataBuilder.BuildUserForUpdateDto();
+        var existingUser = TestDataBuilder.BuildBasicUser(userId);
 
         _userRepositoryMock.SetupUserExists(userId, true);
         _userRepositoryMock.SetupGetUser(userId, existingUser);
@@ -349,8 +349,8 @@ public class UserServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var updateDto = TestDataBuilder.CreateValidUserForUpdateDto();
-        var existingUser = TestDataBuilder.CreateValidUser(userId);
+        var updateDto = TestDataBuilder.BuildUserForUpdateDtoWithPhoto();
+        var existingUser = TestDataBuilder.BuildUserWithPhoto().With(u => u.Id = userId);
 
         _userRepositoryMock.SetupUserExists(userId, true);
         _userRepositoryMock.SetupGetUser(userId, existingUser);
@@ -364,13 +364,13 @@ public class UserServiceTests
     }
 
     [Fact]
-    public async Task UpdateUserAsync_WithNullUser_ShouldThrowArgumentNullException()
+    public async Task UpdateUserAsync_WithNullUser_ShouldThrowBadRequestException()
     {
         // Arrange
         var userId = Guid.NewGuid();
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ArgumentNullException>(
+        var exception = await Assert.ThrowsAsync<BadRequestException>(
             () => _userService.UpdateUserAsync(userId, null));
 
         exception.Message.Should().Contain("User is null");
@@ -383,18 +383,18 @@ public class UserServiceTests
     }
 
     [Fact]
-    public async Task UpdateUserAsync_WithNonExistentId_ShouldThrowArgumentNullException()
+    public async Task UpdateUserAsync_WithNonExistentId_ShouldThrowNotFoundException()
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var updateDto = TestDataBuilder.CreateValidUserForUpdateDto();
+        var updateDto = TestDataBuilder.BuildUserForUpdateDto();
         _userRepositoryMock.SetupUserExists(userId, false);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ArgumentNullException>(
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => _userService.UpdateUserAsync(userId, updateDto));
 
-        exception.Message.Should().Contain("Invalid user Id");
+        exception.Message.Should().Contain($"User with ID '{userId}' was not found");
         _loggerMock.VerifyLogError($"User with id: {userId}, hasn't been found in db.");
     }
 
@@ -406,8 +406,8 @@ public class UserServiceTests
     public async Task CreateUserAsync_WithValidData_ShouldCreateUser()
     {
         // Arrange
-        var createDto = TestDataBuilder.CreateValidUserForCreateDto();
-        var mappedUser = TestDataBuilder.CreateValidUser();
+        var createDto = TestDataBuilder.BuildUserForCreateDto();
+        var mappedUser = TestDataBuilder.BuildBasicUser();
 
         _mapperMock.Setup(x => x.Map<User>(createDto)).Returns(mappedUser);
 
@@ -450,7 +450,7 @@ public class UserServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var user = TestDataBuilder.CreateValidUser(userId);
+        var user = TestDataBuilder.BuildBasicUser(userId);
 
         _userRepositoryMock.SetupUserExists(userId, true);
         _userRepositoryMock.SetupGetUser(userId, user);
@@ -471,9 +471,9 @@ public class UserServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var updateDto = TestDataBuilder.CreateValidUserForUpdateDto();
+        var updateDto = TestDataBuilder.BuildUserForUpdateDto();
         updateDto.Photo = null; // No photo update
-        var existingUser = TestDataBuilder.CreateValidUser(userId);
+        var existingUser = TestDataBuilder.BuildBasicUser(userId);
 
         _userRepositoryMock.SetupUserExists(userId, true);
         _userRepositoryMock.SetupGetUser(userId, existingUser);

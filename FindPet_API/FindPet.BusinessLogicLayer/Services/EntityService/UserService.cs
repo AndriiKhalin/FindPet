@@ -95,7 +95,7 @@ public class UserService(
         if (!await UserExistsAsync(userId))
         {
             logger.LogError($"User with id: {userId}, hasn't been found in db.");
-            throw new ArgumentNullException("Invalid user Id");
+            throw new NotFoundException("User", userId);
         }
 
         var userEntityForDelete = await GetUserByIdAsync(userId);
@@ -112,13 +112,13 @@ public class UserService(
         if (user == null)
         {
             logger.LogError("User object sent from client is null.");
-            throw new ArgumentNullException("User is null");
+            throw new BadRequestException("User is null");
         }
 
         if (!await UserExistsAsync(userId))
         {
             logger.LogError($"User with id: {userId}, hasn't been found in db.");
-            throw new ArgumentNullException("Invalid user Id");
+            throw new NotFoundException("User", userId);
         }
 
         var userEntity = await GetUserByIdAsync(userId);

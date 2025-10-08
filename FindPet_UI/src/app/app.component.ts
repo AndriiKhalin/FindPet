@@ -14,6 +14,7 @@ import { isPlatformBrowser } from '@angular/common';
     styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit ,OnDestroy{
+  title = 'FindPet_UI';
   private isBrowser: boolean;
 
   constructor(

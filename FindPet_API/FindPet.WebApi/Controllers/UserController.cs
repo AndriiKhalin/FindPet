@@ -3,6 +3,7 @@ using FindPet.BusinessLogicLayer.CQRS.Commands.User;
 using FindPet.BusinessLogicLayer.CQRS.Queries.User;
 using FindPet.Domain.DTOs;
 using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
+using FindPet.Domain.DTOs.FileDTOs;
 using FindPet.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -87,7 +88,7 @@ public class UserController(IMediator mediator) : ControllerBase
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> UploadImage([FromForm] FileUploadDto file)
     {
-        var response = await mediator.Send(new UploadImageCommand(file.ImageFile, EntityType.User));
+        var response = await mediator.Send(new UploadImageCommand(file.File, EntityType.User));
         return Ok(response);
     }
 }

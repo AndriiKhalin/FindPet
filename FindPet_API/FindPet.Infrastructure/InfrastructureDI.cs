@@ -2,6 +2,7 @@
 using FindPet.DataAccessLayer;
 using FindPet.Infrastructure.Configurations.AuthExtensions;
 using FindPet.Infrastructure.Configurations.ServiceExtensions;
+using FindPet.Media;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,6 +22,7 @@ public static class InfrastructureDI
         services.Configure_FileProvider();
         services.ConfigureForm();
         services.ConfigureIISIntegration();
+        services.ConfigureStorageService(configuration);
         services.ConfigureLoggerService();
         services.AddIdentityConfiguration();
         services.AddJwtAuthentication(configuration);
@@ -30,5 +32,6 @@ public static class InfrastructureDI
     {
         services.AddDataAccessServices(configuration);
         services.AddBusinessLogicServices();
+        services.AddMediaServices();
     }
 }

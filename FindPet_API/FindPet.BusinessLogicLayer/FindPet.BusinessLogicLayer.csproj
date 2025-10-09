@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <Folder Include="CQRS\Handlers\CommandHandlers\Image\" />
+    <Folder Include="CQRS\Queries\BlobStorage\" />
     <Folder Include="Exceptions\" />
     <Folder Include="Helpers\UrlHelper\" />
     <Folder Include="Services\MLService\" />
@@ -31,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FindPet.DataAccessLayer\FindPet.DataAccessLayer.csproj" />
+    <ProjectReference Include="..\FindPet.Media\FindPet.Media.csproj" />
   </ItemGroup>
 
   <ItemGroup>

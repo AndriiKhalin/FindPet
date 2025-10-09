@@ -6,6 +6,7 @@ using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using FindPet.Domain.DTOs.EntitiesDTOs.AdDTO;
 using FindPet.Domain.Entities;
 using FindPet.Domain.Exceptions;
+using FindPet.Media.Interfaces;
 using FindPet.Tests.TestHelpers;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -20,6 +21,8 @@ public class AdServiceTests
     private readonly Mock<IManageImage<Ad>> _mockImageService;
     private readonly Mock<ILoggerManager> _mockLogger;
     private readonly AdService _adService;
+    private readonly IMediaStorageService _mediaStorageService;
+
 
     // Repository mocks
     private readonly Mock<IAdRepository> _mockAdRepository;
@@ -32,6 +35,7 @@ public class AdServiceTests
         _mockMapper = MockSetupExtensions.SetupMapperMock();
         _mockImageService = MockSetupExtensions.SetupImageServiceMock<Ad>();
         _mockLogger = MockSetupExtensions.SetupLoggerMock();
+        _mediaStorageService = MockSetupExtensions.CreateMock<IMediaStorageService>().Object;
 
         // Setup repository mocks
         _mockAdRepository = new Mock<IAdRepository>();
@@ -43,7 +47,7 @@ public class AdServiceTests
         _mockUnitOfWork.Setup(x => x.Pet).Returns(_mockPetRepository.Object);
         _mockUnitOfWork.Setup(x => x.User).Returns(_mockUserRepository.Object);
 
-        _adService = new AdService(_mockUnitOfWork.Object, _mockMapper.Object, _mockImageService.Object, _mockLogger.Object);
+        _adService = new AdService(_mockUnitOfWork.Object, _mockMapper.Object, _mockImageService.Object, _mockLogger.Object, _mediaStorageService);
     }
 
     #region GetAds Tests

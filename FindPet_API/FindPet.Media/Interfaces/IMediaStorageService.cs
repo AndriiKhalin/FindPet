@@ -4,19 +4,17 @@ namespace FindPet.Media.Interfaces;
 
 public interface IMediaStorageService
 {
-    Task<string> UploadImageAsync(Stream imageStream, string fileName, string? subfolder = null);
+    Task<string> UploadFileAsync(IFormFile file, Guid? entityId = null, string? subfolder = null);
 
-    Task<string> UploadImageAsync(IFormFile file, Guid? entityId = null, string? subfolder = null);
+    Task<List<string>> UploadMultipleFilesAsync(List<IFormFile> files, Guid? entityId = null, string? subfolder = null);
 
-    Task<List<string>> UploadMultipleImagesAsync(List<IFormFile> files, Guid? entityId = null, string? subfolder = null);
+    Task<Stream> DownloadFileAsync(string filePath);
 
-    Task<Stream> DownloadFileAsync(string imageUrl);
+    Task<bool> DeleteFileAsync(string filePath);
 
-    Task<bool> DeleteImageAsync(string imageUrl);
+    Task<Stream> GetFileAsync(string filePath);
 
-    Task<Stream> GetImageAsync(string imageUrl);
+    Task<string> GetFileUrlAsync(string filePath, TimeSpan? expiryTime = null);
 
-    Task<string> GetImageUrlAsync(string fileName, string? subfolder = null);
-
-    Task<bool> ImageExistsAsync(string imageUrl);
+    Task<bool> FileExistsAsync(string filePath);
 }

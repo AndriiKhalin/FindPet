@@ -18,15 +18,15 @@ public class GetFileQueryHandler : IQueryHandler<GetFileQuery, GetFileResponse>
     {
         try
         {
-            var fileStream = await _mediaStorageService.GetImageAsync(request.FileUrl);
+            var fileStream = await _mediaStorageService.GetFileAsync(request.FilePath);
 
             if (fileStream == Stream.Null)
             {
-                throw new NotFoundException("File", request.FileUrl);
+                throw new NotFoundException("File", request.FilePath);
             }
 
-            var uri = new Uri(request.FileUrl);
-            var fileName = Path.GetFileName(uri.LocalPath);
+            //var uri = new Uri(request.FilePath);
+            var fileName = Path.GetFileName(request.FilePath);
             var contentType = GetContentType(fileName);
 
             return new GetFileResponse

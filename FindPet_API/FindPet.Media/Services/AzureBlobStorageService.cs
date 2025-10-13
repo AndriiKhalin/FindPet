@@ -1,5 +1,7 @@
-﻿using Azure.Storage.Blobs;
+﻿using Azure.Storage;
+using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Azure.Storage.Sas;
 using FindPet.Domain.ValueObjects;
 using FindPet.Media.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -30,29 +32,18 @@ public class AzureBlobStorageService : IMediaStorageService
         _containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
     }
 
-    public async Task<bool> DeleteImageAsync(string imageUrl)
+    public async Task<bool> DeleteFileAsync(string filePath)
     {
-        //try
-        //{
-        //    var blobClient = new BlobClient(new Uri(imageUrl));
-        //    var response = await blobClient.DeleteIfExistsAsync();
-        //    return response.Value;
-        //}
-        //catch
-        //{
-        //    return false;
-        //}
-
         try
         {
-            var blobName = ExtractBlobNameFromUrl(imageUrl);
+            var blobName = ExtractBlobNameFromUrl(filePath);
             var blobClient = _containerClient.GetBlobClient(blobName);
 
             var response = await blobClient.DeleteIfExistsAsync();
 
             //if (response.Value)
             //{
-            //    _logger.LogInformation("Successfully deleted image: {BlobName}", blobName);
+            //    _logger.LogInformation("Successfully deleted image: {FilePath}", blobName);
             //}
 
             return response.Value;
@@ -64,28 +55,43 @@ public class AzureBlobStorageService : IMediaStorageService
         }
     }
 
-    public Task<Stream> DownloadFileAsync(string imageUrl)
+    public async Task<Stream> DownloadFileAsync(string filePath)
     {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Stream> GetImageAsync(string imageUrl)
-    {
-        //try
-        //{
-        //    var blobClient = new BlobClient(new Uri(imageUrl));
-        //    var response = await blobClient.DownloadAsync();
-        //    return response.Value.Content;
-        //}
-        //catch
-        //{
-        //    return Stream.Null;
-        //}
-
         try
         {
-            var blobName = ExtractBlobNameFromUrl(imageUrl);
+            var blobName = ExtractBlobNameFromUrl(filePath);
             var blobClient = _containerClient.GetBlobClient(blobName);
+
+            if (!await blobClient.ExistsAsync())
+            {
+                throw new FileNotFoundException($"File {filePath} not found");
+            }
+
+            var response = await blobClient.DownloadStreamingAsync();
+            return response.Value.Content;
+        }
+        catch (FileNotFoundException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            //_logger.LogError(ex, "Failed to download file: {FilePath}", filePath);
+            throw new InvalidOperationException($"Failed to download file: {filePath}", ex);
+        }
+    }
+
+    public async Task<Stream> GetFileAsync(string filePath)
+    {
+        try
+        {
+            var blobName = ExtractBlobNameFromUrl(filePath);
+            var blobClient = _containerClient.GetBlobClient(blobName);
+
+            if (!await blobClient.ExistsAsync())
+            {
+                return Stream.Null;
+            }
 
             var response = await blobClient.DownloadStreamingAsync();
             return response.Value.Content;
@@ -97,19 +103,41 @@ public class AzureBlobStorageService : IMediaStorageService
         }
     }
 
-    public async Task<string> GetImageUrlAsync(string fileName, string? subfolder = null)
+    public async Task<string> GetFileUrlAsync(string filePath, TimeSpan? expiryTime = null)
     {
-        var blobName = GenerateBlobName(fileName, subfolder);
-        var blobClient = _containerClient.GetBlobClient(blobName);
+        var blobClient = _containerClient.GetBlobClient(filePath);
 
+        // Check if the blob exists
+        if (!await blobClient.ExistsAsync())
+        {
+            throw new FileNotFoundException($"File {filePath} not found");
+        }
+
+        // Generate SAS token for secure access
+        if (blobClient.CanGenerateSasUri)
+        {
+            var sasBuilder = new BlobSasBuilder
+            {
+                BlobContainerName = _containerName,
+                BlobName = filePath,
+                Resource = "b",
+                ExpiresOn = DateTimeOffset.UtcNow.Add(expiryTime ?? TimeSpan.FromHours(1))
+            };
+
+            sasBuilder.SetPermissions(BlobSasPermissions.Read);
+
+            return blobClient.GenerateSasUri(sasBuilder).ToString();
+        }
+
+        // Fallback to regular URL if SAS is not available
         return blobClient.Uri.ToString();
     }
 
-    public async Task<bool> ImageExistsAsync(string imageUrl)
+    public async Task<bool> FileExistsAsync(string filePath)
     {
         try
         {
-            var blobName = ExtractBlobNameFromUrl(imageUrl);
+            var blobName = ExtractBlobNameFromUrl(filePath);
             var blobClient = _containerClient.GetBlobClient(blobName);
 
             var response = await blobClient.ExistsAsync();
@@ -121,67 +149,52 @@ public class AzureBlobStorageService : IMediaStorageService
         }
     }
 
-    public async Task<string> UploadImageAsync(Stream imageStream, string fileName, string? subfolder = null)
+    public async Task<string> UploadFileAsync(IFormFile file, Guid? entityId = null, string? subfolder = null)
     {
         try
         {
-            await EnsureContainerExistsAsync();
+            ValidateFile(file);
 
+            var fileName = GenerateUniqueFileName(file.FileName, entityId);
             var blobName = GenerateBlobName(fileName, subfolder);
 
-            var blobClient = _containerClient.GetBlobClient(blobName);
+            using var stream = file.OpenReadStream();
+            using var optimizedStream = await OptimizeImageAsync(stream);
 
-            // Optimize image before upload
-            using var optimizedStream = await OptimizeImageAsync(imageStream);
+            await EnsureContainerExistsAsync();
+            var blobClient = _containerClient.GetBlobClient(blobName);
 
             var uploadOptions = new BlobUploadOptions
             {
                 HttpHeaders = new BlobHttpHeaders
                 {
                     ContentType = GetContentType(fileName),
-                    CacheControl = "public, max-age=31536000" // 1 year cache
+                    CacheControl = "public, max-age=31536000"
                 },
                 Metadata = new Dictionary<string, string>
                 {
-                    ["OriginalFileName"] = fileName,
+                    ["OriginalFileName"] = file.FileName,
                     ["UploadedAt"] = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
-                    ["Subfolder"] = subfolder ?? "general"
+                    ["Subfolder"] = subfolder ?? "general",
+                    ["EntityId"] = entityId?.ToString() ?? string.Empty
                 }
             };
 
             await blobClient.UploadAsync(optimizedStream, uploadOptions);
 
-            //_logger.LogInformation("Successfully uploaded image: {BlobName}", blobName);
-            return blobClient.Uri.ToString();
-
-
+            // Return the blob name, not the full URL
+            return blobName;
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
             throw;
         }
-        //var blobServiceClient = new BlobServiceClient(_connectionString);
-        //var containerClient = blobServiceClient.GetBlobContainerClient(_containerName);
-        //await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
-        //var blobClient = containerClient.GetBlobClient(fileName);
-        //await blobClient.UploadAsync(imageStream, true);
-        //return blobClient.Uri.ToString();
     }
 
-    public async Task<string> UploadImageAsync(IFormFile file, Guid? entityId = null, string? subfolder = null)
+    public async Task<List<string>> UploadMultipleFilesAsync(List<IFormFile> files, Guid? entityId = null, string? subfolder = null)
     {
-        ValidateFile(file);
-
-        var fileName = GenerateUniqueFileName(file.FileName, entityId);
-
-        using var stream = file.OpenReadStream();
-        return await UploadImageAsync(stream, fileName, subfolder);
-    }
-
-    public async Task<List<string>> UploadMultipleImagesAsync(List<IFormFile> files, Guid? entityId = null, string? subfolder = null)
-    {
-        var uploadTasks = files.Select(file => UploadImageAsync(file, entityId, subfolder));
+        var uploadTasks = files.Select(file => UploadFileAsync(file, entityId, subfolder));
         return (await Task.WhenAll(uploadTasks)).ToList();
     }
 
@@ -285,9 +298,17 @@ public class AzureBlobStorageService : IMediaStorageService
         return sanitized;
     }
 
-    private string ExtractBlobNameFromUrl(string imageUrl)
+    private string ExtractBlobNameFromUrl(string fileUrl)
     {
-        var uri = new Uri(imageUrl);
+        string[] urlSchemes = { "https://", "http://", "ftp://" };
+
+        if (!urlSchemes.Any(x => fileUrl.Contains(x)))
+        {
+            return fileUrl;
+        }
+
+        // If it's a full URL, extract the blob name
+        var uri = new Uri(fileUrl);
         return uri.Segments.Skip(2).Aggregate(string.Empty, (current, segment) => current + segment);
     }
 }

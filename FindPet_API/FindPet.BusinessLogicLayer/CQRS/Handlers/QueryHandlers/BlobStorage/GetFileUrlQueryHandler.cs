@@ -9,11 +9,15 @@ public class GetFileUrlQueryHandler(IMediaStorageService mediaStorageService)
 {
     public async Task<GetFileUrlResponse> Handle(GetFileUrlQuery request, CancellationToken cancellationToken)
     {
-        var fileUrl = await mediaStorageService.GetImageUrlAsync(request.FileName, request.Subfolder);
+        var expiryTime = TimeSpan.FromHours(request.ExpiryHours);
+
+        var fileUrl = await mediaStorageService.GetFileUrlAsync(request.FilePath, expiryTime);
 
         return new GetFileUrlResponse
         {
-            FileUrl = fileUrl
+            FileUrl = fileUrl,
+            ExpiresAt = DateTime.UtcNow.Add(expiryTime),
+            FilePath = request.FilePath
         };
     }
 }

@@ -7,33 +7,28 @@ public class GetFileUrlQueryValidator : AbstractValidator<GetFileUrlQuery>
 {
     public GetFileUrlQueryValidator()
     {
-        RuleFor(x => x.FileName)
+        RuleFor(x => x.FilePath)
             .NotEmpty()
-            .WithMessage("File name is required")
-            .Must(BeValidFileName)
+            .WithMessage("File Path is required")
+            .Must(BeValidFilePath)
             .WithMessage("File name contains invalid characters");
 
-        RuleFor(x => x.Subfolder)
-            .MaximumLength(100)
-            .WithMessage("Subfolder name cannot exceed 100 characters")
-            .Must(BeValidSubfolderName)
-            .When(x => !string.IsNullOrEmpty(x.Subfolder))
-            .WithMessage("Subfolder name contains invalid characters");
+        RuleFor(x => x.ExpiryHours)
+            .Must(BeValidExpiryHours)
+            .WithMessage("Expiry hours must be between 1 and 168 (7 days)");
     }
 
-    private bool BeValidFileName(string fileName)
+    private bool BeValidFilePath(string filePath)
     {
-        if (string.IsNullOrEmpty(fileName)) return false;
+        if (string.IsNullOrEmpty(filePath)) return true;
 
-        var invalidChars = Path.GetInvalidFileNameChars();
-        return !fileName.Any(c => invalidChars.Contains(c));
+        var invalidChars = Path.GetInvalidPathChars();
+        return !filePath.Any(c => invalidChars.Contains(c));
     }
 
-    private bool BeValidSubfolderName(string subfolder)
+    private bool BeValidExpiryHours(int expiryHours)
     {
-        if (string.IsNullOrEmpty(subfolder)) return true;
-
-        var invalidChars = Path.GetInvalidPathChars().Concat(new[] { '/', '\\' });
-        return !subfolder.Any(c => invalidChars.Contains(c));
+        return expiryHours > 0 && expiryHours <= 168;
     }
+
 }

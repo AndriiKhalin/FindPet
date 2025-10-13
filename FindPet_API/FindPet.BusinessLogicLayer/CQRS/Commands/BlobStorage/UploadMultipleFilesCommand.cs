@@ -7,7 +7,8 @@ public record UploadMultipleFilesCommand(List<IFormFile> Files, string? Subfolde
 
 public class UploadMultipleFilesResponse
 {
-    public List<string> FileUrls { get; set; } = new();
+    public List<string> FilePaths { get; set; } = new();
+    public List<string> FileSecureUrls { get; set; } = new();
     public int SuccessfulUploads { get; set; }
     public int FailedUploads { get; set; }
     public List<string> ErrorMessages { get; set; } = new();

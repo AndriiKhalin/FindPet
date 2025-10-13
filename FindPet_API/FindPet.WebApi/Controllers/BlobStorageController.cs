@@ -66,9 +66,9 @@ namespace FindPet.WebApi.Controllers
         [HttpGet("download")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> DownloadFile([FromQuery] string fileUrl)
+        public async Task<IActionResult> DownloadFile([FromQuery] string filePath)
         {
-            var query = new GetFileQuery(fileUrl);
+            var query = new GetFileQuery(filePath);
             var result = await _mediator.Send(query);
 
             return File(result.FileStream, result.ContentType, result.FileName);
@@ -83,9 +83,9 @@ namespace FindPet.WebApi.Controllers
         [HttpGet("view")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> ViewFile([FromQuery] string fileUrl)
+        public async Task<IActionResult> ViewFile([FromQuery] string filePath)
         {
-            var query = new GetFileQuery(fileUrl);
+            var query = new GetFileQuery(filePath);
             var result = await _mediator.Send(query);
 
             Response.Headers.Add("Content-Disposition", "inline");
@@ -101,9 +101,9 @@ namespace FindPet.WebApi.Controllers
         [ProducesResponseType(200, Type = typeof(DeleteFileResponse))]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> DeleteFile([FromQuery] string fileUrl)
+        public async Task<IActionResult> DeleteFile([FromQuery] string filePath)
         {
-            var command = new DeleteFileCommand(fileUrl);
+            var command = new DeleteFileCommand(filePath);
             var result = await _mediator.Send(command);
 
             if (result.Success)
@@ -123,9 +123,9 @@ namespace FindPet.WebApi.Controllers
         [HttpHead("exists")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> CheckFileExists([FromQuery] string fileUrl)
+        public async Task<IActionResult> CheckFileExists([FromQuery] string filePath)
         {
-            var query = new CheckFileExistsQuery(fileUrl);
+            var query = new CheckFileExistsQuery(filePath);
             var result = await _mediator.Send(query);
 
             return result.Exists ? Ok() : NotFound();
@@ -140,9 +140,9 @@ namespace FindPet.WebApi.Controllers
         [HttpGet("exists")]
         [ProducesResponseType(200, Type = typeof(CheckFileExistsResponse))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetFileExistsStatus([FromQuery] string fileUrl)
+        public async Task<IActionResult> GetFileExistsStatus([FromQuery] string filePath)
         {
-            var query = new CheckFileExistsQuery(fileUrl);
+            var query = new CheckFileExistsQuery(filePath);
             var result = await _mediator.Send(query);
 
             return Ok(result);
@@ -157,9 +157,9 @@ namespace FindPet.WebApi.Controllers
         [HttpPost("url")]
         [ProducesResponseType(200, Type = typeof(GetFileUrlResponse))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetFileUrl([FromBody] FileUrlDto fileUrlDto)
+        public async Task<IActionResult> GetFileUrl([FromQuery] FileUrlDto fileUrlDto)
         {
-            var query = new GetFileUrlQuery(fileUrlDto.FileName, fileUrlDto.Subfolder);
+            var query = new GetFileUrlQuery(fileUrlDto.FilePath, fileUrlDto.ExpiryHours);
             var result = await _mediator.Send(query);
 
             return Ok(result);

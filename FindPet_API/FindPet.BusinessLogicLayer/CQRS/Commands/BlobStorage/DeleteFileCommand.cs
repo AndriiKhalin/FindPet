@@ -2,7 +2,7 @@
 
 namespace FindPet.BusinessLogicLayer.CQRS.Commands.BlobStorage;
 
-public record DeleteFileCommand(string FileUrl) : ICommand<DeleteFileResponse>;
+public record DeleteFileCommand(string FilePath) : ICommand<DeleteFileResponse>;
 
 public class DeleteFileResponse
 {

@@ -11,12 +11,12 @@ public class CheckFileExistsQueryHandler(IMediaStorageService mediaStorageServic
     {
         try
         {
-            var exists = await mediaStorageService.ImageExistsAsync(request.FileUrl);
+            var exists = await mediaStorageService.FileExistsAsync(request.FilePath);
 
             return new CheckFileExistsResponse
             {
                 Exists = exists,
-                FileUrl = request.FileUrl
+                FilePath = request.FilePath
             };
         }
         catch (Exception)
@@ -24,7 +24,7 @@ public class CheckFileExistsQueryHandler(IMediaStorageService mediaStorageServic
             return new CheckFileExistsResponse
             {
                 Exists = false,
-                FileUrl = request.FileUrl
+                FilePath = request.FilePath
             };
         }
     }

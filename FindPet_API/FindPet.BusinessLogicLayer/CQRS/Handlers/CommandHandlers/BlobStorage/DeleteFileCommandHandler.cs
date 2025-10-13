@@ -12,7 +12,7 @@ public class DeleteFileCommandHandler(IMediaStorageService mediaStorageService)
     {
         try
         {
-            var success = await mediaStorageService.DeleteImageAsync(request.FileUrl);
+            var success = await mediaStorageService.DeleteFileAsync(request.FilePath);
 
             return new DeleteFileResponse
             {

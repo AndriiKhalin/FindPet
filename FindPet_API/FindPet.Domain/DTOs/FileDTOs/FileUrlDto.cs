@@ -5,7 +5,7 @@ namespace FindPet.Domain.DTOs.FileDTOs;
 public class FileUrlDto
 {
     [Required]
-    public string FileName { get; set; } = string.Empty;
+    public string FilePath { get; set; } = string.Empty;
 
-    public string? Subfolder { get; set; }
+    public int ExpiryHours { get; set; } = 24;
 }

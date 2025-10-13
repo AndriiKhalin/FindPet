@@ -2,7 +2,7 @@
 
 namespace FindPet.BusinessLogicLayer.CQRS.Queries.BlobStorage;
 
-public record GetFileQuery(string FileUrl) : IQuery<GetFileResponse>;
+public record GetFileQuery(string FilePath) : IQuery<GetFileResponse>;
 
 public class GetFileResponse
 {

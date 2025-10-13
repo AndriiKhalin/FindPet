@@ -7,16 +7,8 @@ public class DeleteFileCommandValidator : AbstractValidator<DeleteFileCommand>
 {
     public DeleteFileCommandValidator()
     {
-        RuleFor(x => x.FileUrl)
+        RuleFor(x => x.FilePath)
             .NotEmpty()
-            .WithMessage("File URL is required")
-            .Must(BeValidUrl)
-            .WithMessage("File URL must be a valid URL");
-    }
-
-    private bool BeValidUrl(string url)
-    {
-        return Uri.TryCreate(url, UriKind.Absolute, out var uri) &&
-               (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+            .WithMessage("File Path is required");
     }
 }

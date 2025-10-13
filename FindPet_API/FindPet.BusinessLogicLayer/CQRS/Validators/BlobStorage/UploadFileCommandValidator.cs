@@ -6,7 +6,7 @@ namespace FindPet.BusinessLogicLayer.CQRS.Validators.BlobStorage;
 public class UploadFileCommandValidator : AbstractValidator<UploadFileCommand>
 {
     private const long MaxFileSize = 10 * 1024 * 1024; // 10MB
-    private readonly string[] _allowedImageTypes =
+    private readonly string[] _allowedFileTypes =
         { "image/jpeg", "image/jpg", "image/png", "image/gif", "image/bmp", "image/webp" };
 
     public UploadFileCommandValidator()
@@ -24,7 +24,7 @@ public class UploadFileCommandValidator : AbstractValidator<UploadFileCommand>
                 .WithMessage($"File size cannot exceed {MaxFileSize / (1024 * 1024)}MB");
 
             RuleFor(x => x.File.ContentType)
-                .Must(BeValidImageType)
+                .Must(BeValidFileType)
                 .WithMessage("File must be a valid image type (JPEG, PNG, GIF, BMP, or WebP)");
 
             RuleFor(x => x.File.FileName)
@@ -42,9 +42,9 @@ public class UploadFileCommandValidator : AbstractValidator<UploadFileCommand>
             .WithMessage("Subfolder name contains invalid characters");
     }
 
-    private bool BeValidImageType(string contentType)
+    private bool BeValidFileType(string contentType)
     {
-        return _allowedImageTypes.Contains(contentType.ToLower());
+        return _allowedFileTypes.Contains(contentType.ToLower());
     }
 
     private bool BeValidFileName(string fileName)

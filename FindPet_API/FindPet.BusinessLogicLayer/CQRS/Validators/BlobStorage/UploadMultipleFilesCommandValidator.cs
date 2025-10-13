@@ -8,7 +8,7 @@ public class UploadMultipleFilesCommandValidator : AbstractValidator<UploadMulti
     private const int MaxFilesCount = 10;
     private const long MaxFileSize = 10 * 1024 * 1024; // 10MB per file
     private const long MaxTotalSize = 50 * 1024 * 1024; // 50MB total
-    private readonly string[] _allowedImageTypes =
+    private readonly string[] _allowedFileTypes =
         { "image/jpeg", "image/jpg", "image/png", "image/gif", "image/bmp", "image/webp" };
 
     public UploadMultipleFilesCommandValidator()
@@ -30,7 +30,7 @@ public class UploadMultipleFilesCommandValidator : AbstractValidator<UploadMulti
             .WithMessage("File cannot be empty")
             .Must(file => file.Length <= MaxFileSize)
             .WithMessage($"Individual file size cannot exceed {MaxFileSize / (1024 * 1024)}MB")
-            .Must(file => _allowedImageTypes.Contains(file.ContentType.ToLower()))
+            .Must(file => _allowedFileTypes.Contains(file.ContentType.ToLower()))
             .WithMessage("All files must be valid image types (JPEG, PNG, GIF, BMP, or WebP)")
             .Must(file => BeValidFileName(file.FileName))
             .WithMessage("File name contains invalid characters");

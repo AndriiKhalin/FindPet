@@ -81,7 +81,7 @@ public class AdService : IAdService
         var adEntityForDelete = await GetAdAsync(adId);
 
         //_manageImage.DeletePhoto(adEntityForDelete.Photo);
-        await _mediaStorageService.DeleteImageAsync(adEntityForDelete.Photo);
+        await _mediaStorageService.DeleteFileAsync(adEntityForDelete.Photo);
 
         await _unitOfWorkRep.Ad.DeleteAsync(adId);
 
@@ -112,12 +112,9 @@ public class AdService : IAdService
 
         if (ad.Photo is not null)
         {
-            await _mediaStorageService.DeleteImageAsync(adEntity.Photo);
-            using (var stream = ad.Photo.OpenReadStream())
-            {
-                var fileName = $"{Guid.NewGuid()}_{ad.Photo.FileName}";
-                adEntity.Photo = await _mediaStorageService.UploadImageAsync(stream, fileName);
-            }
+            await _mediaStorageService.DeleteFileAsync(adEntity.Photo);
+
+            adEntity.Photo = await _mediaStorageService.UploadFileAsync(ad.Photo, adId, "ads");
         }
 
         _mapper.Map(ad, adEntity);
@@ -144,7 +141,7 @@ public class AdService : IAdService
         // Upload photo to Azure Blob Storage
         if (ad.Photo != null)
         {
-            adMap.Photo = await _mediaStorageService.UploadImageAsync(ad.Photo, adMap.Id, "ads");
+            adMap.Photo = await _mediaStorageService.UploadFileAsync(ad.Photo, adMap.Id, "ads");
         }
         adMap.DateCreateUpdate = DateTime.UtcNow;
 

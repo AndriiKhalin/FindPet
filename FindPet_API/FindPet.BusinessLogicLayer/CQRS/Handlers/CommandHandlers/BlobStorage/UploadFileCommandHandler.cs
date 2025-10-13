@@ -12,17 +12,21 @@ public class UploadFileCommandHandler(IMediaStorageService mediaStorageService)
     {
         try
         {
-            var fileUrl = await mediaStorageService.UploadImageAsync(
+            var blobName = await mediaStorageService.UploadFileAsync(
                 request.File,
                 request.EntityId,
                 request.Subfolder);
 
+            var secureFileUrl = await mediaStorageService.GetFileUrlAsync(blobName, TimeSpan.FromHours(24));
+
             return new UploadFileResponse
             {
-                FileUrl = fileUrl,
+                FilePath = blobName, // Store this in your database
+                FileSecureUrl = secureFileUrl, // Use this for immediate display
                 FileName = request.File.FileName,
                 FileSize = request.File.Length,
-                ContentType = request.File.ContentType
+                ContentType = request.File.ContentType,
+                ExpiresAt = DateTime.UtcNow.AddHours(24)
             };
         }
         catch (ArgumentException ex)

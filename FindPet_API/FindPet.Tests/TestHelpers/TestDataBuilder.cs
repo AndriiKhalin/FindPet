@@ -529,7 +529,37 @@ public static class TestDataBuilder
         public static byte[] CreateValidImageBytes()
         {
             // Create a simple valid image byte array for testing
-            return Encoding.UTF8.GetBytes("fake-image-data-for-testing");
+            //return Encoding.UTF8.GetBytes("fake-image-data-for-testing");
+            return Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==");
+            //return new byte[] {
+            //    // PNG signature
+            //    0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,
+
+            //    // IHDR chunk (13 bytes data + 12 bytes header/crc)
+            //    0x00, 0x00, 0x00, 0x0D, // Length: 13 bytes
+            //    0x49, 0x48, 0x44, 0x52, // Type: IHDR
+            //    0x00, 0x00, 0x00, 0x01, // Width: 1
+            //    0x00, 0x00, 0x00, 0x01, // Height: 1
+            //    0x08,                   // Bit depth: 8
+            //    0x02,                   // Color type: 2 (RGB)
+            //    0x00,                   // Compression: 0
+            //    0x00,                   // Filter: 0
+            //    0x00,                   // Interlace: 0
+            //    0x90, 0x77, 0x53, 0xDE, // CRC
+
+            //    // IDAT chunk (12 bytes data + 12 bytes header/crc)
+            //    0x00, 0x00, 0x00, 0x0C, // Length: 12 bytes
+            //    0x49, 0x44, 0x41, 0x54, // Type: IDAT
+            //    0x78, 0x9C,             // Zlib header
+            //    0x63, 0xF8, 0x0F, 0x00, // Compressed data (RGB: 255,255,255)
+            //    0x00, 0x01, 0x00, 0x01,
+            //    0x35, 0x5C, 0xC5, 0x9A, // CRC
+
+            //    // IEND chunk
+            //    0x00, 0x00, 0x00, 0x00, // Length: 0
+            //    0x49, 0x45, 0x4E, 0x44, // Type: IEND
+            //    0xAE, 0x42, 0x60, 0x82  // CRC
+            //};
         }
 
         public static IFormFile CreateValidImageFile(string fileName = "test-pet.jpg")

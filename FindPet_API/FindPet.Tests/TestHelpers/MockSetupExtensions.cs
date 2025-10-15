@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
-using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
 using FindPet.BusinessLogicLayer.Interfaces.IMLService;
 using FindPet.BusinessLogicLayer.Services.EntityService;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
@@ -18,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using System.Linq.Expressions;
 using System.Security.Claims;
+using FindPet.Domain.Interfaces.ILoggerService;
 
 namespace FindPet.Tests.TestHelpers;
 

@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
-using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
 using FindPet.BusinessLogicLayer.Services.EntityService;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using FindPet.DataAccessLayer.Repositories.EntityRepository;
 using FindPet.Domain.Entities;
 using FindPet.Domain.Exceptions;
+using FindPet.Domain.Interfaces.ILoggerService;
 using FindPet.Tests.TestHelpers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Routing;

@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
-using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
 using FindPet.BusinessLogicLayer.Interfaces.IMLService;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
 using FindPet.Domain.Entities;
 using FindPet.Domain.Exceptions;
+using FindPet.Domain.Interfaces.ILoggerService;
 using Microsoft.AspNetCore.Hosting;
 
 namespace FindPet.BusinessLogicLayer.Services.EntityService;

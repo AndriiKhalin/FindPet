@@ -1,8 +1,8 @@
-﻿using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
-using FindPet.BusinessLogicLayer.Interfaces.IMLService;
+﻿using FindPet.BusinessLogicLayer.Interfaces.IMLService;
 using FindPet.BusinessLogicLayer.Services.MLService;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using FindPet.Domain.Entities;
+using FindPet.Domain.Interfaces.ILoggerService;
 using FindPet.Tests.TestHelpers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;

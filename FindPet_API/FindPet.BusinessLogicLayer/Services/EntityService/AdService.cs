@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
-using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using FindPet.Domain.DTOs.EntitiesDTOs.AdDTO;
 using FindPet.Domain.Entities;
 using FindPet.Domain.Exceptions;
+using FindPet.Domain.Interfaces.ILoggerService;
 using FindPet.Media.Interfaces;
 
 namespace FindPet.BusinessLogicLayer.Services.EntityService;

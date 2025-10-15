@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
+using FindPet.Domain.Interfaces.ILoggerService;
 using NLog;
 
 namespace FindPet.BusinessLogicLayer.Services.LoggerService;

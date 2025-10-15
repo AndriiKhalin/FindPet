@@ -1,4 +1,5 @@
-﻿using FindPet.Domain.ValueObjects;
+﻿using FindPet.Domain.Interfaces.ILoggerService;
+using FindPet.Domain.ValueObjects;
 using FindPet.Media.Interfaces;
 using FindPet.Media.Services;
 using Microsoft.Extensions.Configuration;
@@ -19,8 +20,9 @@ public static class StorageServiceExtension
             var connectionString = configuration["AzureStorage:ConnectionString"];
             var containerName = configuration["AzureStorage:ContainerName"];
             var options = provider.GetRequiredService<IOptions<AzureBlobStorageOptions>>();
+            var logger = provider.GetRequiredService<ILoggerManager>();
 
-            return new AzureBlobStorageService(connectionString, options, containerName);
+            return new AzureBlobStorageService(connectionString, options, containerName, logger);
         });
     }
 }

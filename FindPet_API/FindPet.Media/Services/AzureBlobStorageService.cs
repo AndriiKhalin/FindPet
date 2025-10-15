@@ -10,6 +10,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Processing;
 using System.Text.RegularExpressions;
+using FindPet.Domain.Interfaces.ILoggerService;
 using Size = System.Drawing.Size;
 
 namespace FindPet.Media.Services;
@@ -21,15 +22,20 @@ public class AzureBlobStorageService : IMediaStorageService
     private readonly string _connectionString;
     private readonly string _containerName;
     private readonly AzureBlobStorageOptions _options;
-    //private readonly Logger<AzureBlobStorageService> _logger;
+    private readonly ILoggerManager _logger;
 
-    public AzureBlobStorageService(string connectionString, IOptions<AzureBlobStorageOptions> options, string containerName)
+    public AzureBlobStorageService(
+        string connectionString,
+        IOptions<AzureBlobStorageOptions> options,
+        string containerName,
+        ILoggerManager logger)
     {
         _options = options.Value;
         _connectionString = connectionString;
         _containerName = containerName;
         _blobServiceClient = new BlobServiceClient(_connectionString);
         _containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+        _logger = logger;
     }
 
     public async Task<bool> DeleteFileAsync(string filePath)
@@ -41,16 +47,16 @@ public class AzureBlobStorageService : IMediaStorageService
 
             var response = await blobClient.DeleteIfExistsAsync();
 
-            //if (response.Value)
-            //{
-            //    _logger.LogInformation("Successfully deleted image: {FilePath}", blobName);
-            //}
+            if (response.Value)
+            {
+                _logger.LogInfo("Successfully deleted image: {FilePath}", blobName);
+            }
 
             return response.Value;
         }
         catch (Exception ex)
         {
-            //_logger.LogError(ex, "Failed to delete image: {ImageUrl}", imageUrl);
+            _logger.LogError($"Failed to delete file: {filePath}. Error: {ex.Message}");
             return false;
         }
     }
@@ -76,7 +82,7 @@ public class AzureBlobStorageService : IMediaStorageService
         }
         catch (Exception ex)
         {
-            //_logger.LogError(ex, "Failed to download file: {FilePath}", filePath);
+            _logger.LogError($"Failed to download file: {filePath}. Error: {ex.Message}");
             throw new InvalidOperationException($"Failed to download file: {filePath}", ex);
         }
     }
@@ -98,7 +104,7 @@ public class AzureBlobStorageService : IMediaStorageService
         }
         catch (Exception ex)
         {
-            //_logger.LogError(ex, "Failed to get image: {ImageUrl}", imageUrl);
+            _logger.LogError($"Failed to get file: {filePath}. Error: {ex.Message}");
             return Stream.Null;
         }
     }

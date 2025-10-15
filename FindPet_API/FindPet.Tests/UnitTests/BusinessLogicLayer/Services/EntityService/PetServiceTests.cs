@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
-using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
 using FindPet.BusinessLogicLayer.Interfaces.IMLService;
 using FindPet.BusinessLogicLayer.Services.EntityService;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
@@ -10,6 +9,7 @@ using FindPet.Tests.TestHelpers;
 using Microsoft.AspNetCore.Hosting;
 using Moq;
 using System.Drawing;
+using FindPet.Domain.Interfaces.ILoggerService;
 using Xunit;
 
 namespace FindPet.Tests.UnitTests.BusinessLogicLayer.Services.EntityService;

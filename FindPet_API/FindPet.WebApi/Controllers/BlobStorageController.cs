@@ -58,17 +58,17 @@ namespace FindPet.WebApi.Controllers
         }
 
         /// <summary>
-        /// Download a file from blob storage
+        /// Download a file from blob storage (as attachment)
         /// </summary>
-        /// <param name="fileUrl">The URL of the file to download</param>
-        /// <returns>File stream</returns>
+        /// <param name="filePath">The path of the file to download</param>
+        /// <returns>File stream for download</returns>
         [AllowAnonymous]
         [HttpGet("download")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> DownloadFile([FromQuery] string filePath)
         {
-            var query = new GetFileQuery(filePath);
+            var query = new DownloadFileQuery(filePath);
             var result = await _mediator.Send(query);
 
             return File(result.FileStream, result.ContentType, result.FileName);
@@ -77,7 +77,7 @@ namespace FindPet.WebApi.Controllers
         /// <summary>
         /// Get file stream for viewing (inline display)
         /// </summary>
-        /// <param name="fileUrl">The URL of the file to view</param>
+        /// <param name="filePath">The path of the file to view</param>
         /// <returns>File stream for inline display</returns>
         [AllowAnonymous]
         [HttpGet("view")]
@@ -95,7 +95,7 @@ namespace FindPet.WebApi.Controllers
         /// <summary>
         /// Delete a file from blob storage
         /// </summary>
-        /// <param name="fileUrl">The URL of the file to delete</param>
+        /// <param name="filePath">The path of the file to delete</param>
         /// <returns>Deletion result</returns>
         [HttpDelete]
         [ProducesResponseType(200, Type = typeof(DeleteFileResponse))]
@@ -117,7 +117,7 @@ namespace FindPet.WebApi.Controllers
         /// <summary>
         /// Check if a file exists in blob storage
         /// </summary>
-        /// <param name="fileUrl">The URL of the file to check</param>
+        /// <param name="filePath">The path of the file to check</param>
         /// <returns>File existence status</returns>
         [AllowAnonymous]
         [HttpHead("exists")]
@@ -134,7 +134,7 @@ namespace FindPet.WebApi.Controllers
         /// <summary>
         /// Get file existence status with detailed response
         /// </summary>
-        /// <param name="fileUrl">The URL of the file to check</param>
+        /// <param name="filePath">The path of the file to check</param>
         /// <returns>File existence details</returns>
         [AllowAnonymous]
         [HttpGet("exists")]

@@ -11,31 +11,25 @@ public class UploadMultipleFilesCommandHandler(IMediaStorageService mediaStorage
     public async Task<UploadMultipleFilesResponse> Handle(UploadMultipleFilesCommand request, CancellationToken cancellationToken)
     {
         var response = new UploadMultipleFilesResponse();
-        var uploadTasks = new List<Task<(bool success, string? filePath, string? secureUrl, string? error)>>();
-
-        foreach (var file in request.Files)
+        try
         {
-            uploadTasks.Add(UploadSingleFileAsync(file, request.EntityId, request.Subfolder));
+            // Use the UploadMultipleFilesAsync method for batch upload
+            var filePaths = await mediaStorageService.UploadMultipleFilesAsync(request.Files, request.EntityId, request.Subfolder);
+
+            // Generate secure URLs for each file
+            var secureUrlTasks = filePaths.Select(path => mediaStorageService.GetFileUrlAsync(path, TimeSpan.FromHours(24)));
+            var secureUrls = await Task.WhenAll(secureUrlTasks);
+
+            // Add results to response
+            response.FilePaths.AddRange(filePaths);
+            response.FileSecureUrls.AddRange(secureUrls);
+            response.SuccessfulUploads = filePaths.Count;
         }
-
-        var results = await Task.WhenAll(uploadTasks);
-
-        foreach (var result in results)
+        catch (Exception ex)
         {
-            if (result.success && !string.IsNullOrEmpty(result.filePath) && !string.IsNullOrEmpty(result.secureUrl))
-            {
-                response.FilePaths.Add(result.filePath);
-                response.FileSecureUrls.Add(result.secureUrl);
-                response.SuccessfulUploads++;
-            }
-            else
-            {
-                response.FailedUploads++;
-                if (!string.IsNullOrEmpty(result.error))
-                {
-                    response.ErrorMessages.Add(result.error);
-                }
-            }
+            // Handle batch upload failure
+            response.FailedUploads = request.Files.Count;
+            response.ErrorMessages.Add($"Batch upload failed: {ex.Message}");
         }
 
         return response;

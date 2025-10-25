@@ -59,8 +59,7 @@ public class AdController : ControllerBase
     [HttpPost]
     [ProducesResponseType(201, Type = typeof(AdDto))]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> CreateAd([FromQuery] Guid petId, [FromQuery] Guid userId,
-        [FromForm] AdForCreateDto adCreate)
+    public async Task<IActionResult> CreateAd([FromQuery] Guid petId, [FromQuery] Guid userId, AdForCreateDto adCreate)
     {
         var createdAd = await _mediator.Send(new CreateAdCommand(petId, userId, adCreate));
 
@@ -71,7 +70,7 @@ public class AdController : ControllerBase
     [ProducesResponseType(204)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> UpdateAd(Guid adId, [FromForm] AdForUpdateDto adUpdate)
+    public async Task<IActionResult> UpdateAd(Guid adId, AdForUpdateDto adUpdate)
     {
         await _mediator.Send(new UpdateAdCommand(adId, adUpdate));
 

@@ -1,33 +1,252 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+using System.Security.Claims;
+using AutoMapper;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
 using FindPet.BusinessLogicLayer.Interfaces.IMLService;
 using FindPet.BusinessLogicLayer.Services.EntityService;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
-using FindPet.DataAccessLayer.Repositories.EntityRepository;
 using FindPet.Domain.DTOs.EntitiesDTOs.AdDTO;
 using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
 using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
 using FindPet.Domain.Entities;
-using ICSharpCode.SharpZipLib.Zip;
+using FindPet.Domain.Interfaces.ILoggerService;
+using FindPet.Media.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using System.Linq.Expressions;
-using System.Security.Claims;
-using FindPet.Domain.Interfaces.ILoggerService;
+using Moq.Language.Flow;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace FindPet.Tests.TestHelpers;
 
 public static class MockSetupExtensions
 {
+    #region Test Service Factory Methods
+
+    public static UserService CreateUserServiceForTesting(
+        IEnumerable<User> users = null,
+        User singleUser = null,
+        bool userExists = true)
+    {
+        var mockUow = new Mock<IUnitOfWork>();
+        var mockMapper = new Mock<IMapper>();
+        var mockLogger = new Mock<ILoggerManager>();
+        var mockMediaStorageServer = new Mock<IMediaStorageService>();
+
+        var mockUserRepo = new Mock<IUserRepository<User>>();
+
+        if (users != null) mockUserRepo.Setup(r => r.Gets()).Returns(users);
+
+        if (singleUser != null)
+        {
+            mockUserRepo.Setup(r => r.GetAsync(singleUser.Id)).ReturnsAsync(singleUser);
+            mockUserRepo.Setup(r => r.GetUserAsync(singleUser.Name)).ReturnsAsync(singleUser);
+        }
+
+        mockUserRepo.Setup(r => r.IsExistAsync(It.IsAny<Guid>())).ReturnsAsync(userExists);
+        mockUserRepo.Setup(r => r.IsExistAsync(It.IsAny<string>())).ReturnsAsync(userExists);
+
+        mockUow.Setup(u => u.User).Returns(mockUserRepo.Object);
+        mockUow.Setup(u => u.SaveAsync()).Returns(Task.CompletedTask);
+
+        if (singleUser != null) mockMapper.Setup(m => m.Map<User>(It.IsAny<UserForCreateDto>())).Returns(singleUser);
+
+        return new UserService(mockUow.Object, mockMapper.Object, mockLogger.Object, mockMediaStorageServer.Object);
+    }
+
+    // Similar factory methods could be created for PetService, AdService, etc.
+
+    #endregion
+
+    public static Mock<IManageImage<User>> SetupImageServiceMock()
+    {
+        return new Mock<IManageImage<User>>();
+    }
+
+    //public static void SetupGetUsers(this Mock<IUserRepository<User>> userRepoMock, IEnumerable<User> users)
+    //{
+    //    userRepoMock.Setup(x => x.Gets())
+    //               .Returns(users);
+    //}
+
+    public static void VerifyImageUpload(this Mock<IManageImage<User>> imageServiceMock, string photo, Guid userId)
+    {
+        imageServiceMock.Verify(x => x.UploadPhotoAsync(photo, userId), Times.Once);
+    }
+
+    public static void VerifyImageDelete(this Mock<IManageImage<User>> imageServiceMock, string photo)
+    {
+        imageServiceMock.Verify(x => x.DeletePhoto(photo), Times.Once);
+    }
+
+    //---------------------------------------------------------
+
+
+    // Generic repository setup extensions
+
+    public static Mock<IBaseRepository<T>> SetupExistsByPredicate<T>(this Mock<IBaseRepository<T>> mockRepo,
+        bool exists) where T : class
+    {
+        mockRepo.Setup(repo => repo.IsExistAsync(It.IsAny<Expression<Func<T, bool>>>()))
+            .ReturnsAsync(exists);
+        return mockRepo;
+    }
+
+    // UnitOfWork setup extensions
+    public static Mock<IUnitOfWork> SetupUserRepository(this Mock<IUnitOfWork> mockUow,
+        Mock<IUserRepository<User>> mockRepo)
+    {
+        mockUow.Setup(uow => uow.User).Returns(mockRepo.Object);
+        return mockUow;
+    }
+
+    public static Mock<IUnitOfWork> SetupSaveAsync(this Mock<IUnitOfWork> mockUow)
+    {
+        mockUow.Setup(uow => uow.SaveAsync()).Returns(Task.CompletedTask);
+        return mockUow;
+    }
+
+    #region Controller Testing Mocks
+
+    /// <summary>
+    ///     Controller-specific mock setups
+    /// </summary>
+    public static class ControllerMocks
+    {
+        public static void SetupControllerContext<T>(T controller, ClaimsPrincipal user = null)
+            where T : ControllerBase
+        {
+            var httpContext = InfrastructureMocks.SetupHttpContext(user).Object;
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+        }
+
+        public static ClaimsPrincipal CreateTestUserPrincipal(Guid? userId = null, string role = "User")
+        {
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, (userId ?? Guid.NewGuid()).ToString()),
+                new Claim(ClaimTypes.Email, TestDataBuilder.TestConstants.DEFAULT_EMAIL),
+                new Claim(ClaimTypes.Name, TestDataBuilder.TestConstants.DEFAULT_USERNAME),
+                new Claim(ClaimTypes.Role, role)
+            };
+
+            return new ClaimsPrincipal(new ClaimsIdentity(claims, "Test"));
+        }
+    }
+
+    #endregion
+
+
+    #region Scenario-Based Mock Builders
+
+    /// <summary>
+    ///     Pre-configured mock scenarios for common testing situations
+    /// </summary>
+    public static class ScenarioMocks
+    {
+        // Success Scenarios
+        public static class Success
+        {
+            public static Mock<IUnitOfWork> CreateUserFlow()
+            {
+                var users = TestDataBuilder.BuildUserList();
+                var unitOfWork = SetupUnitOfWorkMock();
+                var userRepo = UserRepositoryMocks.SetupUserRepository(users);
+
+                unitOfWork.Setup(x => x.User).Returns(userRepo.Object);
+                return unitOfWork;
+            }
+
+            public static Mock<IUnitOfWork> CreatePetFlow()
+            {
+                var pets = TestDataBuilder.BuildPetList();
+                var unitOfWork = SetupUnitOfWorkMock();
+                var petRepo = PetRepositoryMocks.SetupPetRepository(pets);
+
+                unitOfWork.Setup(x => x.Pet).Returns(petRepo.Object);
+                return unitOfWork;
+            }
+
+            public static Mock<IUnitOfWork> CreateAdFlow()
+            {
+                var ads = TestDataBuilder.BuildAdList();
+                var unitOfWork = SetupUnitOfWorkMock();
+                var adRepo = AdRepositoryMocks.SetupAdRepository(ads);
+
+                unitOfWork.Setup(x => x.Ad).Returns(adRepo.Object);
+                return unitOfWork;
+            }
+        }
+
+        // Failure Scenarios
+        public static class Failure
+        {
+            public static Mock<IUnitOfWork> CreateUserNotFound()
+            {
+                var unitOfWork = SetupUnitOfWorkMock();
+                var userRepo = RepositoryMocks.SetupForFailure<User>();
+
+                unitOfWork.Setup(x => x.User).Returns(userRepo.As<IUserRepository<User>>().Object);
+                return unitOfWork;
+            }
+
+            public static Mock<IUnitOfWork> CreateDatabaseError()
+            {
+                var unitOfWork = new Mock<IUnitOfWork>();
+                unitOfWork.Setup(x => x.SaveAsync()).ThrowsAsync(new Exception("Database connection failed"));
+                return unitOfWork;
+            }
+
+            public static Mock<IUserService> CreateEmailAlreadyExists()
+            {
+                var mock = ServiceMocks.SetupUserService();
+                mock.Setup(x => x.IsEmailRegisteredAsync(It.IsAny<string>())).ReturnsAsync(true);
+                mock.Setup(x => x.CreateUserAsync(It.IsAny<UserForCreateDto>()))
+                    .ThrowsAsync(new InvalidOperationException("Email already exists"));
+                return mock;
+            }
+        }
+
+        // Complex Integration Scenarios
+        public static class Integration
+        {
+            public static (Mock<IUnitOfWork>, Mock<IMLService>, Mock<IManageImage<Pet>>) CreatePetWithMLPrediction()
+            {
+                var unitOfWork = Success.CreatePetFlow();
+                var mlService = ServiceMocks.SetupMLService();
+                var imageService = ServiceMocks.SetupImageService<Pet>();
+
+                return (unitOfWork, mlService, imageService);
+            }
+
+            public static Mock<IUnitOfWork> CreateUserWithPetsAndAds()
+            {
+                var user = TestDataBuilder.BuildBasicUser();
+                var pets = TestDataBuilder.BuildPetList(3, user.Id);
+                var ads = TestDataBuilder.BuildAdList(5, user.Id);
+
+                var unitOfWork = SetupUnitOfWorkMock();
+                var userRepo = UserRepositoryMocks.SetupForUserWithRelations(user, pets, ads);
+
+                unitOfWork.Setup(x => x.User).Returns(userRepo.Object);
+                return unitOfWork;
+            }
+        }
+    }
+
+    #endregion
 
     #region Generic Mock Factory
 
     /// <summary>
-    /// Creates a basic mock with common setup
+    ///     Creates a basic mock with common setup
     /// </summary>
     public static Mock<T> CreateMock<T>() where T : class
     {
@@ -35,7 +254,7 @@ public static class MockSetupExtensions
     }
 
     /// <summary>
-    /// Creates a mock and applies configuration
+    ///     Creates a mock and applies configuration
     /// </summary>
     public static Mock<T> CreateMockWith<T>(Action<Mock<T>> configure) where T : class
     {
@@ -49,7 +268,7 @@ public static class MockSetupExtensions
     #region Unit of Work Mocks
 
     /// <summary>
-    /// Sets up a complete UnitOfWork mock with all repositories
+    ///     Sets up a complete UnitOfWork mock with all repositories
     /// </summary>
     public static Mock<IUnitOfWork> SetupUnitOfWorkMock()
     {
@@ -65,9 +284,10 @@ public static class MockSetupExtensions
     }
 
     /// <summary>
-    /// Sets up UnitOfWork with specific repository
+    ///     Sets up UnitOfWork with specific repository
     /// </summary>
-    public static Mock<IUnitOfWork> SetupUnitOfWorkWith<TRepo>(Mock<TRepo> repository, Expression<Func<IUnitOfWork, TRepo>> propertySelector) where TRepo : class
+    public static Mock<IUnitOfWork> SetupUnitOfWorkWith<TRepo>(Mock<TRepo> repository,
+        Expression<Func<IUnitOfWork, TRepo>> propertySelector) where TRepo : class
     {
         var mock = new Mock<IUnitOfWork>();
         mock.Setup(propertySelector).Returns(repository.Object);
@@ -81,19 +301,22 @@ public static class MockSetupExtensions
     #region Repository Mock Extensions
 
     // Generic repository setup extensions
-    public static Mock<IBaseRepository<T>> SetupGets<T>(this Mock<IBaseRepository<T>> mockRepo, List<T> entities) where T : class
+    public static Mock<IBaseRepository<T>> SetupGets<T>(this Mock<IBaseRepository<T>> mockRepo, List<T> entities)
+        where T : class
     {
         mockRepo.Setup(repo => repo.Gets()).Returns(entities);
         return mockRepo;
     }
 
-    public static Mock<IBaseRepository<T>> SetupGet<T>(this Mock<IBaseRepository<T>> mockRepo, Guid id, T entity) where T : class
+    public static Mock<IBaseRepository<T>> SetupGet<T>(this Mock<IBaseRepository<T>> mockRepo, Guid id, T entity)
+        where T : class
     {
         mockRepo.Setup(repo => repo.GetAsync(id)).ReturnsAsync(entity);
         return mockRepo;
     }
 
-    public static Mock<IBaseRepository<T>> SetupExists<T>(this Mock<IBaseRepository<T>> mockRepo, Guid id, bool exists) where T : class
+    public static Mock<IBaseRepository<T>> SetupExists<T>(this Mock<IBaseRepository<T>> mockRepo, Guid id, bool exists)
+        where T : class
     {
         mockRepo.Setup(repo => repo.IsExistAsync(id)).ReturnsAsync(exists);
         return mockRepo;
@@ -121,7 +344,8 @@ public static class MockSetupExtensions
         return mockRepo;
     }
 
-    public static Mock<IBaseRepository<T>> SetupDelete<T>(this Mock<IBaseRepository<T>> mockRepo, Guid id) where T : class
+    public static Mock<IBaseRepository<T>> SetupDelete<T>(this Mock<IBaseRepository<T>> mockRepo, Guid id)
+        where T : class
     {
         mockRepo.Setup(repo => repo.DeleteAsync(id)).Returns(Task.CompletedTask);
         return mockRepo;
@@ -157,12 +381,12 @@ public static class MockSetupExtensions
     }
 
     /// <summary>
-    /// Generic repository setup for any entity
+    ///     Generic repository setup for any entity
     /// </summary>
     public static class RepositoryMocks
     {
         /// <summary>
-        /// Sets up basic CRUD operations for any repository
+        ///     Sets up basic CRUD operations for any repository
         /// </summary>
         public static Mock<IBaseRepository<T>> SetupBasicCrud<T>(
             List<T> data = null,
@@ -190,7 +414,7 @@ public static class MockSetupExtensions
         }
 
         /// <summary>
-        /// Sets up repository with predefined data
+        ///     Sets up repository with predefined data
         /// </summary>
         public static Mock<IBaseRepository<T>> SetupWithData<T>(List<T> data) where T : class
         {
@@ -198,7 +422,7 @@ public static class MockSetupExtensions
         }
 
         /// <summary>
-        /// Sets up repository for failure scenarios
+        ///     Sets up repository for failure scenarios
         /// </summary>
         public static Mock<IBaseRepository<T>> SetupForFailure<T>() where T : class
         {
@@ -221,19 +445,22 @@ public static class MockSetupExtensions
         return new Mock<IUserRepository<User>>();
     }
 
-    public static Mock<IUserRepository<User>> SetupGetUser(this Mock<IUserRepository<User>> mockRepo, Guid userId, User user)
+    public static Mock<IUserRepository<User>> SetupGetUser(this Mock<IUserRepository<User>> mockRepo, Guid userId,
+        User user)
     {
         mockRepo.Setup(repo => repo.GetAsync(userId)).ReturnsAsync(user);
         return mockRepo;
     }
 
-    public static Mock<IUserRepository<User>> SetupGetUserByName(this Mock<IUserRepository<User>> mockRepo, string userName, User user)
+    public static Mock<IUserRepository<User>> SetupGetUserByName(this Mock<IUserRepository<User>> mockRepo,
+        string userName, User user)
     {
         mockRepo.Setup(repo => repo.GetUserAsync(userName)).ReturnsAsync(user);
         return mockRepo;
     }
 
-    public static Mock<IUserRepository<User>> SetupGetUsers(this Mock<IUserRepository<User>> mockRepo, IEnumerable<User> users)
+    public static Mock<IUserRepository<User>> SetupGetUsers(this Mock<IUserRepository<User>> mockRepo,
+        IEnumerable<User> users)
     {
         mockRepo.Setup(repo => repo.Gets()).Returns(users);
         return mockRepo;
@@ -251,7 +478,8 @@ public static class MockSetupExtensions
             .ReturnsAsync(exists);
     }
 
-    public static Mock<IUserRepository<User>> SetupUserExistsByPredicate(this Mock<IUserRepository<User>> mockRepo, bool exists)
+    public static Mock<IUserRepository<User>> SetupUserExistsByPredicate(this Mock<IUserRepository<User>> mockRepo,
+        bool exists)
     {
         mockRepo.Setup(repo => repo.IsExistAsync(It.IsAny<Expression<Func<User, bool>>>()))
             .ReturnsAsync(exists);
@@ -271,13 +499,13 @@ public static class MockSetupExtensions
     }
 
     /// <summary>
-    /// Comprehensive User repository mock setup
+    ///     Comprehensive User repository mock setup
     /// </summary>
     public static class UserRepositoryMocks
     {
         public static Mock<IUserRepository<User>> SetupUserRepository(List<User> users = null)
         {
-            users ??= TestDataBuilder.BuildUserList(3);
+            users ??= TestDataBuilder.BuildUserList();
             var mock = RepositoryMocks.SetupBasicCrud(users, users.FirstOrDefault()).As<IUserRepository<User>>();
 
             // User-specific methods
@@ -314,7 +542,8 @@ public static class MockSetupExtensions
         //    return mock;
         //}
 
-        public static Mock<IUserRepository<User>> SetupForUserWithRelations(User user, List<Pet> pets = null, List<Ad> ads = null)
+        public static Mock<IUserRepository<User>> SetupForUserWithRelations(User user, List<Pet> pets = null,
+            List<Ad> ads = null)
         {
             var mock = new Mock<IUserRepository<User>>();
 
@@ -364,20 +593,21 @@ public static class MockSetupExtensions
         return mockRepo;
     }
 
-    public static Mock<IPetRepository> SetupPetExistsByName(this Mock<IPetRepository> mockRepo, string petName, bool exists)
+    public static Mock<IPetRepository> SetupPetExistsByName(this Mock<IPetRepository> mockRepo, string petName,
+        bool exists)
     {
         mockRepo.Setup(repo => repo.IsExistAsync(petName)).ReturnsAsync(exists);
         return mockRepo;
     }
 
     /// <summary>
-    /// Comprehensive Pet repository mock setup
+    ///     Comprehensive Pet repository mock setup
     /// </summary>
     public static class PetRepositoryMocks
     {
         public static Mock<IPetRepository> SetupPetRepository(List<Pet> pets = null)
         {
-            pets ??= TestDataBuilder.BuildPetList(3);
+            pets ??= TestDataBuilder.BuildPetList();
             var mock = RepositoryMocks.SetupBasicCrud(pets, pets.FirstOrDefault()).As<IPetRepository>();
 
             // Pet-specific methods
@@ -413,7 +643,7 @@ public static class MockSetupExtensions
             //    .ReturnsAsync(TestDataBuilder.BuildPetList(3));
 
             var mock = new Mock<IPetRepository>();
-            var pets = TestDataBuilder.BuildPetList(3);
+            var pets = TestDataBuilder.BuildPetList();
             mock.Setup(x => x.Gets()).Returns(pets);
             return mock;
         }
@@ -459,13 +689,13 @@ public static class MockSetupExtensions
     }
 
     /// <summary>
-    /// Comprehensive Ad repository mock setup
+    ///     Comprehensive Ad repository mock setup
     /// </summary>
     public static class AdRepositoryMocks
     {
         public static Mock<IAdRepository> SetupAdRepository(List<Ad> ads = null)
         {
-            ads ??= TestDataBuilder.BuildAdList(3);
+            ads ??= TestDataBuilder.BuildAdList();
             var mock = RepositoryMocks.SetupBasicCrud(ads, ads.FirstOrDefault()).As<IAdRepository>();
 
             // Ad-specific methods
@@ -508,8 +738,8 @@ public static class MockSetupExtensions
             //mock.Setup(x => x.GetAdsInRadiusAsync(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>()))
             //    .ReturnsAsync(locationAds);
 
-            mock.Setup(x => x.IsExistAsync(It.Is<Expression<Func<Ad, bool>>>(
-                    expr => expr.ToString().Contains("Location"))))
+            mock.Setup(x =>
+                    x.IsExistAsync(It.Is<Expression<Func<Ad, bool>>>(expr => expr.ToString().Contains("Location"))))
                 .ReturnsAsync(locationAds.Any());
 
             return mock;
@@ -545,7 +775,8 @@ public static class MockSetupExtensions
         return mockService;
     }
 
-    public static Mock<IUserService> SetupCreateUser(this Mock<IUserService> mockService, UserForCreateDto dto, User createdUser)
+    public static Mock<IUserService> SetupCreateUser(this Mock<IUserService> mockService, UserForCreateDto dto,
+        User createdUser)
     {
         mockService.Setup(s => s.CreateUserAsync(It.Is<UserForCreateDto>(x =>
             x.Name == dto.Name &&
@@ -560,7 +791,7 @@ public static class MockSetupExtensions
         return mockService;
     }
 
-    public static Moq.Language.Flow.ISetup<IUserService, Task> SetupDeleteUserAsync(
+    public static ISetup<IUserService, Task> SetupDeleteUserAsync(
         this Mock<IUserService> mock, Guid userId)
     {
         return mock.Setup(x => x.DeleteUserAsync(userId));
@@ -590,7 +821,8 @@ public static class MockSetupExtensions
         return mockService;
     }
 
-    public static Mock<IPetService> SetupCreatePet(this Mock<IPetService> mockService, Guid userId, PetForCreateDto dto, Pet createdPet)
+    public static Mock<IPetService> SetupCreatePet(this Mock<IPetService> mockService, Guid userId, PetForCreateDto dto,
+        Pet createdPet)
     {
         mockService.Setup(s => s.CreatePetAsync(userId, It.Is<PetForCreateDto>(x => x.Nickname == dto.Nickname)))
             .ReturnsAsync(createdPet);
@@ -628,9 +860,11 @@ public static class MockSetupExtensions
         return mockService;
     }
 
-    public static Mock<IAdService> SetupCreateAd(this Mock<IAdService> mockService, Guid petId, Guid userId, AdForCreateDto dto, Ad createdAd)
+    public static Mock<IAdService> SetupCreateAd(this Mock<IAdService> mockService, Guid petId, Guid userId,
+        AdForCreateDto dto, Ad createdAd)
     {
-        mockService.Setup(s => s.CreateAdAsync(petId, userId, It.Is<AdForCreateDto>(x => x.Description == dto.Description)))
+        mockService.Setup(s =>
+                s.CreateAdAsync(petId, userId, It.Is<AdForCreateDto>(x => x.Description == dto.Description)))
             .ReturnsAsync(createdAd);
         return mockService;
     }
@@ -649,14 +883,14 @@ public static class MockSetupExtensions
     }
 
     /// <summary>
-    /// Service layer mock setups
+    ///     Service layer mock setups
     /// </summary>
     public static class ServiceMocks
     {
         // User Service Mocks
         public static Mock<IUserService> SetupUserService(List<User> users = null)
         {
-            users ??= TestDataBuilder.BuildUserList(3);
+            users ??= TestDataBuilder.BuildUserList();
             var mock = new Mock<IUserService>();
 
             mock.Setup(x => x.GetUsers()).Returns(users);
@@ -684,7 +918,7 @@ public static class MockSetupExtensions
         // Pet Service Mocks
         public static Mock<IPetService> SetupPetService(List<Pet> pets = null)
         {
-            pets ??= TestDataBuilder.BuildPetList(3);
+            pets ??= TestDataBuilder.BuildPetList();
             var mock = new Mock<IPetService>();
 
             mock.Setup(x => x.GetPets()).Returns(pets);
@@ -703,7 +937,7 @@ public static class MockSetupExtensions
         // Ad Service Mocks
         public static Mock<IAdService> SetupAdService(List<Ad> ads = null)
         {
-            ads ??= TestDataBuilder.BuildAdList(3);
+            ads ??= TestDataBuilder.BuildAdList();
             var mock = new Mock<IAdService>();
 
             mock.Setup(x => x.GetAds()).Returns(ads);
@@ -776,12 +1010,14 @@ public static class MockSetupExtensions
         return new Mock<IMapper>();
     }
 
-    public static void SetupMap<TSource, TDestination>(this Mock<IMapper> mockMapper, TSource source, TDestination destination)
+    public static void SetupMap<TSource, TDestination>(this Mock<IMapper> mockMapper, TSource source,
+        TDestination destination)
     {
         mockMapper.Setup(m => m.Map<TDestination>(source)).Returns(destination);
     }
 
-    public static Mock<IMapper> SetupMapToExisting<TSource, TDestination>(this Mock<IMapper> mockMapper) where TDestination : class
+    public static Mock<IMapper> SetupMapToExisting<TSource, TDestination>(this Mock<IMapper> mockMapper)
+        where TDestination : class
     {
         mockMapper.Setup(m => m.Map(It.IsAny<TSource>(), It.IsAny<TDestination>()));
         return mockMapper;
@@ -817,7 +1053,8 @@ public static class MockSetupExtensions
         return new Mock<IManageImage<T>>();
     }
 
-    public static Mock<IManageImage<T>> SetupUploadPhoto<T>(this Mock<IManageImage<T>> mockImageService, string photoPath)
+    public static Mock<IManageImage<T>> SetupUploadPhoto<T>(this Mock<IManageImage<T>> mockImageService,
+        string photoPath)
         where T : class
     {
         mockImageService.Setup(s => s.UploadPhotoAsync(It.IsAny<IFormFile>(), It.IsAny<Guid?>()))
@@ -827,7 +1064,8 @@ public static class MockSetupExtensions
         return mockImageService;
     }
 
-    public static void VerifyImageUpload<T>(this Mock<IManageImage<T>> imageServiceMock, string photo, Guid userId) where T : class
+    public static void VerifyImageUpload<T>(this Mock<IManageImage<T>> imageServiceMock, string photo, Guid userId)
+        where T : class
     {
         imageServiceMock.Verify(x => x.UploadPhotoAsync(photo, userId), Times.Once);
     }
@@ -838,7 +1076,7 @@ public static class MockSetupExtensions
     }
 
     /// <summary>
-    /// Infrastructure layer mock setups
+    ///     Infrastructure layer mock setups
     /// </summary>
     public static class InfrastructureMocks
     {
@@ -864,7 +1102,7 @@ public static class MockSetupExtensions
                 .Returns((PetForCreateDto dto) => TestDataBuilder.BuildBasicPet());
 
             mock.Setup(x => x.Map<PetDto>(It.IsAny<Pet>()))
-                .Returns((Pet pet) => new PetDto()
+                .Returns((Pet pet) => new PetDto
                 {
                     Id = pet.Id,
                     Nickname = pet.Nickname,
@@ -876,7 +1114,7 @@ public static class MockSetupExtensions
                 .Returns((AdForCreateDto dto) => TestDataBuilder.BuildAd());
 
             mock.Setup(x => x.Map<AdDto>(It.IsAny<Ad>()))
-                .Returns((Ad ad) => new AdDto()
+                .Returns((Ad ad) => new AdDto
                 {
                     Id = ad.Id,
                     Description = ad.Description,
@@ -932,8 +1170,9 @@ public static class MockSetupExtensions
                 claimsFactory.Object,
                 null, null, null, null);
 
-            mock.Setup(x => x.PasswordSignInAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))
-                .ReturnsAsync(Microsoft.AspNetCore.Identity.SignInResult.Success);
+            mock.Setup(x =>
+                    x.PasswordSignInAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))
+                .ReturnsAsync(SignInResult.Success);
 
             return mock;
         }
@@ -969,7 +1208,8 @@ public static class MockSetupExtensions
         return mediatorMock;
     }
 
-    public static Mock<IMediator> SetupSend<TRequest, TResponse>(this Mock<IMediator> mediatorMock, Func<TRequest, bool> match, TResponse response)
+    public static Mock<IMediator> SetupSend<TRequest, TResponse>(this Mock<IMediator> mediatorMock,
+        Func<TRequest, bool> match, TResponse response)
         where TRequest : IRequest<TResponse>
     {
         mediatorMock.Setup(m => m.Send(It.Is<TRequest>(r => match(r)), It.IsAny<CancellationToken>()))
@@ -989,18 +1229,11 @@ public static class MockSetupExtensions
         {
             var claims = new List<Claim>();
 
-            if (userId != null)
-            {
-                claims.Add(new Claim(ClaimTypes.NameIdentifier, userId));
-            }
+            if (userId != null) claims.Add(new Claim(ClaimTypes.NameIdentifier, userId));
 
             if (roles != null)
-            {
                 foreach (var role in roles)
-                {
                     claims.Add(new Claim(ClaimTypes.Role, role));
-                }
-            }
 
             var identity = new ClaimsIdentity(claims, "TestAuth");
             user = new ClaimsPrincipal(identity);
@@ -1020,139 +1253,6 @@ public static class MockSetupExtensions
         fileMock.Setup(f => f.Length).Returns(length);
 
         return fileMock;
-    }
-
-    #endregion
-
-    #region Controller Testing Mocks
-
-    /// <summary>
-    /// Controller-specific mock setups
-    /// </summary>
-    public static class ControllerMocks
-    {
-        public static void SetupControllerContext<T>(T controller, ClaimsPrincipal user = null)
-            where T : Microsoft.AspNetCore.Mvc.ControllerBase
-        {
-            var httpContext = InfrastructureMocks.SetupHttpContext(user).Object;
-            controller.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext
-            {
-                HttpContext = httpContext
-            };
-        }
-
-        public static ClaimsPrincipal CreateTestUserPrincipal(Guid? userId = null, string role = "User")
-        {
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, (userId ?? Guid.NewGuid()).ToString()),
-                new Claim(ClaimTypes.Email, TestDataBuilder.TestConstants.DEFAULT_EMAIL),
-                new Claim(ClaimTypes.Name, TestDataBuilder.TestConstants.DEFAULT_USERNAME),
-                new Claim(ClaimTypes.Role, role)
-            };
-
-            return new ClaimsPrincipal(new ClaimsIdentity(claims, "Test"));
-        }
-    }
-
-    #endregion
-
-
-    #region Scenario-Based Mock Builders
-
-    /// <summary>
-    /// Pre-configured mock scenarios for common testing situations
-    /// </summary>
-    public static class ScenarioMocks
-    {
-        // Success Scenarios
-        public static class Success
-        {
-            public static Mock<IUnitOfWork> CreateUserFlow()
-            {
-                var users = TestDataBuilder.BuildUserList(3);
-                var unitOfWork = SetupUnitOfWorkMock();
-                var userRepo = UserRepositoryMocks.SetupUserRepository(users);
-
-                unitOfWork.Setup(x => x.User).Returns(userRepo.Object);
-                return unitOfWork;
-            }
-
-            public static Mock<IUnitOfWork> CreatePetFlow()
-            {
-                var pets = TestDataBuilder.BuildPetList(3);
-                var unitOfWork = SetupUnitOfWorkMock();
-                var petRepo = PetRepositoryMocks.SetupPetRepository(pets);
-
-                unitOfWork.Setup(x => x.Pet).Returns(petRepo.Object);
-                return unitOfWork;
-            }
-
-            public static Mock<IUnitOfWork> CreateAdFlow()
-            {
-                var ads = TestDataBuilder.BuildAdList(3);
-                var unitOfWork = SetupUnitOfWorkMock();
-                var adRepo = AdRepositoryMocks.SetupAdRepository(ads);
-
-                unitOfWork.Setup(x => x.Ad).Returns(adRepo.Object);
-                return unitOfWork;
-            }
-        }
-
-        // Failure Scenarios
-        public static class Failure
-        {
-            public static Mock<IUnitOfWork> CreateUserNotFound()
-            {
-                var unitOfWork = SetupUnitOfWorkMock();
-                var userRepo = RepositoryMocks.SetupForFailure<User>();
-
-                unitOfWork.Setup(x => x.User).Returns(userRepo.As<IUserRepository<User>>().Object);
-                return unitOfWork;
-            }
-
-            public static Mock<IUnitOfWork> CreateDatabaseError()
-            {
-                var unitOfWork = new Mock<IUnitOfWork>();
-                unitOfWork.Setup(x => x.SaveAsync()).ThrowsAsync(new Exception("Database connection failed"));
-                return unitOfWork;
-            }
-
-            public static Mock<IUserService> CreateEmailAlreadyExists()
-            {
-                var mock = ServiceMocks.SetupUserService();
-                mock.Setup(x => x.IsEmailRegisteredAsync(It.IsAny<string>())).ReturnsAsync(true);
-                mock.Setup(x => x.CreateUserAsync(It.IsAny<UserForCreateDto>()))
-                    .ThrowsAsync(new InvalidOperationException("Email already exists"));
-                return mock;
-            }
-        }
-
-        // Complex Integration Scenarios
-        public static class Integration
-        {
-            public static (Mock<IUnitOfWork>, Mock<IMLService>, Mock<IManageImage<Pet>>) CreatePetWithMLPrediction()
-            {
-                var unitOfWork = Success.CreatePetFlow();
-                var mlService = ServiceMocks.SetupMLService();
-                var imageService = ServiceMocks.SetupImageService<Pet>();
-
-                return (unitOfWork, mlService, imageService);
-            }
-
-            public static Mock<IUnitOfWork> CreateUserWithPetsAndAds()
-            {
-                var user = TestDataBuilder.BuildBasicUser();
-                var pets = TestDataBuilder.BuildPetList(3, user.Id);
-                var ads = TestDataBuilder.BuildAdList(5, user.Id);
-
-                var unitOfWork = SetupUnitOfWorkMock();
-                var userRepo = UserRepositoryMocks.SetupForUserWithRelations(user, pets, ads);
-
-                unitOfWork.Setup(x => x.User).Returns(userRepo.Object);
-                return unitOfWork;
-            }
-        }
     }
 
     #endregion
@@ -1221,101 +1321,12 @@ public static class MockSetupExtensions
     }
 
     #endregion
-
-    #region Test Service Factory Methods
-
-    public static UserService CreateUserServiceForTesting(
-        IEnumerable<User> users = null,
-        User singleUser = null,
-        bool userExists = true)
-    {
-        var mockUow = new Mock<IUnitOfWork>();
-        var mockMapper = new Mock<IMapper>();
-        var mockImageService = new Mock<IManageImage<User>>();
-        var mockLogger = new Mock<ILoggerManager>();
-
-        var mockUserRepo = new Mock<IUserRepository<User>>();
-
-        if (users != null)
-        {
-            mockUserRepo.Setup(r => r.Gets()).Returns(users);
-        }
-
-        if (singleUser != null)
-        {
-            mockUserRepo.Setup(r => r.GetAsync(singleUser.Id)).ReturnsAsync(singleUser);
-            mockUserRepo.Setup(r => r.GetUserAsync(singleUser.Name)).ReturnsAsync(singleUser);
-        }
-
-        mockUserRepo.Setup(r => r.IsExistAsync(It.IsAny<Guid>())).ReturnsAsync(userExists);
-        mockUserRepo.Setup(r => r.IsExistAsync(It.IsAny<string>())).ReturnsAsync(userExists);
-
-        mockUow.Setup(u => u.User).Returns(mockUserRepo.Object);
-        mockUow.Setup(u => u.SaveAsync()).Returns(Task.CompletedTask);
-
-        if (singleUser != null)
-        {
-            mockMapper.Setup(m => m.Map<User>(It.IsAny<UserForCreateDto>())).Returns(singleUser);
-        }
-
-        return new UserService(mockUow.Object, mockMapper.Object, mockImageService.Object, mockLogger.Object);
-    }
-
-    // Similar factory methods could be created for PetService, AdService, etc.
-
-    #endregion
-
-    public static Mock<IManageImage<User>> SetupImageServiceMock()
-    {
-        return new Mock<IManageImage<User>>();
-    }
-
-    //public static void SetupGetUsers(this Mock<IUserRepository<User>> userRepoMock, IEnumerable<User> users)
-    //{
-    //    userRepoMock.Setup(x => x.Gets())
-    //               .Returns(users);
-    //}
-
-    public static void VerifyImageUpload(this Mock<IManageImage<User>> imageServiceMock, string photo, Guid userId)
-    {
-        imageServiceMock.Verify(x => x.UploadPhotoAsync(photo, userId), Times.Once);
-    }
-
-    public static void VerifyImageDelete(this Mock<IManageImage<User>> imageServiceMock, string photo)
-    {
-        imageServiceMock.Verify(x => x.DeletePhoto(photo), Times.Once);
-    }
-
-    //---------------------------------------------------------
-
-
-    // Generic repository setup extensions
-
-    public static Mock<IBaseRepository<T>> SetupExistsByPredicate<T>(this Mock<IBaseRepository<T>> mockRepo, bool exists) where T : class
-    {
-        mockRepo.Setup(repo => repo.IsExistAsync(It.IsAny<Expression<Func<T, bool>>>()))
-            .ReturnsAsync(exists);
-        return mockRepo;
-    }
-
-    // UnitOfWork setup extensions
-    public static Mock<IUnitOfWork> SetupUserRepository(this Mock<IUnitOfWork> mockUow, Mock<IUserRepository<User>> mockRepo)
-    {
-        mockUow.Setup(uow => uow.User).Returns(mockRepo.Object);
-        return mockUow;
-    }
-
-    public static Mock<IUnitOfWork> SetupSaveAsync(this Mock<IUnitOfWork> mockUow)
-    {
-        mockUow.Setup(uow => uow.SaveAsync()).Returns(Task.CompletedTask);
-        return mockUow;
-    }
 }
 
 #region Verification Extensions
 
 /// <summary>
-/// Mock verification helpers
+///     Mock verification helpers
 /// </summary>
 public static class VerificationExtensions
 {

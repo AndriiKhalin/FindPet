@@ -13,9 +13,9 @@ namespace FindPet.Tests.UnitTests.BusinessLogicLayer.CQRS.Handlers.QueryHandlers
 
 public class GetUserByIdQueryHandlerTests
 {
-    private readonly Mock<IUserService> _mockUserService;
-    private readonly Mock<IMapper> _mockMapper;
     private readonly GetUserByIdQueryHandler _handler;
+    private readonly Mock<IMapper> _mockMapper;
+    private readonly Mock<IUserService> _mockUserService;
 
     public GetUserByIdQueryHandlerTests()
     {
@@ -35,12 +35,12 @@ public class GetUserByIdQueryHandlerTests
         var cancellationToken = CancellationToken.None;
 
         var userEntity = TestDataBuilder.BuildBasicUser(
-            id: userId,
+            userId,
             email: "test@example.com",
             name: "John");
 
         var expectedUserDto = TestDataBuilder.BuildBasicUserDto(
-            id: userId,
+            userId,
             email: "test@example.com",
             name: "John");
 
@@ -97,8 +97,7 @@ public class GetUserByIdQueryHandlerTests
             .ThrowsAsync(new NotFoundException("User", userId));
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<NotFoundException>(
-            () => _handler.Handle(query, cancellationToken));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(query, cancellationToken));
 
         exception.Should().NotBeNull();
         exception.Message.Should().Contain($"User with ID '{userId}' was not found");
@@ -118,8 +117,8 @@ public class GetUserByIdQueryHandlerTests
         _mockUserService.Setup(x => x.GetUserByIdAsync(userId)).ThrowsAsync(expectedException);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => _handler.Handle(query, cancellationToken));
+        var exception =
+            await Assert.ThrowsAsync<InvalidOperationException>(() => _handler.Handle(query, cancellationToken));
 
         exception.Should().NotBeNull();
         exception.Message.Should().Be("Database connection failed");
@@ -163,8 +162,8 @@ public class GetUserByIdQueryHandlerTests
             .Throws(mappingException);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<AutoMapperMappingException>(
-            () => _handler.Handle(query, cancellationToken));
+        var exception =
+            await Assert.ThrowsAsync<AutoMapperMappingException>(() => _handler.Handle(query, cancellationToken));
 
         exception.Should().NotBeNull();
         exception.Message.Should().Be("Mapping configuration error");
@@ -210,8 +209,8 @@ public class GetUserByIdQueryHandlerTests
         _mockUserService.Setup(x => x.GetUserByIdAsync(userId)).ThrowsAsync(cancellationException);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<OperationCanceledException>(
-            () => _handler.Handle(query, cancellationToken));
+        var exception =
+            await Assert.ThrowsAsync<OperationCanceledException>(() => _handler.Handle(query, cancellationToken));
 
         exception.Should().NotBeNull();
         _mockUserService.Verify(x => x.GetUserByIdAsync(userId), Times.Once);
@@ -226,13 +225,13 @@ public class GetUserByIdQueryHandlerTests
         var query = new GetUserByIdQuery(userId);
         var cancellationToken = CancellationToken.None;
         var userEntity = TestDataBuilder.BuildBasicUser(
-            id: userId,
+            userId,
             email: "complex.user@example.com",
             name: "Jane",
             phone: "+1234567890"
         );
         var expectedUserDto = TestDataBuilder.BuildBasicUserDto(
-            id: userId,
+            userId,
             email: "complex.user@example.com",
             name: "Jane",
             phone: "+1234567890"

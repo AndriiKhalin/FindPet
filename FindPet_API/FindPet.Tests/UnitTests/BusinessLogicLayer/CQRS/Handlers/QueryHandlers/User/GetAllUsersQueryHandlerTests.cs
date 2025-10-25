@@ -12,14 +12,14 @@ using Xunit;
 namespace FindPet.Tests.UnitTests.BusinessLogicLayer.CQRS.Handlers.QueryHandlers.User;
 
 /// <summary>
-/// Unit tests for GetAllUsersQueryHandler covering all scenarios including success, empty collections,
-/// service failures, mapping errors, and edge cases.
+///     Unit tests for GetAllUsersQueryHandler covering all scenarios including success, empty collections,
+///     service failures, mapping errors, and edge cases.
 /// </summary>
 public class GetAllUsersQueryHandlerTests
 {
-    private readonly Mock<IUserService> _mockUserService;
-    private readonly Mock<IMapper> _mockMapper;
     private readonly GetAllUsersQueryHandler _handler;
+    private readonly Mock<IMapper> _mockMapper;
+    private readonly Mock<IUserService> _mockUserService;
     private readonly GetAllUsersQuery _query;
 
     public GetAllUsersQueryHandlerTests()
@@ -30,14 +30,50 @@ public class GetAllUsersQueryHandlerTests
         _query = new GetAllUsersQuery();
     }
 
+    #region Cancellation Token Scenarios
+
+    [Fact]
+    public async Task Handle_WithCancelledToken_ShouldNotAffectSynchronousOperations()
+    {
+        // Arrange
+        var users = TestDataBuilder.BuildUserList(2);
+        var userDtos = TestDataBuilder.BuildUserDtoList(2);
+        var cancelledToken = new CancellationToken(true);
+
+        _mockUserService.SetupGetUsers(users);
+        _mockMapper.SetupMap(users, (IEnumerable<UserDto>)userDtos);
+
+        // Act
+        var result = await _handler.Handle(_query, cancelledToken);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().HaveCount(2);
+
+        _mockUserService.Verify(x => x.GetUsers(), Times.Once);
+        _mockMapper.Verify(x => x.Map<IEnumerable<UserDto>>(users), Times.Once);
+    }
+
+    #endregion
+
+    #region Verification Helper Methods
+
+    private void VerifyNoUnexpectedCalls()
+    {
+        _mockUserService.VerifyNoOtherCalls();
+        _mockMapper.VerifyNoOtherCalls();
+    }
+
+    #endregion
+
     #region Success Scenarios
 
     [Fact]
     public async Task Handle_WithValidUsers_ShouldReturnMappedUserDtos()
     {
         // Arrange
-        var users = TestDataBuilder.BuildUserList(3);
-        var expectedUserDtos = TestDataBuilder.BuildUserDtoList(3);
+        var users = TestDataBuilder.BuildUserList();
+        var expectedUserDtos = TestDataBuilder.BuildUserDtoList();
 
         _mockUserService.SetupGetUsers(users);
         _mockMapper.SetupMap(users, (IEnumerable<UserDto>)expectedUserDtos);
@@ -135,8 +171,8 @@ public class GetAllUsersQueryHandlerTests
             .Throws(expectedException);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<BadRequestException>(
-            () => _handler.Handle(_query, CancellationToken.None));
+        var exception =
+            await Assert.ThrowsAsync<BadRequestException>(() => _handler.Handle(_query, CancellationToken.None));
 
         exception.Message.Should().Be("Invalid request parameters");
         _mockUserService.Verify(x => x.GetUsers(), Times.Once);
@@ -154,8 +190,8 @@ public class GetAllUsersQueryHandlerTests
             .Throws(expectedException);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<NotFoundException>(
-            () => _handler.Handle(_query, CancellationToken.None));
+        var exception =
+            await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(_query, CancellationToken.None));
 
         exception.Message.Should().Contain("Users");
         _mockUserService.Verify(x => x.GetUsers(), Times.Once);
@@ -173,8 +209,8 @@ public class GetAllUsersQueryHandlerTests
             .Throws(expectedException);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => _handler.Handle(_query, CancellationToken.None));
+        var exception =
+            await Assert.ThrowsAsync<InvalidOperationException>(() => _handler.Handle(_query, CancellationToken.None));
 
         exception.Message.Should().Be("Database connection failed");
         _mockUserService.Verify(x => x.GetUsers(), Times.Once);
@@ -192,8 +228,7 @@ public class GetAllUsersQueryHandlerTests
             .Throws(expectedException);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<Exception>(
-            () => _handler.Handle(_query, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(_query, CancellationToken.None));
 
         exception.Message.Should().Be("Unexpected error occurred");
         _mockUserService.Verify(x => x.GetUsers(), Times.Once);
@@ -217,8 +252,8 @@ public class GetAllUsersQueryHandlerTests
             .Throws(expectedException);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<AutoMapperMappingException>(
-            () => _handler.Handle(_query, CancellationToken.None));
+        var exception =
+            await Assert.ThrowsAsync<AutoMapperMappingException>(() => _handler.Handle(_query, CancellationToken.None));
 
         exception.Message.Should().Contain("Mapping failed");
         _mockUserService.Verify(x => x.GetUsers(), Times.Once);
@@ -238,8 +273,8 @@ public class GetAllUsersQueryHandlerTests
             .Throws(expectedException);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ArgumentNullException>(
-            () => _handler.Handle(_query, CancellationToken.None));
+        var exception =
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _handler.Handle(_query, CancellationToken.None));
 
         exception.ParamName.Should().Be("source");
         _mockUserService.Verify(x => x.GetUsers(), Times.Once);
@@ -293,32 +328,6 @@ public class GetAllUsersQueryHandlerTests
 
         // Assert
         result.Should().BeNull();
-
-        _mockUserService.Verify(x => x.GetUsers(), Times.Once);
-        _mockMapper.Verify(x => x.Map<IEnumerable<UserDto>>(users), Times.Once);
-    }
-
-    #endregion
-
-    #region Cancellation Token Scenarios
-
-    [Fact]
-    public async Task Handle_WithCancelledToken_ShouldNotAffectSynchronousOperations()
-    {
-        // Arrange
-        var users = TestDataBuilder.BuildUserList(2);
-        var userDtos = TestDataBuilder.BuildUserDtoList(2);
-        var cancelledToken = new CancellationToken(true);
-
-        _mockUserService.SetupGetUsers(users);
-        _mockMapper.SetupMap(users, (IEnumerable<UserDto>)userDtos);
-
-        // Act
-        var result = await _handler.Handle(_query, cancelledToken);
-
-        // Assert
-        result.Should().NotBeNull();
-        result.Should().HaveCount(2);
 
         _mockUserService.Verify(x => x.GetUsers(), Times.Once);
         _mockMapper.Verify(x => x.Map<IEnumerable<UserDto>>(users), Times.Once);
@@ -472,16 +481,6 @@ public class GetAllUsersQueryHandlerTests
         // Assert
         handler.Should().NotBeNull();
         handler.Should().BeOfType<GetAllUsersQueryHandler>();
-    }
-
-    #endregion
-
-    #region Verification Helper Methods
-
-    private void VerifyNoUnexpectedCalls()
-    {
-        _mockUserService.VerifyNoOtherCalls();
-        _mockMapper.VerifyNoOtherCalls();
     }
 
     #endregion

@@ -1,11 +1,10 @@
-﻿using FindPet.Domain.DTOs.EntitiesDTOs.AdDTO;
+﻿using System.Net;
+using FindPet.Domain.DTOs.EntitiesDTOs.AdDTO;
 using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
 using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
 using FindPet.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
-using System.Text;
 
 namespace FindPet.Tests.TestHelpers;
 
@@ -34,7 +33,263 @@ public static class TestDataBuilder
         public const string INVALID_EMAIL = "invalid-email";
         public const string EMPTY_STRING = "";
         public const string WHITESPACE_STRING = "   ";
-        public static readonly string LONG_STRING = new string('A', 1000);
+        public static readonly string LONG_STRING = new('A', 1000);
+    }
+
+    #endregion
+
+    #region ML Model Test Data
+
+    /// <summary>
+    ///     Creates test data for ML model predictions
+    /// </summary>
+    public static class MLTestData
+    {
+        public static byte[] CreateValidImageBytes()
+        {
+            // Create a simple valid image byte array for testing
+            //return Encoding.UTF8.GetBytes("fake-image-data-for-testing");
+            return Convert.FromBase64String(
+                "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==");
+            //return new byte[] {
+            //    // PNG signature
+            //    0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,
+
+            //    // IHDR chunk (13 bytes data + 12 bytes header/crc)
+            //    0x00, 0x00, 0x00, 0x0D, // Length: 13 bytes
+            //    0x49, 0x48, 0x44, 0x52, // Type: IHDR
+            //    0x00, 0x00, 0x00, 0x01, // Width: 1
+            //    0x00, 0x00, 0x00, 0x01, // Height: 1
+            //    0x08,                   // Bit depth: 8
+            //    0x02,                   // Color type: 2 (RGB)
+            //    0x00,                   // Compression: 0
+            //    0x00,                   // Filter: 0
+            //    0x00,                   // Interlace: 0
+            //    0x90, 0x77, 0x53, 0xDE, // CRC
+
+            //    // IDAT chunk (12 bytes data + 12 bytes header/crc)
+            //    0x00, 0x00, 0x00, 0x0C, // Length: 12 bytes
+            //    0x49, 0x44, 0x41, 0x54, // Type: IDAT
+            //    0x78, 0x9C,             // Zlib header
+            //    0x63, 0xF8, 0x0F, 0x00, // Compressed data (RGB: 255,255,255)
+            //    0x00, 0x01, 0x00, 0x01,
+            //    0x35, 0x5C, 0xC5, 0x9A, // CRC
+
+            //    // IEND chunk
+            //    0x00, 0x00, 0x00, 0x00, // Length: 0
+            //    0x49, 0x45, 0x4E, 0x44, // Type: IEND
+            //    0xAE, 0x42, 0x60, 0x82  // CRC
+            //};
+        }
+
+        public static IFormFile CreateValidImageFile(string fileName = "test-pet.jpg")
+        {
+            var content = CreateValidImageBytes();
+            var stream = new MemoryStream(content);
+
+            var file = new FormFile(stream, 0, content.Length, "file", fileName)
+            {
+                Headers = new HeaderDictionary(),
+                ContentType = "image/jpeg"
+            };
+
+            return file;
+        }
+
+        public static string[] GetTestBreeds()
+        {
+            return new[]
+            {
+                "Golden Retriever", "German Shepherd", "Labrador", "Bulldog",
+                "Poodle", "Beagle", "Rottweiler", "Siberian Husky"
+            };
+        }
+
+        public static Dictionary<string, float> CreatePredictionResults()
+        {
+            return new Dictionary<string, float>
+            {
+                { "Golden Retriever", 0.95f },
+                { "Labrador", 0.85f },
+                { "German Shepherd", 0.75f },
+                { "Beagle", 0.65f }
+            };
+        }
+    }
+
+    #endregion
+
+    #region Authentication Test Data
+
+    /// <summary>
+    ///     Creates test data for authentication scenarios
+    /// </summary>
+    public static class AuthTestData
+    {
+        public static string CreateValidJwtToken()
+        {
+            return
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+        }
+
+        public static string CreateExpiredJwtToken()
+        {
+            return "expired.jwt.token";
+        }
+
+        public static Dictionary<string, object> CreateJwtClaims(Guid userId)
+        {
+            return new Dictionary<string, object>
+            {
+                { "sub", userId.ToString() },
+                { "email", TestConstants.DEFAULT_EMAIL },
+                { "name", TestConstants.DEFAULT_USERNAME },
+                { "role", "User" },
+                { "iat", DateTimeOffset.UtcNow.ToUnixTimeSeconds() },
+                { "exp", DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds() }
+            };
+        }
+    }
+
+    #endregion
+
+    #region HTTP Test Data
+
+    /// <summary>
+    ///     Creates test data for HTTP requests and responses
+    /// </summary>
+    public static class HttpTestData
+    {
+        public static HttpRequestMessage CreateValidRequest(HttpMethod method, string uri)
+        {
+            return new HttpRequestMessage(method, uri);
+        }
+
+        public static HttpResponseMessage CreateSuccessResponse<T>(T data)
+        {
+            var response = new HttpResponseMessage(HttpStatusCode.OK);
+            // Add JSON content if needed
+            return response;
+        }
+
+        public static HttpResponseMessage CreateErrorResponse(HttpStatusCode statusCode, string message)
+        {
+            var response = new HttpResponseMessage(statusCode);
+            // Add error content if needed
+            return response;
+        }
+    }
+
+    #endregion
+
+    #region Database Test Data
+
+    /// <summary>
+    ///     Creates test data for database scenarios
+    /// </summary>
+    public static class DatabaseTestData
+    {
+        public static string GetTestConnectionString()
+        {
+            return
+                "Server=(localdb)\\mssqllocaldb;Database=FindPetTestDb;Trusted_Connection=true;MultipleActiveResultSets=true";
+        }
+
+        public static void SeedDatabase(DbContext context)
+        {
+            if (!context.Set<User>().Any())
+            {
+                var users = BuildUserList(5);
+                context.Set<User>().AddRange(users);
+
+                var pets = BuildPetList(10, users.First().Id);
+                context.Set<Pet>().AddRange(pets);
+
+                var ads = BuildAdList(15, users.First().Id);
+                context.Set<Ad>().AddRange(ads);
+
+                context.SaveChanges();
+            }
+        }
+    }
+
+    #endregion
+
+    #region Performance Test Data
+
+    /// <summary>
+    ///     Creates test data for performance testing
+    /// </summary>
+    public static class PerformanceTestData
+    {
+        public static List<User> CreateLargeUserDataset(int count = 10000)
+        {
+            return BuildUserList(count);
+        }
+
+        public static List<Pet> CreateLargePetDataset(int count = 50000)
+        {
+            return BuildPetList(count);
+        }
+
+        public static List<Ad> CreateLargeAdDataset(int count = 100000)
+        {
+            return BuildAdList(count);
+        }
+    }
+
+    #endregion
+
+    #region Validation Test Data
+
+    /// <summary>
+    ///     Creates test data for validation scenarios
+    /// </summary>
+    public static class ValidationTestData
+    {
+        public static IEnumerable<object[]> GetInvalidEmailData()
+        {
+            yield return new object[] { "" };
+            yield return new object[] { "   " };
+            yield return new object[] { "invalid-email" };
+            yield return new object[] { "@invalid.com" };
+            yield return new object[] { "test@" };
+            yield return new object[] { "test@.com" };
+        }
+
+        public static IEnumerable<object[]> GetInvalidPhoneData()
+        {
+            yield return new object[] { "" };
+            yield return new object[] { "123" };
+            yield return new object[] { "invalid-phone" };
+            yield return new object[] { "+123" };
+            yield return new object[] { "1234567890123456" };
+        }
+
+        public static IEnumerable<object[]> GetInvalidPasswordData()
+        {
+            yield return new object[] { "" };
+            yield return new object[] { "123" };
+            yield return new object[] { "password" };
+            yield return new object[] { "12345678" };
+            yield return new object[] { "PASSWORD123" };
+        }
+    }
+
+    #endregion
+
+    // ----------------------------------------------------
+
+    #region Utility Methods
+
+    public static class InvalidData
+    {
+        public static readonly Guid EmptyGuid = Guid.Empty;
+        public static readonly string EmptyString = string.Empty;
+        public static readonly string WhiteSpaceString = "   ";
+        public static readonly string NullString = null;
+        public static readonly DateTime FutureDate = DateTime.UtcNow.AddYears(10);
+        public static readonly DateTime DistantPastDate = DateTime.UtcNow.AddYears(-100);
     }
 
     #endregion
@@ -42,7 +297,7 @@ public static class TestDataBuilder
     #region Generic Builders
 
     /// <summary>
-    /// Creates a list of entities with specified count
+    ///     Creates a list of entities with specified count
     /// </summary>
     public static List<T> CreateList<T>(int count, Func<int, T> factory)
     {
@@ -52,7 +307,7 @@ public static class TestDataBuilder
     }
 
     /// <summary>
-    /// Creates an entity with custom properties
+    ///     Creates an entity with custom properties
     /// </summary>
     public static T With<T>(this T entity, Action<T> customize) where T : class
     {
@@ -63,6 +318,7 @@ public static class TestDataBuilder
     #endregion
 
     #region User Entity
+
     // User building methods
     public static User BuildBasicUser(
         Guid? id = null,
@@ -86,6 +342,7 @@ public static class TestDataBuilder
             DateCreateUpdate = createDate ?? DateTime.UtcNow
         };
     }
+
     public static User BuildUserWithPhoto(string photoPath = "user_photo.jpg")
     {
         var user = BuildBasicUser();
@@ -133,9 +390,11 @@ public static class TestDataBuilder
             return user;
         });
     }
+
     #endregion
 
     #region User DTO Builders
+
     // User DTO building methods
     public static UserForCreateDto BuildUserForCreateDto(
         string name = "New Test User",
@@ -255,6 +514,7 @@ public static class TestDataBuilder
     #endregion
 
     #region Pet Entity Builders
+
     // Pet building methods (example - extend as needed)
     public static Pet BuildBasicPet(
         Guid? id = null,
@@ -321,7 +581,7 @@ public static class TestDataBuilder
         string[] breeds = { "Labrador", "Siamese", "Netherland Dwarf" };
         string[] colors = { "Black", "White", "Brown" };
 
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             var typeIndex = i % types.Length;
             pets.Add(BuildBasicPet(
@@ -375,7 +635,7 @@ public static class TestDataBuilder
             SpecialMarks = marks,
             Photo = photo,
             Description = description,
-            LostDate = DateTime.UtcNow.AddDays(-5),
+            LostDate = DateTime.UtcNow.AddDays(-5)
         };
     }
 
@@ -401,7 +661,7 @@ public static class TestDataBuilder
             SpecialMarks = marks,
             Photo = photo,
             Description = description,
-            LostDate = DateTime.UtcNow.AddDays(-5),
+            LostDate = DateTime.UtcNow.AddDays(-5)
         };
     }
 
@@ -452,17 +712,16 @@ public static class TestDataBuilder
     public static List<Ad> BuildAdList(int count = 3, Guid? userId = null, Guid? petId = null)
     {
         var ads = new List<Ad>();
-        for (int i = 0; i < count; i++)
-        {
+        for (var i = 0; i < count; i++)
             ads.Add(BuildAd(
                 description: $"Advertisement {i}",
                 location: $"Location {i}",
                 userId: userId,
                 petId: petId
             ));
-        }
         return ads;
     }
+
     public static Ad BuildInvalidAd(string invalidField = "description")
     {
         var ad = BuildAd();
@@ -482,7 +741,7 @@ public static class TestDataBuilder
     public static AdForCreateDto BuildAdForCreateDto(
         string description = "New advertisement",
         string location = "New location",
-        IFormFile photo = null)
+        string photo = null)
     {
         return new AdForCreateDto
         {
@@ -495,7 +754,7 @@ public static class TestDataBuilder
     public static AdForUpdateDto BuildAdForUpdateDto(
         string description = "Updated advertisement",
         string location = "Updated location",
-        IFormFile photo = null)
+        string photo = null)
     {
         return new AdForUpdateDto
         {
@@ -519,247 +778,10 @@ public static class TestDataBuilder
 
     #endregion
 
-    #region ML Model Test Data
-
-    /// <summary>
-    /// Creates test data for ML model predictions
-    /// </summary>
-    public static class MLTestData
-    {
-        public static byte[] CreateValidImageBytes()
-        {
-            // Create a simple valid image byte array for testing
-            //return Encoding.UTF8.GetBytes("fake-image-data-for-testing");
-            return Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==");
-            //return new byte[] {
-            //    // PNG signature
-            //    0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,
-
-            //    // IHDR chunk (13 bytes data + 12 bytes header/crc)
-            //    0x00, 0x00, 0x00, 0x0D, // Length: 13 bytes
-            //    0x49, 0x48, 0x44, 0x52, // Type: IHDR
-            //    0x00, 0x00, 0x00, 0x01, // Width: 1
-            //    0x00, 0x00, 0x00, 0x01, // Height: 1
-            //    0x08,                   // Bit depth: 8
-            //    0x02,                   // Color type: 2 (RGB)
-            //    0x00,                   // Compression: 0
-            //    0x00,                   // Filter: 0
-            //    0x00,                   // Interlace: 0
-            //    0x90, 0x77, 0x53, 0xDE, // CRC
-
-            //    // IDAT chunk (12 bytes data + 12 bytes header/crc)
-            //    0x00, 0x00, 0x00, 0x0C, // Length: 12 bytes
-            //    0x49, 0x44, 0x41, 0x54, // Type: IDAT
-            //    0x78, 0x9C,             // Zlib header
-            //    0x63, 0xF8, 0x0F, 0x00, // Compressed data (RGB: 255,255,255)
-            //    0x00, 0x01, 0x00, 0x01,
-            //    0x35, 0x5C, 0xC5, 0x9A, // CRC
-
-            //    // IEND chunk
-            //    0x00, 0x00, 0x00, 0x00, // Length: 0
-            //    0x49, 0x45, 0x4E, 0x44, // Type: IEND
-            //    0xAE, 0x42, 0x60, 0x82  // CRC
-            //};
-        }
-
-        public static IFormFile CreateValidImageFile(string fileName = "test-pet.jpg")
-        {
-            var content = CreateValidImageBytes();
-            var stream = new MemoryStream(content);
-
-            var file = new FormFile(stream, 0, content.Length, "file", fileName)
-            {
-                Headers = new HeaderDictionary(),
-                ContentType = "image/jpeg"
-            };
-
-            return file;
-        }
-
-        public static string[] GetTestBreeds()
-        {
-            return new[]
-            {
-                "Golden Retriever", "German Shepherd", "Labrador", "Bulldog",
-                "Poodle", "Beagle", "Rottweiler", "Siberian Husky"
-            };
-        }
-
-        public static Dictionary<string, float> CreatePredictionResults()
-        {
-            return new Dictionary<string, float>
-            {
-                { "Golden Retriever", 0.95f },
-                { "Labrador", 0.85f },
-                { "German Shepherd", 0.75f },
-                { "Beagle", 0.65f }
-            };
-        }
-    }
-
-    #endregion
-
-    #region Authentication Test Data
-
-    /// <summary>
-    /// Creates test data for authentication scenarios
-    /// </summary>
-    public static class AuthTestData
-    {
-        public static string CreateValidJwtToken()
-        {
-            return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
-        }
-
-        public static string CreateExpiredJwtToken()
-        {
-            return "expired.jwt.token";
-        }
-
-        public static Dictionary<string, object> CreateJwtClaims(Guid userId)
-        {
-            return new Dictionary<string, object>
-            {
-                { "sub", userId.ToString() },
-                { "email", TestConstants.DEFAULT_EMAIL },
-                { "name", TestConstants.DEFAULT_USERNAME },
-                { "role", "User" },
-                { "iat", DateTimeOffset.UtcNow.ToUnixTimeSeconds() },
-                { "exp", DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds() }
-            };
-        }
-    }
-
-    #endregion
-
-    #region HTTP Test Data
-
-    /// <summary>
-    /// Creates test data for HTTP requests and responses
-    /// </summary>
-    public static class HttpTestData
-    {
-        public static HttpRequestMessage CreateValidRequest(HttpMethod method, string uri)
-        {
-            return new HttpRequestMessage(method, uri);
-        }
-
-        public static HttpResponseMessage CreateSuccessResponse<T>(T data)
-        {
-            var response = new HttpResponseMessage(System.Net.HttpStatusCode.OK);
-            // Add JSON content if needed
-            return response;
-        }
-
-        public static HttpResponseMessage CreateErrorResponse(System.Net.HttpStatusCode statusCode, string message)
-        {
-            var response = new HttpResponseMessage(statusCode);
-            // Add error content if needed
-            return response;
-        }
-    }
-
-    #endregion
-
-    #region Database Test Data
-
-    /// <summary>
-    /// Creates test data for database scenarios
-    /// </summary>
-    public static class DatabaseTestData
-    {
-        public static string GetTestConnectionString()
-        {
-            return "Server=(localdb)\\mssqllocaldb;Database=FindPetTestDb;Trusted_Connection=true;MultipleActiveResultSets=true";
-        }
-
-        public static void SeedDatabase(DbContext context)
-        {
-            if (!context.Set<User>().Any())
-            {
-                var users = BuildUserList(5);
-                context.Set<User>().AddRange(users);
-
-                var pets = BuildPetList(10, users.First().Id);
-                context.Set<Pet>().AddRange(pets);
-
-                var ads = BuildAdList(15, users.First().Id);
-                context.Set<Ad>().AddRange(ads);
-
-                context.SaveChanges();
-            }
-        }
-    }
-
-    #endregion
-
-    #region Performance Test Data
-
-    /// <summary>
-    /// Creates test data for performance testing
-    /// </summary>
-    public static class PerformanceTestData
-    {
-        public static List<User> CreateLargeUserDataset(int count = 10000)
-        {
-            return BuildUserList(count);
-        }
-
-        public static List<Pet> CreateLargePetDataset(int count = 50000)
-        {
-            return BuildPetList(count);
-        }
-
-        public static List<Ad> CreateLargeAdDataset(int count = 100000)
-        {
-            return BuildAdList(count);
-        }
-    }
-
-    #endregion
-
-    #region Validation Test Data
-
-    /// <summary>
-    /// Creates test data for validation scenarios
-    /// </summary>
-    public static class ValidationTestData
-    {
-        public static IEnumerable<object[]> GetInvalidEmailData()
-        {
-            yield return new object[] { "" };
-            yield return new object[] { "   " };
-            yield return new object[] { "invalid-email" };
-            yield return new object[] { "@invalid.com" };
-            yield return new object[] { "test@" };
-            yield return new object[] { "test@.com" };
-        }
-
-        public static IEnumerable<object[]> GetInvalidPhoneData()
-        {
-            yield return new object[] { "" };
-            yield return new object[] { "123" };
-            yield return new object[] { "invalid-phone" };
-            yield return new object[] { "+123" };
-            yield return new object[] { "1234567890123456" };
-        }
-
-        public static IEnumerable<object[]> GetInvalidPasswordData()
-        {
-            yield return new object[] { "" };
-            yield return new object[] { "123" };
-            yield return new object[] { "password" };
-            yield return new object[] { "12345678" };
-            yield return new object[] { "PASSWORD123" };
-        }
-    }
-
-    #endregion
-
     #region Specialized Builders for Different Testing Layers
 
     /// <summary>
-    /// Creates test data specifically for service layer testing
+    ///     Creates test data specifically for service layer testing
     /// </summary>
     public static class ServiceTestData
     {
@@ -780,22 +802,16 @@ public static class TestDataBuilder
         {
             var pet = BuildBasicPet();
 
-            if (withOwner)
-            {
-                pet.User = BuildBasicUser(pet.UserId);
-            }
+            if (withOwner) pet.User = BuildBasicUser(pet.UserId);
 
-            if (withAds)
-            {
-                pet.Ads = BuildAdList(2, petId: pet.Id);
-            }
+            if (withAds) pet.Ads = BuildAdList(2, petId: pet.Id);
 
             return pet;
         }
     }
 
     /// <summary>
-    /// Creates test data specifically for controller layer testing
+    ///     Creates test data specifically for controller layer testing
     /// </summary>
     public static class ControllerTestData
     {
@@ -821,7 +837,7 @@ public static class TestDataBuilder
     }
 
     /// <summary>
-    /// Creates test data specifically for repository layer testing
+    ///     Creates test data specifically for repository layer testing
     /// </summary>
     public static class RepositoryTestData
     {
@@ -875,20 +891,4 @@ public static class TestDataBuilder
     }
 
     #endregion
-
-    // ----------------------------------------------------
-
-    #region Utility Methods
-    public static class InvalidData
-    {
-        public static readonly Guid EmptyGuid = Guid.Empty;
-        public static readonly string EmptyString = string.Empty;
-        public static readonly string WhiteSpaceString = "   ";
-        public static readonly string NullString = null;
-        public static readonly DateTime FutureDate = DateTime.UtcNow.AddYears(10);
-        public static readonly DateTime DistantPastDate = DateTime.UtcNow.AddYears(-100);
-    }
-
-    #endregion
-
 }

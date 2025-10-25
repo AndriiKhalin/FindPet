@@ -1,9 +1,6 @@
-﻿using FindPet.BusinessLogicLayer.CQRS.Commands.Image;
-using FindPet.BusinessLogicLayer.CQRS.Commands.Pet;
+﻿using FindPet.BusinessLogicLayer.CQRS.Commands.Pet;
 using FindPet.BusinessLogicLayer.CQRS.Queries.Pet;
 using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
-using FindPet.Domain.DTOs.FileDTOs;
-using FindPet.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -85,15 +82,15 @@ public class PetController : ControllerBase
         return NoContent();
     }
 
-    [AllowAnonymous]
-    [HttpPost("uploadImage")]
-    [DisableRequestSizeLimit]
-    [Consumes("multipart/form-data")]
-    [ProducesResponseType(200, Type = typeof(UploadImageResponse))]
-    [ProducesResponseType(400)]
-    public async Task<IActionResult> UploadImage([FromForm] FileUploadDto file)
-    {
-        var response = await _mediator.Send(new UploadImageCommand(file.File, EntityType.Pet));
-        return Ok(response);
-    }
+    //[AllowAnonymous]
+    //[HttpPost("uploadImage")]
+    //[DisableRequestSizeLimit]
+    //[Consumes("multipart/form-data")]
+    //[ProducesResponseType(200, Type = typeof(UploadFileResponse))]
+    //[ProducesResponseType(400)]
+    //public async Task<IActionResult> UploadImage([FromForm] FileUploadDto file)
+    //{
+    //    var response = await _mediator.Send(new UploadFileCommand(file.File, file.Subfolder, file.EntityId));
+    //    return Ok(response);
+    //}
 }

@@ -14,11 +14,12 @@ public class AdService : IAdService
 {
     private readonly ILoggerManager _logger;
     private readonly IManageImage<Ad> _manageImage;
-    private readonly IMediaStorageService _mediaStorageService;
     private readonly IMapper _mapper;
+    private readonly IMediaStorageService _mediaStorageService;
     private readonly IUnitOfWork _unitOfWorkRep;
 
-    public AdService(IUnitOfWork unitOfWorkRep, IMapper mapper, IManageImage<Ad> manageImage, ILoggerManager logger, IMediaStorageService mediaStorageService)
+    public AdService(IUnitOfWork unitOfWorkRep, IMapper mapper, IManageImage<Ad> manageImage, ILoggerManager logger,
+        IMediaStorageService mediaStorageService)
     {
         _unitOfWorkRep = unitOfWorkRep;
         _mapper = mapper;
@@ -81,7 +82,8 @@ public class AdService : IAdService
         var adEntityForDelete = await GetAdAsync(adId);
 
         //_manageImage.DeletePhoto(adEntityForDelete.Photo);
-        await _mediaStorageService.DeleteFileAsync(adEntityForDelete.Photo);
+        if (!string.IsNullOrEmpty(adEntityForDelete.Photo))
+            await _mediaStorageService.DeleteFileAsync(adEntityForDelete.Photo);
 
         await _unitOfWorkRep.Ad.DeleteAsync(adId);
 
@@ -110,12 +112,8 @@ public class AdService : IAdService
 
         var adEntity = await GetAdAsync(adId);
 
-        if (ad.Photo is not null)
-        {
+        if (!string.IsNullOrEmpty(ad.Photo) && !string.IsNullOrEmpty(adEntity.Photo) && ad.Photo != adEntity.Photo)
             await _mediaStorageService.DeleteFileAsync(adEntity.Photo);
-
-            adEntity.Photo = await _mediaStorageService.UploadFileAsync(ad.Photo, adId, "ads");
-        }
 
         _mapper.Map(ad, adEntity);
 
@@ -139,10 +137,10 @@ public class AdService : IAdService
         adMap.UserId = userEntity.Id;
         adMap.PetId = petEntity.Id;
         // Upload photo to Azure Blob Storage
-        if (ad.Photo != null)
-        {
-            adMap.Photo = await _mediaStorageService.UploadFileAsync(ad.Photo, adMap.Id, "ads");
-        }
+        //if (ad.Photo != null)
+        //{
+        //    adMap.Photo = await _mediaStorageService.UploadFileAsync(ad.Photo, adMap.Id, "ads");
+        //}
         adMap.DateCreateUpdate = DateTime.UtcNow;
 
         await _unitOfWorkRep.Ad.CreateAsync(adMap);

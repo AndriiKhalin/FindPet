@@ -5,8 +5,7 @@ namespace FindPet.Domain.DTOs.FileDTOs;
 
 public class FileUploadDto
 {
-    [Required]
-    public IFormFile File { get; set; }
+    [Required] public IFormFile File { get; set; }
 
     public string? Subfolder { get; set; }
 

@@ -6,16 +6,14 @@ using FindPet.Tests.TestHelpers;
 using FluentAssertions;
 using MediatR;
 using Moq;
-using System;
-using System.Data;
 using Xunit;
 
 namespace FindPet.Tests.UnitTests.BusinessLogicLayer.CQRS.Handlers.CommandHandlers.User;
 
 public class DeleteUserCommandHandlerTests
 {
-    private readonly Mock<IUserService> _mockUserService;
     private readonly DeleteUserCommandHandler _handler;
+    private readonly Mock<IUserService> _mockUserService;
 
     public DeleteUserCommandHandlerTests()
     {
@@ -319,10 +317,7 @@ public class DeleteUserCommandHandlerTests
         var cancellationToken = cancellationTokenSource.Token;
 
         _mockUserService.SetupDeleteUserAsync(userId)
-            .Returns(async () =>
-            {
-                await Task.Delay(1000, cancellationToken);
-            });
+            .Returns(async () => { await Task.Delay(1000, cancellationToken); });
 
         // Act
         cancellationTokenSource.CancelAfter(100);

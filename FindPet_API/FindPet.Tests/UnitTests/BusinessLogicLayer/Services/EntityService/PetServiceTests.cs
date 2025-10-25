@@ -1,35 +1,22 @@
-﻿using AutoMapper;
+﻿using System.Diagnostics;
+using AutoMapper;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
 using FindPet.BusinessLogicLayer.Interfaces.IMLService;
 using FindPet.BusinessLogicLayer.Services.EntityService;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using FindPet.Domain.Entities;
 using FindPet.Domain.Exceptions;
+using FindPet.Domain.Interfaces.ILoggerService;
+using FindPet.Media.Interfaces;
 using FindPet.Tests.TestHelpers;
 using Microsoft.AspNetCore.Hosting;
 using Moq;
-using System.Drawing;
-using FindPet.Domain.Interfaces.ILoggerService;
 using Xunit;
 
 namespace FindPet.Tests.UnitTests.BusinessLogicLayer.Services.EntityService;
 
 public class PetServiceTests
 {
-    #region Private Fields
-
-    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
-    private readonly Mock<IMapper> _mockMapper;
-    private readonly Mock<IManageImage<Pet>> _mockManageImage;
-    private readonly Mock<IMLService> _mockMLService;
-    private readonly Mock<ILoggerManager> _mockLogger;
-    private readonly Mock<IWebHostEnvironment> _mockHostingEnvironment;
-    private readonly Mock<IPetRepository> _mockPetRepository;
-    private readonly Mock<IUserRepository<User>> _mockUserRepository;
-    private readonly PetService _petService;
-
-    #endregion
-
     #region Constructor & Setup
 
     public PetServiceTests()
@@ -40,6 +27,7 @@ public class PetServiceTests
         _mockMLService = MockSetupExtensions.CreateMock<IMLService>();
         _mockLogger = MockSetupExtensions.SetupLoggerMock();
         _mockHostingEnvironment = MockSetupExtensions.CreateMock<IWebHostEnvironment>();
+        _mockMediaStorageService = MockSetupExtensions.CreateMock<IMediaStorageService>();
 
         _mockPetRepository = MockSetupExtensions.SetupPetRepositoryMock();
         _mockUserRepository = MockSetupExtensions.SetupUserRepositoryMock();
@@ -54,9 +42,85 @@ public class PetServiceTests
             _mockManageImage.Object,
             _mockMLService.Object,
             _mockLogger.Object,
-            _mockHostingEnvironment.Object
+            _mockHostingEnvironment.Object,
+            _mockMediaStorageService.Object
         );
     }
+
+    #endregion
+
+    #region Integration Tests
+
+    [Fact]
+    public async Task CreateUpdateDeletePet_ShouldWorkCorrectly_InSequence()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var petId = Guid.NewGuid();
+        var createDto = TestDataBuilder.BuildPetForCreateDto();
+        var updateDto = TestDataBuilder.BuildPetForUpdateDto();
+        var pet = TestDataBuilder.BuildBasicPet(petId);
+
+        // Setup for Create
+        _mockUserRepository.SetupUserExists(userId, true);
+        _mockMapper.Setup(x => x.Map<Pet>(createDto)).Returns(pet);
+        _mockMLService.Setup(x => x.PredictAsync(It.IsAny<string>())).ReturnsAsync("Golden Retriever");
+
+        // Setup for Update
+        _mockPetRepository.SetupPetExists(petId, true);
+        _mockPetRepository.SetupGetPet(petId, pet);
+
+        // Setup for Delete
+        //_mockPetRepository.SetupDelete<Pet>(petId);
+
+        // Act & Assert Create
+        await _petService.CreatePetAsync(userId, createDto);
+        _mockPetRepository.Verify(x => x.CreateAsync(It.IsAny<Pet>()), Times.Once);
+
+        // Act & Assert Update
+        await _petService.UpdatePetAsync(petId, updateDto);
+        _mockPetRepository.Verify(x => x.UpdateAsync(It.IsAny<Pet>()), Times.Once);
+
+        // Act & Assert Delete
+        await _petService.DeletePetAsync(petId);
+        _mockPetRepository.Verify(x => x.DeleteAsync(petId), Times.Once);
+    }
+
+    #endregion
+
+    #region Performance Tests
+
+    [Fact]
+    public async Task GetPets_ShouldPerformWell_WithLargeDataset()
+    {
+        // Arrange
+        var largePetList = TestDataBuilder.CreateList(1000, i => TestDataBuilder.BuildBasicPet(Guid.NewGuid()));
+        _mockPetRepository.SetupGetPets(largePetList);
+
+        // Act
+        var stopwatch = Stopwatch.StartNew();
+        var result = _petService.GetPets();
+        stopwatch.Stop();
+
+        // Assert
+        Assert.Equal(1000, result.Count());
+        Assert.True(stopwatch.ElapsedMilliseconds < 100, "Method should complete in under 100ms");
+    }
+
+    #endregion
+
+    #region Private Fields
+
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<IMapper> _mockMapper;
+    private readonly Mock<IManageImage<Pet>> _mockManageImage;
+    private readonly Mock<IMLService> _mockMLService;
+    private readonly Mock<ILoggerManager> _mockLogger;
+    private readonly Mock<IWebHostEnvironment> _mockHostingEnvironment;
+    private readonly Mock<IPetRepository> _mockPetRepository;
+    private readonly Mock<IUserRepository<User>> _mockUserRepository;
+    private readonly Mock<IMediaStorageService> _mockMediaStorageService;
+    private readonly PetService _petService;
 
     #endregion
 
@@ -66,7 +130,7 @@ public class PetServiceTests
     public void GetPets_ShouldReturnAllPets_WhenCalled()
     {
         // Arrange
-        var pets = TestDataBuilder.BuildPetList(3);
+        var pets = TestDataBuilder.BuildPetList();
         _mockPetRepository.SetupGetPets(pets);
 
         // Act
@@ -103,7 +167,7 @@ public class PetServiceTests
     {
         // Arrange
         var petId = Guid.NewGuid();
-        var pet = TestDataBuilder.BuildBasicPet(id: petId);
+        var pet = TestDataBuilder.BuildBasicPet(petId);
 
         _mockPetRepository.SetupPetExists(petId, true);
         _mockPetRepository.SetupGetPet(petId, pet);
@@ -125,8 +189,7 @@ public class PetServiceTests
         var emptyGuid = Guid.Empty;
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<BadRequestException>(
-            () => _petService.GetPetByIdAsync(emptyGuid));
+        var exception = await Assert.ThrowsAsync<BadRequestException>(() => _petService.GetPetByIdAsync(emptyGuid));
 
         Assert.Equal("PetId must be a valid non-empty GUID", exception.Message);
         _mockPetRepository.Verify(r => r.GetAsync(It.IsAny<Guid>()), Times.Never);
@@ -141,8 +204,7 @@ public class PetServiceTests
         _mockPetRepository.SetupPetExists(petId, false);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<NotFoundException>(
-            () => _petService.GetPetByIdAsync(petId));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _petService.GetPetByIdAsync(petId));
 
         Assert.Contains("Pet", exception.Message);
         Assert.Contains(petId.ToString(), exception.Message);
@@ -222,8 +284,7 @@ public class PetServiceTests
         var emptyGuid = Guid.Empty;
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<BadRequestException>(
-            () => _petService.DeletePetAsync(emptyGuid));
+        var exception = await Assert.ThrowsAsync<BadRequestException>(() => _petService.DeletePetAsync(emptyGuid));
 
         Assert.Equal("PetId must be a valid non-empty GUID", exception.Message);
         _mockPetRepository.Verify(r => r.IsExistAsync(It.IsAny<Guid>()), Times.Never);
@@ -239,8 +300,7 @@ public class PetServiceTests
         _mockPetRepository.SetupPetExists(petId, false);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<NotFoundException>(
-            () => _petService.DeletePetAsync(petId));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _petService.DeletePetAsync(petId));
 
         Assert.Contains("Pet", exception.Message);
         Assert.Contains(petId.ToString(), exception.Message);
@@ -255,7 +315,7 @@ public class PetServiceTests
     {
         // Arrange
         var petId = Guid.NewGuid();
-        var pet = TestDataBuilder.BuildBasicPet(id: petId, photo: null);
+        var pet = TestDataBuilder.BuildBasicPet(petId, photo: null);
         _mockPetRepository.SetupPetExists(petId, true);
         _mockPetRepository.SetupGetPet(petId, pet);
         _mockUnitOfWork.SetupSaveAsync();
@@ -352,8 +412,8 @@ public class PetServiceTests
         var updateDto = TestDataBuilder.BuildPetForUpdateDto();
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<BadRequestException>(
-            () => _petService.UpdatePetAsync(emptyGuid, updateDto));
+        var exception =
+            await Assert.ThrowsAsync<BadRequestException>(() => _petService.UpdatePetAsync(emptyGuid, updateDto));
 
         Assert.Equal("PetId must be a valid non-empty GUID", exception.Message);
         _mockPetRepository.Verify(r => r.IsExistAsync(It.IsAny<Guid>()), Times.Never);
@@ -368,8 +428,7 @@ public class PetServiceTests
         var petId = Guid.NewGuid();
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<BadRequestException>(
-            () => _petService.UpdatePetAsync(petId, null));
+        var exception = await Assert.ThrowsAsync<BadRequestException>(() => _petService.UpdatePetAsync(petId, null));
 
         Assert.Equal("Pet is null", exception.Message);
         _mockPetRepository.Verify(r => r.IsExistAsync(It.IsAny<Guid>()), Times.Never);
@@ -385,8 +444,7 @@ public class PetServiceTests
         _mockPetRepository.SetupPetExists(petId, false);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<NotFoundException>(
-            () => _petService.UpdatePetAsync(petId, updateDto));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _petService.UpdatePetAsync(petId, updateDto));
 
         Assert.Contains("Pet", exception.Message);
         Assert.Contains(petId.ToString(), exception.Message);
@@ -486,8 +544,8 @@ public class PetServiceTests
         var createDto = TestDataBuilder.BuildPetForCreateDto();
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<BadRequestException>(
-            () => _petService.CreatePetAsync(userId, createDto));
+        var exception =
+            await Assert.ThrowsAsync<BadRequestException>(() => _petService.CreatePetAsync(userId, createDto));
 
         Assert.Equal("Invalid userId or createPetDto object.", exception.Message);
         _mockUserRepository.Verify(r => r.IsExistAsync(It.IsAny<Guid>()), Times.Never);
@@ -502,8 +560,7 @@ public class PetServiceTests
         var userId = Guid.NewGuid();
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<BadRequestException>(
-            () => _petService.CreatePetAsync(userId, null));
+        var exception = await Assert.ThrowsAsync<BadRequestException>(() => _petService.CreatePetAsync(userId, null));
 
         Assert.Equal("Invalid userId or createPetDto object.", exception.Message);
         _mockUserRepository.Verify(r => r.IsExistAsync(It.IsAny<Guid>()), Times.Never);
@@ -520,8 +577,8 @@ public class PetServiceTests
         _mockUserRepository.SetupUserExists(userId, false);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<NotFoundException>(
-            () => _petService.CreatePetAsync(userId, createDto));
+        var exception =
+            await Assert.ThrowsAsync<NotFoundException>(() => _petService.CreatePetAsync(userId, createDto));
 
         Assert.Contains("User", exception.Message);
         Assert.Contains(userId.ToString(), exception.Message);
@@ -550,45 +607,6 @@ public class PetServiceTests
         Assert.NotNull(result.DateCreateUpdate);
         Assert.True(result.DateCreateUpdate >= beforeTest);
         Assert.True(result.DateCreateUpdate <= afterTest);
-    }
-
-    #endregion
-
-    #region Integration Tests
-
-    [Fact]
-    public async Task CreateUpdateDeletePet_ShouldWorkCorrectly_InSequence()
-    {
-        // Arrange
-        var userId = Guid.NewGuid();
-        var petId = Guid.NewGuid();
-        var createDto = TestDataBuilder.BuildPetForCreateDto();
-        var updateDto = TestDataBuilder.BuildPetForUpdateDto();
-        var pet = TestDataBuilder.BuildBasicPet(petId);
-
-        // Setup for Create
-        _mockUserRepository.SetupUserExists(userId, true);
-        _mockMapper.Setup(x => x.Map<Pet>(createDto)).Returns(pet);
-        _mockMLService.Setup(x => x.PredictAsync(It.IsAny<string>())).ReturnsAsync("Golden Retriever");
-
-        // Setup for Update
-        _mockPetRepository.SetupPetExists(petId, true);
-        _mockPetRepository.SetupGetPet(petId, pet);
-
-        // Setup for Delete
-        //_mockPetRepository.SetupDelete<Pet>(petId);
-
-        // Act & Assert Create
-        await _petService.CreatePetAsync(userId, createDto);
-        _mockPetRepository.Verify(x => x.CreateAsync(It.IsAny<Pet>()), Times.Once);
-
-        // Act & Assert Update
-        await _petService.UpdatePetAsync(petId, updateDto);
-        _mockPetRepository.Verify(x => x.UpdateAsync(It.IsAny<Pet>()), Times.Once);
-
-        // Act & Assert Delete
-        await _petService.DeletePetAsync(petId);
-        _mockPetRepository.Verify(x => x.DeleteAsync(petId), Times.Once);
     }
 
     #endregion
@@ -649,27 +667,6 @@ public class PetServiceTests
 
         // Assert
         _mockMLService.Verify(x => x.PredictAsync(It.IsAny<string>()), Times.Once);
-    }
-
-    #endregion
-
-    #region Performance Tests
-
-    [Fact]
-    public async Task GetPets_ShouldPerformWell_WithLargeDataset()
-    {
-        // Arrange
-        var largePetList = TestDataBuilder.CreateList(1000, i => TestDataBuilder.BuildBasicPet(Guid.NewGuid()));
-        _mockPetRepository.SetupGetPets(largePetList);
-
-        // Act
-        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        var result = _petService.GetPets();
-        stopwatch.Stop();
-
-        // Assert
-        Assert.Equal(1000, result.Count());
-        Assert.True(stopwatch.ElapsedMilliseconds < 100, "Method should complete in under 100ms");
     }
 
     #endregion

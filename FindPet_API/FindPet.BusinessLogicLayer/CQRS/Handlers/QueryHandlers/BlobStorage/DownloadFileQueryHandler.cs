@@ -20,10 +20,7 @@ public class DownloadFileQueryHandler : IQueryHandler<DownloadFileQuery, Downloa
         {
             var fileStream = await _mediaStorageService.DownloadFileAsync(request.FilePath);
 
-            if (fileStream == Stream.Null)
-            {
-                throw new NotFoundException("File", request.FilePath);
-            }
+            if (fileStream == Stream.Null) throw new NotFoundException("File", request.FilePath);
 
             var fileName = Path.GetFileName(request.FilePath);
             var contentType = GetContentType(fileName);

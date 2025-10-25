@@ -13,9 +13,9 @@ namespace FindPet.Tests.UnitTests.BusinessLogicLayer.CQRS.Handlers.CommandHandle
 
 public class CreateUserCommandHandlerTests
 {
-    private readonly Mock<IUserService> _userServiceMock;
-    private readonly Mock<IMapper> _mapperMock;
     private readonly CreateUserCommandHandler _handler;
+    private readonly Mock<IMapper> _mapperMock;
+    private readonly Mock<IUserService> _userServiceMock;
 
     public CreateUserCommandHandlerTests()
     {
@@ -84,10 +84,10 @@ public class CreateUserCommandHandlerTests
     {
         // Arrange
         var createDto = TestDataBuilder.BuildUserForCreateDto(
-            name: "John",
-            email: "john@test.com",
-            phone: "+1234567890",
-            password: "Password123"
+            "John",
+            "john@test.com",
+            "+1234567890",
+            "Password123"
         );
         var command = new CreateUserCommand(createDto);
         var createdUser = TestDataBuilder.BuildBasicUser();
@@ -118,8 +118,8 @@ public class CreateUserCommandHandlerTests
             .ThrowsAsync(new BadRequestException("Invalid  user object."));
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<BadRequestException>(
-            () => _handler.Handle(command, CancellationToken.None));
+        var exception =
+            await Assert.ThrowsAsync<BadRequestException>(() => _handler.Handle(command, CancellationToken.None));
 
         exception.Message.Should().Be("Invalid  user object.");
         _userServiceMock.Verify(x => x.CreateUserAsync(null), Times.Once);
@@ -130,15 +130,15 @@ public class CreateUserCommandHandlerTests
     public async Task Handle_WithInvalidUserData_ShouldThrowValidationException()
     {
         // Arrange
-        var invalidDto = TestDataBuilder.BuildInvalidUserForCreateDto("email");
+        var invalidDto = TestDataBuilder.BuildInvalidUserForCreateDto();
         var command = new CreateUserCommand(invalidDto);
 
         _userServiceMock.Setup(x => x.CreateUserAsync(invalidDto))
             .ThrowsAsync(new ArgumentException("Invalid user data"));
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ArgumentException>(
-            () => _handler.Handle(command, CancellationToken.None));
+        var exception =
+            await Assert.ThrowsAsync<ArgumentException>(() => _handler.Handle(command, CancellationToken.None));
 
         _userServiceMock.Verify(x => x.CreateUserAsync(invalidDto), Times.Once);
         _mapperMock.Verify(x => x.Map<UserDto>(It.IsAny<Domain.Entities.User>()), Times.Never);
@@ -159,8 +159,8 @@ public class CreateUserCommandHandlerTests
             .ThrowsAsync(new InvalidOperationException("Email already exists"));
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => _handler.Handle(command, CancellationToken.None));
+        var exception =
+            await Assert.ThrowsAsync<InvalidOperationException>(() => _handler.Handle(command, CancellationToken.None));
 
         exception.Message.Should().Be("Email already exists");
         _userServiceMock.Verify(x => x.CreateUserAsync(createDto), Times.Once);
@@ -177,8 +177,8 @@ public class CreateUserCommandHandlerTests
             .ThrowsAsync(new InvalidOperationException("Phone number already exists"));
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => _handler.Handle(command, CancellationToken.None));
+        var exception =
+            await Assert.ThrowsAsync<InvalidOperationException>(() => _handler.Handle(command, CancellationToken.None));
 
         exception.Message.Should().Be("Phone number already exists");
     }
@@ -198,8 +198,8 @@ public class CreateUserCommandHandlerTests
             .ThrowsAsync(new InvalidOperationException("Database connection failed"));
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => _handler.Handle(command, CancellationToken.None));
+        var exception =
+            await Assert.ThrowsAsync<InvalidOperationException>(() => _handler.Handle(command, CancellationToken.None));
 
         exception.Message.Should().Be("Database connection failed");
         _mapperMock.Verify(x => x.Map<UserDto>(It.IsAny<Domain.Entities.User>()), Times.Never);
@@ -218,8 +218,9 @@ public class CreateUserCommandHandlerTests
             .Throws(new AutoMapperMappingException("Mapping failed"));
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<AutoMapperMappingException>(
-            () => _handler.Handle(command, CancellationToken.None));
+        var exception =
+            await Assert.ThrowsAsync<AutoMapperMappingException>(() =>
+                _handler.Handle(command, CancellationToken.None));
 
         exception.Message.Should().Be("Mapping failed");
         _userServiceMock.Verify(x => x.CreateUserAsync(createDto), Times.Once);
@@ -243,8 +244,7 @@ public class CreateUserCommandHandlerTests
             .ReturnsAsync(createdUser);
 
         // Act & Assert
-        await Assert.ThrowsAsync<OperationCanceledException>(
-            () => _handler.Handle(command, cancellationToken));
+        await Assert.ThrowsAsync<OperationCanceledException>(() => _handler.Handle(command, cancellationToken));
     }
 
     [Fact]
@@ -277,7 +277,7 @@ public class CreateUserCommandHandlerTests
     {
         // Arrange
         var longName = new string('A', 100); // Maximum allowed length
-        var createDto = TestDataBuilder.BuildUserForCreateDto(name: longName);
+        var createDto = TestDataBuilder.BuildUserForCreateDto(longName);
         var command = new CreateUserCommand(createDto);
         var createdUser = TestDataBuilder.BuildBasicUser().With(u => u.Name = longName);
         var expectedDto = new UserDto { Id = createdUser.Id, Name = longName };
@@ -298,8 +298,8 @@ public class CreateUserCommandHandlerTests
     {
         // Arrange
         var createDto = TestDataBuilder.BuildUserForCreateDto(
-            name: "José María O'Connor-Smith",
-            email: "jose.maria@test-domain.com"
+            "José María O'Connor-Smith",
+            "jose.maria@test-domain.com"
         );
         var command = new CreateUserCommand(createDto);
         var createdUser = TestDataBuilder.BuildBasicUser();
@@ -410,8 +410,7 @@ public class CreateUserCommandHandlerTests
             .ThrowsAsync(new InvalidOperationException("Service failed"));
 
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(
-            () => _handler.Handle(command, CancellationToken.None));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => _handler.Handle(command, CancellationToken.None));
 
         _userServiceMock.Verify(x => x.CreateUserAsync(createDto), Times.Once);
         _mapperMock.Verify(x => x.Map<UserDto>(It.IsAny<Domain.Entities.User>()), Times.Never);

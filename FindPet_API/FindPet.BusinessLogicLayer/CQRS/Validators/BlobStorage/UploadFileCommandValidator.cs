@@ -6,6 +6,7 @@ namespace FindPet.BusinessLogicLayer.CQRS.Validators.BlobStorage;
 public class UploadFileCommandValidator : AbstractValidator<UploadFileCommand>
 {
     private const long MaxFileSize = 10 * 1024 * 1024; // 10MB
+
     private readonly string[] _allowedFileTypes =
         { "image/jpeg", "image/jpg", "image/png", "image/gif", "image/bmp", "image/webp" };
 

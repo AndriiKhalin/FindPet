@@ -20,10 +20,7 @@ public class GetFileQueryHandler : IQueryHandler<GetFileQuery, GetFileResponse>
         {
             var fileStream = await _mediaStorageService.GetFileAsync(request.FilePath);
 
-            if (fileStream == Stream.Null)
-            {
-                throw new NotFoundException("File", request.FilePath);
-            }
+            if (fileStream == Stream.Null) throw new NotFoundException("File", request.FilePath);
 
             //var uri = new Uri(request.FilePath);
             var fileName = Path.GetFileName(request.FilePath);

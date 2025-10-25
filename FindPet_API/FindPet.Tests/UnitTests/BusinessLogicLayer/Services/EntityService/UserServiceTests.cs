@@ -1,15 +1,15 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+using AutoMapper;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
 using FindPet.BusinessLogicLayer.Services.EntityService;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
-using FindPet.DataAccessLayer.Repositories.EntityRepository;
 using FindPet.Domain.Entities;
 using FindPet.Domain.Exceptions;
 using FindPet.Domain.Interfaces.ILoggerService;
+using FindPet.Media.Interfaces;
 using FindPet.Tests.TestHelpers;
 using FluentAssertions;
-using Microsoft.AspNetCore.Routing;
 using Moq;
 using Xunit;
 
@@ -17,11 +17,12 @@ namespace FindPet.Tests.UnitTests.BusinessLogicLayer.Services.EntityService;
 
 public class UserServiceTests
 {
-    private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-    private readonly Mock<IUserRepository<User>> _userRepositoryMock;
-    private readonly Mock<IMapper> _mapperMock;
     private readonly Mock<IManageImage<User>> _imageServiceMock;
     private readonly Mock<ILoggerManager> _loggerMock;
+    private readonly Mock<IMapper> _mapperMock;
+    private readonly Mock<IMediaStorageService> _mediaStorageServer;
+    private readonly Mock<IUnitOfWork> _unitOfWorkMock;
+    private readonly Mock<IUserRepository<User>> _userRepositoryMock;
     private readonly IUserService _userService;
 
     public UserServiceTests()
@@ -32,14 +33,15 @@ public class UserServiceTests
         _mapperMock = MockSetupExtensions.SetupMapperMock();
         _imageServiceMock = MockSetupExtensions.SetupImageServiceMock();
         _loggerMock = MockSetupExtensions.SetupLoggerMock();
+        _mediaStorageServer = MockSetupExtensions.CreateMock<IMediaStorageService>();
 
         _unitOfWorkMock.Setup(x => x.User).Returns(_userRepositoryMock.Object);
 
         _userService = new UserService(
             _unitOfWorkMock.Object,
             _mapperMock.Object,
-            _imageServiceMock.Object,
-            _loggerMock.Object);
+            _loggerMock.Object,
+            _mediaStorageServer.Object);
     }
 
     #region GetUsers Tests
@@ -48,7 +50,7 @@ public class UserServiceTests
     public void GetUsers_WhenCalled_ShouldReturnAllUsers()
     {
         // Arrange
-        var expectedUsers = TestDataBuilder.BuildUserList(3);
+        var expectedUsers = TestDataBuilder.BuildUserList();
         _userRepositoryMock.SetupGetUsers(expectedUsers);
 
         // Act
@@ -107,8 +109,7 @@ public class UserServiceTests
         var emptyId = Guid.Empty;
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<BadRequestException>(
-            () => _userService.GetUserByIdAsync(emptyId));
+        var exception = await Assert.ThrowsAsync<BadRequestException>(() => _userService.GetUserByIdAsync(emptyId));
 
         exception.Message.Should().Be("User ID must be NON-Empty");
         _userRepositoryMock.Verify(x => x.IsExistAsync(It.IsAny<Guid>()), Times.Never);
@@ -122,8 +123,7 @@ public class UserServiceTests
         _userRepositoryMock.SetupUserExists(userId, false);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<NotFoundException>(
-            () => _userService.GetUserByIdAsync(userId));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _userService.GetUserByIdAsync(userId));
 
         exception.Should().NotBeNull();
         _loggerMock.VerifyLogError($"User with id: {userId}, hasn't been found in db.");
@@ -162,8 +162,8 @@ public class UserServiceTests
     public async Task GetUserByNameAsync_WithInvalidName_ShouldThrowBadRequestException(string invalidName)
     {
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<BadRequestException>(
-            () => _userService.GetUserByNameAsync(invalidName));
+        var exception =
+            await Assert.ThrowsAsync<BadRequestException>(() => _userService.GetUserByNameAsync(invalidName));
 
         exception.Message.Should().Be("UserName cannot be empty");
         _userRepositoryMock.Verify(x => x.IsExistAsync(It.IsAny<string>()), Times.Never);
@@ -177,8 +177,7 @@ public class UserServiceTests
         _userRepositoryMock.SetupUserExists(userName, false);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<NotFoundException>(
-            () => _userService.GetUserByNameAsync(userName));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _userService.GetUserByNameAsync(userName));
 
         exception.Should().NotBeNull();
         _loggerMock.VerifyLogError($"User with name: {userName}, hasn't been found in db.");
@@ -201,7 +200,7 @@ public class UserServiceTests
 
         // Assert
         result.Should().BeTrue();
-        _userRepositoryMock.Verify(x => x.IsExistAsync(It.IsAny<System.Linq.Expressions.Expression<Func<User, bool>>>()), Times.Once);
+        _userRepositoryMock.Verify(x => x.IsExistAsync(It.IsAny<Expression<Func<User, bool>>>()), Times.Once);
     }
 
     [Fact]
@@ -230,7 +229,7 @@ public class UserServiceTests
 
         // Assert
         result.Should().BeTrue();
-        _userRepositoryMock.Verify(x => x.IsExistAsync(It.IsAny<System.Linq.Expressions.Expression<Func<User, bool>>>()), Times.Once);
+        _userRepositoryMock.Verify(x => x.IsExistAsync(It.IsAny<Expression<Func<User, bool>>>()), Times.Once);
     }
 
     [Fact]
@@ -312,8 +311,7 @@ public class UserServiceTests
         _userRepositoryMock.SetupUserExists(userId, false);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<NotFoundException>(
-            () => _userService.DeleteUserAsync(userId));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _userService.DeleteUserAsync(userId));
 
         exception.Message.Should().Contain($"User with ID '{userId}' was not found");
         _loggerMock.VerifyLogError($"User with id: {userId}, hasn't been found in db.");
@@ -370,8 +368,7 @@ public class UserServiceTests
         var userId = Guid.NewGuid();
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<BadRequestException>(
-            () => _userService.UpdateUserAsync(userId, null));
+        var exception = await Assert.ThrowsAsync<BadRequestException>(() => _userService.UpdateUserAsync(userId, null));
 
         exception.Message.Should().Contain("User is null");
         _loggerMock.Verify(x => x.LogError(
@@ -391,8 +388,8 @@ public class UserServiceTests
         _userRepositoryMock.SetupUserExists(userId, false);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<NotFoundException>(
-            () => _userService.UpdateUserAsync(userId, updateDto));
+        var exception =
+            await Assert.ThrowsAsync<NotFoundException>(() => _userService.UpdateUserAsync(userId, updateDto));
 
         exception.Message.Should().Contain($"User with ID '{userId}' was not found");
         _loggerMock.VerifyLogError($"User with id: {userId}, hasn't been found in db.");
@@ -428,8 +425,7 @@ public class UserServiceTests
     public async Task CreateUserAsync_WithNullUser_ShouldThrowBadRequestException()
     {
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<BadRequestException>(
-            () => _userService.CreateUserAsync(null));
+        var exception = await Assert.ThrowsAsync<BadRequestException>(() => _userService.CreateUserAsync(null));
 
         exception.Message.Should().Be("Invalid  user object.");
         _loggerMock.Verify(x => x.LogError(
@@ -459,7 +455,8 @@ public class UserServiceTests
         await _userService.DeleteUserAsync(userId);
 
         // Assert - Verify complete flow
-        _userRepositoryMock.Verify(x => x.IsExistAsync(userId), Times.Exactly(2)); // Once in DeleteUserAsync, once in GetUserByIdAsync
+        _userRepositoryMock.Verify(x => x.IsExistAsync(userId),
+            Times.Exactly(2)); // Once in DeleteUserAsync, once in GetUserByIdAsync
         _userRepositoryMock.Verify(x => x.GetAsync(userId), Times.Once);
         _imageServiceMock.Verify(x => x.DeletePhoto(user.Photo), Times.Once);
         _userRepositoryMock.Verify(x => x.DeleteAsync(userId), Times.Once);

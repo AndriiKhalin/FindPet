@@ -17,6 +17,7 @@ public class UserSeed : IEntityTypeConfiguration<User>
                 Email = "khalin2002@gmail.com",
                 Password = "10122002",
                 PhoneNumber = "+380737303288",
+                Photo = "users/andrew_example.jpg",
                 BirthDate = new DateTime(2002, 12, 10)
             },
             new()
@@ -26,6 +27,7 @@ public class UserSeed : IEntityTypeConfiguration<User>
                 Email = "vanya2002@gmail.com",
                 Password = "10122002",
                 PhoneNumber = "+380737303288",
+                Photo = "users/vanya_example.jpg",
                 BirthDate = new DateTime(2002, 12, 10)
             },
             new()
@@ -35,6 +37,7 @@ public class UserSeed : IEntityTypeConfiguration<User>
                 Email = "vlad2002@gmail.com",
                 Password = "10122002",
                 PhoneNumber = "+380737303288",
+                Photo = "users/vlad_example.jpg",
                 BirthDate = new DateTime(2002, 12, 10)
             },
             new()
@@ -44,6 +47,7 @@ public class UserSeed : IEntityTypeConfiguration<User>
                 Email = "dima2002@gmail.com",
                 Password = "10122002",
                 PhoneNumber = "+380737303288",
+                Photo = "users/dima_example.jpg",
                 BirthDate = new DateTime(2002, 12, 10)
             }
         };

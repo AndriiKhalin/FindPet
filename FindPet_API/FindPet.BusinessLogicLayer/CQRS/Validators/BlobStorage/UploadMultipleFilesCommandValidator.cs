@@ -1,5 +1,6 @@
 ﻿using FindPet.BusinessLogicLayer.CQRS.Commands.BlobStorage;
 using FluentValidation;
+using Microsoft.AspNetCore.Http;
 
 namespace FindPet.BusinessLogicLayer.CQRS.Validators.BlobStorage;
 
@@ -8,6 +9,7 @@ public class UploadMultipleFilesCommandValidator : AbstractValidator<UploadMulti
     private const int MaxFilesCount = 10;
     private const long MaxFileSize = 10 * 1024 * 1024; // 10MB per file
     private const long MaxTotalSize = 50 * 1024 * 1024; // 50MB total
+
     private readonly string[] _allowedFileTypes =
         { "image/jpeg", "image/jpg", "image/png", "image/gif", "image/bmp", "image/webp" };
 
@@ -43,7 +45,7 @@ public class UploadMultipleFilesCommandValidator : AbstractValidator<UploadMulti
             .WithMessage("Subfolder name contains invalid characters");
     }
 
-    private bool HaveValidTotalSize(List<Microsoft.AspNetCore.Http.IFormFile> files)
+    private bool HaveValidTotalSize(List<IFormFile> files)
     {
         return files.Sum(f => f.Length) <= MaxTotalSize;
     }

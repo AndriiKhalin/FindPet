@@ -13,8 +13,8 @@ namespace FindPet.Tests.UnitTests.BusinessLogicLayer.CQRS.Handlers.CommandHandle
 
 public class UpdateUserCommandHandlerTests
 {
-    private readonly Mock<IUserService> _mockUserService;
     private readonly UpdateUserCommandHandler _handler;
+    private readonly Mock<IUserService> _mockUserService;
 
     public UpdateUserCommandHandlerTests()
     {
@@ -56,8 +56,8 @@ public class UpdateUserCommandHandlerTests
             .ThrowsAsync(expectedException);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<BadRequestException>(
-            () => _handler.Handle(command, CancellationToken.None));
+        var exception =
+            await Assert.ThrowsAsync<BadRequestException>(() => _handler.Handle(command, CancellationToken.None));
 
         exception.Message.Should().Be("User is null");
         _mockUserService.Verify(x => x.UpdateUserAsync(userId, userForUpdate), Times.Once);
@@ -77,8 +77,8 @@ public class UpdateUserCommandHandlerTests
             .ThrowsAsync(expectedException);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<NotFoundException>(
-            () => _handler.Handle(command, CancellationToken.None));
+        var exception =
+            await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(command, CancellationToken.None));
 
         exception.Message.Should().Contain("User");
         exception.Message.Should().Contain(userId.ToString());
@@ -99,8 +99,8 @@ public class UpdateUserCommandHandlerTests
             .ThrowsAsync(expectedException);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => _handler.Handle(command, CancellationToken.None));
+        var exception =
+            await Assert.ThrowsAsync<InvalidOperationException>(() => _handler.Handle(command, CancellationToken.None));
 
         exception.Message.Should().Be("Database error");
         _mockUserService.Verify(x => x.UpdateUserAsync(userId, userForUpdate), Times.Once);
@@ -120,8 +120,8 @@ public class UpdateUserCommandHandlerTests
             .ThrowsAsync(expectedException);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<BadRequestException>(
-            () => _handler.Handle(command, CancellationToken.None));
+        var exception =
+            await Assert.ThrowsAsync<BadRequestException>(() => _handler.Handle(command, CancellationToken.None));
 
         exception.Message.Should().Be("User ID must be NON-Empty");
         _mockUserService.Verify(x => x.UpdateUserAsync(userId, userForUpdate), Times.Once);
@@ -141,8 +141,8 @@ public class UpdateUserCommandHandlerTests
             .ThrowsAsync(expectedException);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<BadRequestException>(
-            () => _handler.Handle(command, CancellationToken.None));
+        var exception =
+            await Assert.ThrowsAsync<BadRequestException>(() => _handler.Handle(command, CancellationToken.None));
 
         exception.Message.Should().Be("User is null");
         _mockUserService.Verify(x => x.UpdateUserAsync(userId, userForUpdate!), Times.Once);
@@ -186,8 +186,8 @@ public class UpdateUserCommandHandlerTests
             .ThrowsAsync(expectedException);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<BadRequestException>(
-            () => _handler.Handle(command, CancellationToken.None));
+        var exception =
+            await Assert.ThrowsAsync<BadRequestException>(() => _handler.Handle(command, CancellationToken.None));
 
         exception.Message.Should().Contain("Invalid user data");
         _mockUserService.Verify(x => x.UpdateUserAsync(userId, userForUpdate), Times.Once);
@@ -207,8 +207,8 @@ public class UpdateUserCommandHandlerTests
             .ThrowsAsync(expectedException);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => _handler.Handle(command, CancellationToken.None));
+        var exception =
+            await Assert.ThrowsAsync<InvalidOperationException>(() => _handler.Handle(command, CancellationToken.None));
 
         exception.Message.Should().Be("Concurrency conflict detected");
         _mockUserService.Verify(x => x.UpdateUserAsync(userId, userForUpdate), Times.Once);
@@ -220,8 +220,8 @@ public class UpdateUserCommandHandlerTests
         // Arrange
         var userId = Guid.NewGuid();
         var userForUpdate = TestDataBuilder.BuildUserForUpdateDto(
-            name: "UpdatedName",
-            email: "updated@example.com");
+            "UpdatedName",
+            "updated@example.com");
         var command = new UpdateUserCommand(userId, userForUpdate);
 
         _mockUserService

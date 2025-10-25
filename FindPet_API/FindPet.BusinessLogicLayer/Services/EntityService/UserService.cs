@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
-using FindPet.BusinessLogicLayer.Interfaces.IImageService;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
 using FindPet.Domain.Entities;
 using FindPet.Domain.Exceptions;
 using FindPet.Domain.Interfaces.ILoggerService;
+using FindPet.Media.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace FindPet.BusinessLogicLayer.Services.EntityService;
@@ -13,8 +13,9 @@ namespace FindPet.BusinessLogicLayer.Services.EntityService;
 public class UserService(
     IUnitOfWork unitOfWorkRep,
     IMapper mapper,
-    IManageImage<User> manageImage,
-    ILoggerManager logger)
+    ILoggerManager logger,
+    IMediaStorageService _mediaStorageService
+)
     : IUserService
 {
     public IEnumerable<User> GetUsers()
@@ -100,7 +101,10 @@ public class UserService(
 
         var userEntityForDelete = await GetUserByIdAsync(userId);
 
-        manageImage.DeletePhoto(userEntityForDelete.Photo);
+        if (!string.IsNullOrEmpty(userEntityForDelete.Photo))
+            await _mediaStorageService.DeleteFileAsync(userEntityForDelete.Photo);
+
+        //manageImage.DeletePhoto(userEntityForDelete.Photo);
 
         await unitOfWorkRep.User.DeleteAsync(userId);
 
@@ -123,11 +127,8 @@ public class UserService(
 
         var userEntity = await GetUserByIdAsync(userId);
 
-        if (user.Photo is not null)
-        {
-            manageImage.DeletePhoto(userEntity.Photo);
-            await manageImage.UploadPhotoAsync(user.Photo, userId);
-        }
+        if (!string.IsNullOrEmpty(user.Photo) && !string.IsNullOrEmpty(userEntity.Photo) &&
+            user.Photo != userEntity.Photo) await _mediaStorageService.DeleteFileAsync(userEntity.Photo);
 
         mapper.Map(user, userEntity);
 
@@ -147,7 +148,6 @@ public class UserService(
         var userMap = mapper.Map<User>(user);
 
         userMap.DateCreateUpdate = DateTime.UtcNow;
-        userMap.Photo = user.Photo;
 
         await unitOfWorkRep.User.CreateAsync(userMap);
 

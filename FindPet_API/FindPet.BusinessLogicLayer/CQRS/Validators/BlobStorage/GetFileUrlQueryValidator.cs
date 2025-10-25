@@ -30,5 +30,4 @@ public class GetFileUrlQueryValidator : AbstractValidator<GetFileUrlQuery>
     {
         return expiryHours > 0 && expiryHours <= 168;
     }
-
 }

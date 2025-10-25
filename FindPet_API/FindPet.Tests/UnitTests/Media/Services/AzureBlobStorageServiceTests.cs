@@ -675,6 +675,8 @@
 
 // -------------------------------------------------------------------------------------
 
+using System.Reflection;
+using System.Text;
 using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
@@ -687,36 +689,16 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Moq;
-using System.Reflection;
-using System.Text;
 using Xunit;
 
 namespace FindPet.Tests.UnitTests.Media.Services;
 
 /// <summary>
-/// Unit tests for AzureBlobStorageService
-/// Tests all public methods and private method behavior through reflection
+///     Unit tests for AzureBlobStorageService
+///     Tests all public methods and private method behavior through reflection
 /// </summary>
 public class AzureBlobStorageServiceTests : IDisposable
 {
-    #region Fields and Constants
-
-    private const string TEST_CONNECTION_STRING = "UseDevelopmentStorage=true";
-    private const string CONTAINER_NAME = "test-container";
-    private const string TEST_FILE_PATH = "folder/test-image.jpg";
-    private const string TEST_FILE_CONTENT = "test content";
-    private const string STORAGE_ERROR_MESSAGE = "Storage error";
-
-    private readonly Mock<ILoggerManager> _mockLogger;
-    private readonly Mock<IOptions<AzureBlobStorageOptions>> _mockOptions;
-    private readonly Mock<BlobServiceClient> _mockBlobServiceClient;
-    private readonly Mock<BlobContainerClient> _mockContainerClient;
-    private readonly Mock<BlobClient> _mockBlobClient;
-    private readonly AzureBlobStorageOptions _options;
-    private readonly AzureBlobStorageService _azureBlobStorageService;
-
-    #endregion
-
     #region Constructor
 
     public AzureBlobStorageServiceTests()
@@ -742,6 +724,34 @@ public class AzureBlobStorageServiceTests : IDisposable
         SetupInternalMocks();
         SetupCommonMockBehaviors();
     }
+
+    #endregion
+
+    #region IDisposable
+
+    public void Dispose()
+    {
+        // Clean up any resources if needed
+        GC.SuppressFinalize(this);
+    }
+
+    #endregion
+
+    #region Fields and Constants
+
+    private const string TEST_CONNECTION_STRING = "UseDevelopmentStorage=true";
+    private const string CONTAINER_NAME = "test-container";
+    private const string TEST_FILE_PATH = "folder/test-image.jpg";
+    private const string TEST_FILE_CONTENT = "test content";
+    private const string STORAGE_ERROR_MESSAGE = "Storage error";
+
+    private readonly Mock<ILoggerManager> _mockLogger;
+    private readonly Mock<IOptions<AzureBlobStorageOptions>> _mockOptions;
+    private readonly Mock<BlobServiceClient> _mockBlobServiceClient;
+    private readonly Mock<BlobContainerClient> _mockContainerClient;
+    private readonly Mock<BlobClient> _mockBlobClient;
+    private readonly AzureBlobStorageOptions _options;
+    private readonly AzureBlobStorageService _azureBlobStorageService;
 
     #endregion
 
@@ -785,7 +795,8 @@ public class AzureBlobStorageServiceTests : IDisposable
     {
         // Arrange
         var response = Response.FromValue(true, new Mock<Response>().Object);
-        _mockBlobClient.Setup(c => c.DeleteIfExistsAsync(It.IsAny<DeleteSnapshotsOption>(), It.IsAny<BlobRequestConditions>(), It.IsAny<CancellationToken>()))
+        _mockBlobClient.Setup(c => c.DeleteIfExistsAsync(It.IsAny<DeleteSnapshotsOption>(),
+                It.IsAny<BlobRequestConditions>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
         // Act
@@ -804,7 +815,8 @@ public class AzureBlobStorageServiceTests : IDisposable
         var fileUrl = "https://teststorage.blob.core.windows.net/container/folder/test-image.jpg";
         var response = Response.FromValue(true, new Mock<Response>().Object);
 
-        _mockBlobClient.Setup(c => c.DeleteIfExistsAsync(It.IsAny<DeleteSnapshotsOption>(), It.IsAny<BlobRequestConditions>(), It.IsAny<CancellationToken>()))
+        _mockBlobClient.Setup(c => c.DeleteIfExistsAsync(It.IsAny<DeleteSnapshotsOption>(),
+                It.IsAny<BlobRequestConditions>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
         // Act
@@ -812,7 +824,8 @@ public class AzureBlobStorageServiceTests : IDisposable
 
         // Assert
         result.Should().BeTrue();
-        _mockContainerClient.Verify(c => c.GetBlobClient(It.Is<string>(s => s.Contains("folder/test-image.jpg"))), Times.Once);
+        _mockContainerClient.Verify(c => c.GetBlobClient(It.Is<string>(s => s.Contains("folder/test-image.jpg"))),
+            Times.Once);
     }
 
     [Fact]
@@ -820,7 +833,8 @@ public class AzureBlobStorageServiceTests : IDisposable
     {
         // Arrange
         var response = Response.FromValue(false, new Mock<Response>().Object);
-        _mockBlobClient.Setup(c => c.DeleteIfExistsAsync(It.IsAny<DeleteSnapshotsOption>(), It.IsAny<BlobRequestConditions>(), It.IsAny<CancellationToken>()))
+        _mockBlobClient.Setup(c => c.DeleteIfExistsAsync(It.IsAny<DeleteSnapshotsOption>(),
+                It.IsAny<BlobRequestConditions>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
         // Act
@@ -830,14 +844,16 @@ public class AzureBlobStorageServiceTests : IDisposable
         result.Should().BeFalse();
         VerifyDeleteOperation();
         // Should not log success when file doesn't exist
-        _mockLogger.Verify(l => l.LogInfo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()), Times.Never);
+        _mockLogger.Verify(l => l.LogInfo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()),
+            Times.Never);
     }
 
     [Fact]
     public async Task DeleteFileAsync_WhenExceptionOccurs_ShouldReturnFalseAndLogError()
     {
         // Arrange
-        _mockBlobClient.Setup(c => c.DeleteIfExistsAsync(It.IsAny<DeleteSnapshotsOption>(), It.IsAny<BlobRequestConditions>(), It.IsAny<CancellationToken>()))
+        _mockBlobClient.Setup(c => c.DeleteIfExistsAsync(It.IsAny<DeleteSnapshotsOption>(),
+                It.IsAny<BlobRequestConditions>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new RequestFailedException(STORAGE_ERROR_MESSAGE));
 
         // Act
@@ -863,7 +879,7 @@ public class AzureBlobStorageServiceTests : IDisposable
 
         // Create a real BlobDownloadStreamingResult using BinaryData
         var binaryData = BinaryData.FromBytes(testContent);
-        var downloadInfo = BlobsModelFactory.BlobDownloadStreamingResult(content: binaryData.ToStream());
+        var downloadInfo = BlobsModelFactory.BlobDownloadStreamingResult(binaryData.ToStream());
         var response = Response.FromValue(downloadInfo, new Mock<Response>().Object);
 
         _mockBlobClient.Setup(c => c.DownloadStreamingAsync(
@@ -906,7 +922,8 @@ public class AzureBlobStorageServiceTests : IDisposable
     {
         // Arrange
         SetupFileExistenceCheck(true);
-        _mockBlobClient.Setup(c => c.DownloadStreamingAsync(It.IsAny<BlobDownloadOptions>(), It.IsAny<CancellationToken>()))
+        _mockBlobClient.Setup(c =>
+                c.DownloadStreamingAsync(It.IsAny<BlobDownloadOptions>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new RequestFailedException(STORAGE_ERROR_MESSAGE));
 
         // Act & Assert
@@ -932,7 +949,7 @@ public class AzureBlobStorageServiceTests : IDisposable
 
         // Create a real BlobDownloadStreamingResult using BinaryData
         var binaryData = BinaryData.FromBytes(testContent);
-        var downloadInfo = BlobsModelFactory.BlobDownloadStreamingResult(content: binaryData.ToStream());
+        var downloadInfo = BlobsModelFactory.BlobDownloadStreamingResult(binaryData.ToStream());
         var response = Response.FromValue(downloadInfo, new Mock<Response>().Object);
 
         _mockBlobClient.Setup(c => c.DownloadStreamingAsync(
@@ -989,8 +1006,10 @@ public class AzureBlobStorageServiceTests : IDisposable
     public async Task GetFileUrlAsync_WithValidFilePath_ShouldReturnSasUrl()
     {
         // Arrange
-        var sasUri = new Uri("https://teststorage.blob.core.windows.net/container/folder/test-image.jpg?sv=2020-08-04&sr=b&sig=abc123");
-        SetupSasUriGeneration(sasUri, fileExists: true);
+        var sasUri =
+            new Uri(
+                "https://teststorage.blob.core.windows.net/container/folder/test-image.jpg?sv=2020-08-04&sr=b&sig=abc123");
+        SetupSasUriGeneration(sasUri, true);
 
         // Act
         var result = await _azureBlobStorageService.GetFileUrlAsync(TEST_FILE_PATH);
@@ -1019,12 +1038,14 @@ public class AzureBlobStorageServiceTests : IDisposable
     {
         // Arrange
         var customExpiry = TimeSpan.FromHours(2);
-        var sasUri = new Uri("https://teststorage.blob.core.windows.net/container/folder/test-image.jpg?sv=2020-08-04&sr=b&sig=abc123");
+        var sasUri =
+            new Uri(
+                "https://teststorage.blob.core.windows.net/container/folder/test-image.jpg?sv=2020-08-04&sr=b&sig=abc123");
 
         SetupFileExistenceCheck(true);
         _mockBlobClient.Setup(c => c.CanGenerateSasUri).Returns(true);
         _mockBlobClient.Setup(c => c.GenerateSasUri(It.Is<BlobSasBuilder>(b =>
-            IsExpiryWithinExpectedRange(b.ExpiresOn, customExpiry))))
+                IsExpiryWithinExpectedRange(b.ExpiresOn, customExpiry))))
             .Returns(sasUri);
 
         // Act
@@ -1124,7 +1145,8 @@ public class AzureBlobStorageServiceTests : IDisposable
 
     [Theory]
     [InlineData(null, "File is null or empty")]
-    public async Task UploadFileAsync_WithInvalidFile_ShouldThrowArgumentException(IFormFile file, string expectedMessage)
+    public async Task UploadFileAsync_WithInvalidFile_ShouldThrowArgumentException(IFormFile file,
+        string expectedMessage)
     {
         // Act & Assert
         var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
@@ -1163,13 +1185,15 @@ public class AzureBlobStorageServiceTests : IDisposable
     public async Task UploadFileAsync_WithOversizedFile_ShouldThrowArgumentException()
     {
         // Arrange
-        var oversizedFile = MockSetupExtensions.SetupMockFormFile("large.jpg", "image/jpeg", _options.MaxFileSizeBytes + 1).Object;
+        var oversizedFile = MockSetupExtensions
+            .SetupMockFormFile("large.jpg", "image/jpeg", _options.MaxFileSizeBytes + 1).Object;
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
             _azureBlobStorageService.UploadFileAsync(oversizedFile, Guid.NewGuid(), "pets"));
 
-        exception.Message.Should().Contain($"File size exceeds maximum allowed size of {_options.MaxFileSizeBytes} bytes");
+        exception.Message.Should()
+            .Contain($"File size exceeds maximum allowed size of {_options.MaxFileSizeBytes} bytes");
     }
 
     [Fact]
@@ -1178,7 +1202,8 @@ public class AzureBlobStorageServiceTests : IDisposable
         // Arrange
         var mockFile = TestDataBuilder.MLTestData.CreateValidImageFile("test-upload-error.jpg");
 
-        _mockContainerClient.Setup(c => c.CreateIfNotExistsAsync(It.IsAny<PublicAccessType>(), It.IsAny<IDictionary<string, string>>(), It.IsAny<CancellationToken>()))
+        _mockContainerClient.Setup(c => c.CreateIfNotExistsAsync(It.IsAny<PublicAccessType>(),
+                It.IsAny<IDictionary<string, string>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Mock<Response<BlobContainerInfo>>().Object);
 
         _mockBlobClient.Setup(c => c.UploadAsync(
@@ -1351,7 +1376,8 @@ public class AzureBlobStorageServiceTests : IDisposable
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Mock<Response<BlobContainerInfo>>().Object);
 
-        _mockBlobClient.Setup(c => c.UploadAsync(It.IsAny<Stream>(), It.IsAny<BlobUploadOptions>(), It.IsAny<CancellationToken>()))
+        _mockBlobClient.Setup(c =>
+                c.UploadAsync(It.IsAny<Stream>(), It.IsAny<BlobUploadOptions>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Mock<Response<BlobContentInfo>>().Object);
     }
 
@@ -1398,13 +1424,13 @@ public class AzureBlobStorageServiceTests : IDisposable
     private MethodInfo GetPrivateMethod(string methodName)
     {
         return typeof(AzureBlobStorageService).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance)
-            ?? throw new InvalidOperationException($"Method '{methodName}' not found");
+               ?? throw new InvalidOperationException($"Method '{methodName}' not found");
     }
 
     private MethodInfo GetPrivateStaticMethod(string methodName)
     {
         return typeof(AzureBlobStorageService).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static)
-            ?? throw new InvalidOperationException($"Static method '{methodName}' not found");
+               ?? throw new InvalidOperationException($"Static method '{methodName}' not found");
     }
 
     #endregion
@@ -1485,17 +1511,6 @@ public class AzureBlobStorageServiceTests : IDisposable
     }
 
     #endregion
-
-    #region IDisposable
-
-    public void Dispose()
-    {
-        // Clean up any resources if needed
-        GC.SuppressFinalize(this);
-    }
-
-    #endregion
 }
 
 // ---------------------------------------------------------------------------------------
-

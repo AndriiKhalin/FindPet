@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Http;
 
 namespace FindPet.BusinessLogicLayer.CQRS.Commands.BlobStorage;
 
-public record UploadFileCommand(IFormFile File, string? Subfolder = null, Guid? EntityId = null) : ICommand<UploadFileResponse>;
+public record UploadFileCommand(IFormFile File, string? Subfolder = null, Guid? EntityId = null)
+    : ICommand<UploadFileResponse>;
 
 public class UploadFileResponse
 {

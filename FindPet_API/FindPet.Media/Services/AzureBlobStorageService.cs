@@ -1,7 +1,8 @@
-﻿using Azure.Storage;
+﻿using System.Text.RegularExpressions;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
+using FindPet.Domain.Interfaces.ILoggerService;
 using FindPet.Domain.ValueObjects;
 using FindPet.Media.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -9,20 +10,17 @@ using Microsoft.Extensions.Options;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Processing;
-using System.Text.RegularExpressions;
-using FindPet.Domain.Interfaces.ILoggerService;
-using Size = System.Drawing.Size;
 
 namespace FindPet.Media.Services;
 
 public class AzureBlobStorageService : IMediaStorageService
 {
     private readonly BlobServiceClient _blobServiceClient;
-    private readonly BlobContainerClient _containerClient;
     private readonly string _connectionString;
+    private readonly BlobContainerClient _containerClient;
     private readonly string _containerName;
-    private readonly AzureBlobStorageOptions _options;
     private readonly ILoggerManager _logger;
+    private readonly AzureBlobStorageOptions _options;
 
     public AzureBlobStorageService(
         string connectionString,
@@ -47,10 +45,7 @@ public class AzureBlobStorageService : IMediaStorageService
 
             var response = await blobClient.DeleteIfExistsAsync();
 
-            if (response.Value)
-            {
-                _logger.LogInfo("Successfully deleted image: {FilePath}", blobName);
-            }
+            if (response.Value) _logger.LogInfo("Successfully deleted image: {FilePath}", blobName);
 
             return response.Value;
         }
@@ -68,10 +63,7 @@ public class AzureBlobStorageService : IMediaStorageService
             var blobName = ExtractBlobNameFromUrl(filePath);
             var blobClient = _containerClient.GetBlobClient(blobName);
 
-            if (!await blobClient.ExistsAsync())
-            {
-                throw new FileNotFoundException($"File {filePath} not found");
-            }
+            if (!await blobClient.ExistsAsync()) throw new FileNotFoundException($"File {filePath} not found");
 
             var response = await blobClient.DownloadStreamingAsync();
             return response.Value.Content;
@@ -94,10 +86,7 @@ public class AzureBlobStorageService : IMediaStorageService
             var blobName = ExtractBlobNameFromUrl(filePath);
             var blobClient = _containerClient.GetBlobClient(blobName);
 
-            if (!await blobClient.ExistsAsync())
-            {
-                return Stream.Null;
-            }
+            if (!await blobClient.ExistsAsync()) return Stream.Null;
 
             var response = await blobClient.DownloadStreamingAsync();
             return response.Value.Content;
@@ -114,10 +103,7 @@ public class AzureBlobStorageService : IMediaStorageService
         var blobClient = _containerClient.GetBlobClient(filePath);
 
         // Check if the blob exists
-        if (!await blobClient.ExistsAsync())
-        {
-            throw new FileNotFoundException($"File {filePath} not found");
-        }
+        if (!await blobClient.ExistsAsync()) throw new FileNotFoundException($"File {filePath} not found");
 
         // Generate SAS token for secure access
         if (blobClient.CanGenerateSasUri)
@@ -198,7 +184,8 @@ public class AzureBlobStorageService : IMediaStorageService
         }
     }
 
-    public async Task<List<string>> UploadMultipleFilesAsync(List<IFormFile> files, Guid? entityId = null, string? subfolder = null)
+    public async Task<List<string>> UploadMultipleFilesAsync(List<IFormFile> files, Guid? entityId = null,
+        string? subfolder = null)
     {
         var uploadTasks = files.Select(file => UploadFileAsync(file, entityId, subfolder));
         return (await Task.WhenAll(uploadTasks)).ToList();
@@ -221,13 +208,11 @@ public class AzureBlobStorageService : IMediaStorageService
 
         // Resize if too large
         if (image.Width > 1920 || image.Height > 1920)
-        {
             image.Mutate(x => x.Resize(new ResizeOptions
             {
                 Mode = ResizeMode.Max,
-                Size = new SixLabors.ImageSharp.Size(1920, 1920)
+                Size = new Size(1920, 1920)
             }));
-        }
 
         var outputStream = new MemoryStream();
         await image.SaveAsJpegAsync(outputStream, new JpegEncoder
@@ -308,10 +293,7 @@ public class AzureBlobStorageService : IMediaStorageService
     {
         string[] urlSchemes = { "https://", "http://", "ftp://" };
 
-        if (!urlSchemes.Any(x => fileUrl.Contains(x)))
-        {
-            return fileUrl;
-        }
+        if (!urlSchemes.Any(x => fileUrl.Contains(x))) return fileUrl;
 
         // If it's a full URL, extract the blob name
         var uri = new Uri(fileUrl);

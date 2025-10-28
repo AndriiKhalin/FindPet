@@ -19,6 +19,11 @@ public class MLService(ILoggerManager logger) : IMLService
 
     public async Task<string> PredictAsync(Stream imageStream)
     {
+        if (imageStream == null)
+        {
+            throw new ArgumentNullException(nameof(imageStream), "Image stream cannot be null.");
+        }
+
         try
         {
             using var memoryStream = new MemoryStream();
@@ -33,6 +38,10 @@ public class MLService(ILoggerManager logger) : IMLService
             var output = await Task.Run(() => PetMLModel.Predict(sampleData));
 
             return output.PredictedLabel;
+        }
+        catch (ArgumentNullException)
+        {
+            throw;
         }
         catch (Exception ex)
         {

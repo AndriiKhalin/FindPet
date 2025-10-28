@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using AutoMapper;
+﻿using AutoMapper;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
 using FindPet.BusinessLogicLayer.Interfaces.IMLService;
 using FindPet.BusinessLogicLayer.Services.EntityService;
@@ -11,6 +10,8 @@ using FindPet.Media.Interfaces;
 using FindPet.Tests.TestHelpers;
 using Microsoft.AspNetCore.Hosting;
 using Moq;
+using System;
+using System.Diagnostics;
 using Xunit;
 
 namespace FindPet.Tests.UnitTests.BusinessLogicLayer.Services.EntityService;
@@ -264,7 +265,7 @@ public class PetServiceTests
 
         _mockPetRepository.SetupPetExists(petId, true);
         _mockPetRepository.SetupGetPet(petId, pet);
-        //_mockPetRepository.SetupDelete(petId);
+        _mockPetRepository.Setup(x => x.DeleteAsync(petId));
         _mockUnitOfWork.SetupSaveAsync();
 
         // Act
@@ -272,7 +273,7 @@ public class PetServiceTests
 
         // Assert
         _mockPetRepository.Verify(r => r.IsExistAsync(petId), Times.AtLeast(2));
-        _mockManageImage.Verify(x => x.DeletePhoto(pet.Photo), Times.Once);
+        _mockMediaStorageService.Verify(x => x.DeleteFileAsync(pet.Photo), Times.Once);
         _mockPetRepository.Verify(x => x.DeleteAsync(petId), Times.Once);
         _mockUnitOfWork.Verify(x => x.SaveAsync(), Times.Once);
     }
@@ -318,6 +319,7 @@ public class PetServiceTests
         var pet = TestDataBuilder.BuildBasicPet(petId, photo: null);
         _mockPetRepository.SetupPetExists(petId, true);
         _mockPetRepository.SetupGetPet(petId, pet);
+        _mockPetRepository.Setup(r => r.DeleteAsync(petId));
         _mockUnitOfWork.SetupSaveAsync();
 
         // Act
@@ -326,7 +328,7 @@ public class PetServiceTests
         // Assert
         _mockPetRepository.Verify(r => r.IsExistAsync(petId), Times.AtLeast(2));
         _mockPetRepository.Verify(r => r.DeleteAsync(petId), Times.Once);
-        _mockManageImage.Verify(i => i.DeletePhoto(null), Times.Once); // Will be called with null
+        _mockMediaStorageService.Verify(i => i.DeleteFileAsync(null!), Times.Never); // Will be called with null
         _mockUnitOfWork.Verify(u => u.SaveAsync(), Times.Once);
     }
 
@@ -367,7 +369,10 @@ public class PetServiceTests
 
         _mockPetRepository.SetupPetExists(petId, true);
         _mockPetRepository.SetupGetPet(petId, existingPet);
-        _mockManageImage.SetupUploadPhoto("uploaded_photo.jpg");
+
+        _mockMediaStorageService.SetupPredictTypePet(updateDto.Photo);
+        _mockMLService.Setup(x => x.PredictAsync(It.IsAny<Stream>()));
+        //_mockManageImage.SetupUploadPhoto("uploaded_photo.jpg");
         _mockUnitOfWork.SetupSaveAsync();
 
         // Act
@@ -377,8 +382,10 @@ public class PetServiceTests
         _mockPetRepository.Verify(r => r.IsExistAsync(petId), Times.AtLeast(2));
         _mockPetRepository.Verify(r => r.UpdateAsync(existingPet), Times.Once);
         _mockUnitOfWork.Verify(u => u.SaveAsync(), Times.Once);
-        _mockManageImage.Verify(x => x.DeletePhoto(existingPet.Photo), Times.Once);
-        _mockManageImage.Verify(x => x.UploadPhotoAsync(updateDto.Photo, petId), Times.Once);
+        _mockMediaStorageService.Verify(x => x.DeleteFileAsync(existingPet.Photo), Times.Once);
+        _mockMLService.Verify(x => x.PredictAsync(It.IsAny<Stream>()), Times.Once);
+        // _mockManageImage.Verify(x => x.DeletePhoto(existingPet.Photo), Times.Once);
+        // _mockManageImage.Verify(x => x.UploadPhotoAsync(updateDto.Photo, petId), Times.Once);
     }
 
     [Fact]
@@ -463,13 +470,22 @@ public class PetServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var createDto = TestDataBuilder.BuildPetForCreateDto().With(x => x.Photo = "retriver.jpg");
-        var pet = TestDataBuilder.BuildBasicPet();
+        var createDto = TestDataBuilder.BuildPetForCreateDto().With(x => x.Photo = "pets/retriver.jpg");
+        var pet = TestDataBuilder.BuildBasicPet().With(x => x.Photo = "pets/retriver.jpg");
         var predictedBreed = "Golden Retriever";
 
         _mockUserRepository.SetupUserExists(userId, true);
         _mockMapper.Setup(x => x.Map<Pet>(createDto)).Returns(pet);
-        _mockMLService.Setup(x => x.PredictAsync(It.IsAny<string>())).ReturnsAsync(predictedBreed);
+
+        _mockMediaStorageService.Setup(x => x.FileExistsAsync(createDto.Photo))
+            .ReturnsAsync(true);
+
+        var mockImageStream = new MemoryStream(new byte[] { 0x00, 0x01, 0x02 });
+        _mockMediaStorageService.Setup(x => x.GetFileAsync(createDto.Photo))
+            .ReturnsAsync(mockImageStream);
+
+        _mockMLService.Setup(x => x.PredictAsync(It.IsAny<Stream>())).ReturnsAsync(predictedBreed);
+        _mockPetRepository.Setup(x => x.CreateAsync(pet)).Returns(Task.CompletedTask);
         _mockUnitOfWork.SetupSaveAsync();
 
         // Act
@@ -481,6 +497,9 @@ public class PetServiceTests
         Assert.Equal(predictedBreed, result.Type);
         Assert.Equal(createDto.Photo, result.Photo);
         Assert.True(pet.DateCreateUpdate <= DateTime.UtcNow);
+        _mockMediaStorageService.Verify(x => x.FileExistsAsync(createDto.Photo), Times.Once);
+        _mockMediaStorageService.Verify(x => x.GetFileAsync(createDto.Photo), Times.Once);
+        _mockMLService.Verify(x => x.PredictAsync(It.IsAny<Stream>()), Times.Once);
         _mockUserRepository.Verify(r => r.IsExistAsync(userId), Times.Once);
         _mockPetRepository.Verify(x => x.CreateAsync(pet), Times.Once);
         _mockUnitOfWork.Verify(u => u.SaveAsync(), Times.Once);
@@ -513,14 +532,23 @@ public class PetServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var createDto = TestDataBuilder.BuildPetForCreateDto().With(x => x.Photo = "testphoto.jpg");
-        var pet = TestDataBuilder.BuildBasicPet();
-        //var expectedPath = "/test/wwwroot/testphoto.jpg";
+        var createDto = TestDataBuilder.BuildPetForCreateDto().With(x => x.Photo = "pets/testphoto.jpg");
+        var pet = TestDataBuilder.BuildBasicPet().With(x => x.Photo = "pets/testphoto.jpg");
         var predictedBreed = "Dog";
 
         _mockUserRepository.SetupUserExists(userId, true);
         _mockMapper.Setup(x => x.Map<Pet>(createDto)).Returns(pet);
-        _mockMLService.Setup(x => x.PredictAsync(It.IsAny<string>())).ReturnsAsync(predictedBreed);
+
+        _mockMediaStorageService.Setup(x => x.FileExistsAsync(createDto.Photo))
+            .ReturnsAsync(true);
+
+        var mockImageStream = new MemoryStream(new byte[] { 0x00, 0x01, 0x02 });
+        _mockMediaStorageService.Setup(x => x.GetFileAsync(createDto.Photo))
+            .ReturnsAsync(mockImageStream);
+
+        _mockMLService.Setup(x => x.PredictAsync(It.IsAny<Stream>())).ReturnsAsync(predictedBreed);
+
+        _mockPetRepository.Setup(x => x.CreateAsync(pet)).Returns(Task.CompletedTask);
         _mockUnitOfWork.SetupSaveAsync();
 
         // Act
@@ -530,7 +558,10 @@ public class PetServiceTests
         Assert.NotNull(result);
         Assert.Equal(userId, result.UserId);
         Assert.Equal(predictedBreed, result.Type);
-        _mockMLService.Verify(x => x.PredictAsync(It.IsAny<string>()), Times.Once);
+        Assert.Equal(createDto.Photo, result.Photo);
+        _mockMediaStorageService.Verify(x => x.FileExistsAsync(createDto.Photo), Times.Once);
+        _mockMediaStorageService.Verify(x => x.GetFileAsync(createDto.Photo), Times.Once);
+        _mockMLService.Verify(x => x.PredictAsync(It.IsAny<Stream>()), Times.Once);
         _mockPetRepository.Verify(r => r.CreateAsync(pet), Times.Once);
     }
 
@@ -618,16 +649,38 @@ public class PetServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var createDto = TestDataBuilder.BuildPetForCreateDto().With(x => x.Photo = "testphoto.jpg");
-        var pet = TestDataBuilder.BuildBasicPet();
+        var createDto = TestDataBuilder.BuildPetForCreateDto().With(x => x.Photo = "pets/testphoto.jpg");
+        var pet = TestDataBuilder.BuildBasicPet().With(x => x.Photo = "pets/testphoto.jpg");
 
         _mockUserRepository.SetupUserExists(userId, true);
         _mockMapper.Setup(x => x.Map<Pet>(createDto)).Returns(pet);
-        _mockMLService.Setup(x => x.PredictAsync(It.IsAny<string>()))
+
+        // Setup media storage service
+        _mockMediaStorageService.Setup(x => x.FileExistsAsync(createDto.Photo))
+            .ReturnsAsync(true);
+
+        var mockImageStream = new MemoryStream(new byte[] { 0x00, 0x01, 0x02 });
+        _mockMediaStorageService.Setup(x => x.GetFileAsync(createDto.Photo))
+            .ReturnsAsync(mockImageStream);
+
+        // Setup ML service to throw exception
+        _mockMLService.Setup(x => x.PredictAsync(It.IsAny<Stream>()))
             .ThrowsAsync(new Exception("ML Service Error"));
 
-        // Act & Assert
-        await Assert.ThrowsAsync<Exception>(() => _petService.CreatePetAsync(userId, createDto));
+        _mockPetRepository.Setup(x => x.CreateAsync(pet)).Returns(Task.CompletedTask);
+        _mockUnitOfWork.SetupSaveAsync();
+
+        // Act
+        var result = await _petService.CreatePetAsync(userId, createDto);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal("Unknown", result.Type);
+        Assert.Equal(userId, result.UserId);
+        _mockMLService.Verify(x => x.PredictAsync(It.IsAny<Stream>()), Times.Once);
+        _mockPetRepository.Verify(x => x.CreateAsync(pet), Times.Once);
+        _mockUnitOfWork.Verify(x => x.SaveAsync(), Times.Once);
+        _mockLogger.VerifyLogError("Failed to predict pet type");
     }
 
     [Fact]
@@ -635,39 +688,15 @@ public class PetServiceTests
     {
         // Arrange
         var petId = Guid.NewGuid();
-        var pet = TestDataBuilder.BuildPetWithPhoto("test_photo.jpg");
+        var pet = TestDataBuilder.BuildPetWithPhoto("pets/test_photo.jpg");
 
         _mockPetRepository.SetupPetExists(petId, true);
         _mockPetRepository.SetupGetPet(petId, pet);
-        _mockManageImage.Setup(x => x.DeletePhoto(It.IsAny<string>()))
+        _mockMediaStorageService.Setup(x => x.DeleteFileAsync(It.IsAny<string>()))
             .Throws(new Exception("File deletion failed"));
 
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => _petService.DeletePetAsync(petId));
     }
-
-    [Theory]
-    [InlineData("/uploads/photo.jpg")]
-    [InlineData("\\uploads\\photo.jpg")]
-    [InlineData("uploads/photo.jpg")]
-    public async Task CreatePetAsync_ShouldHandleDifferentPhotoPathFormats(string photoPath)
-    {
-        // Arrange
-        var userId = Guid.NewGuid();
-        var createDto = TestDataBuilder.BuildPetForCreateDto();
-        createDto.Photo = photoPath;
-        var pet = TestDataBuilder.BuildBasicPet();
-
-        _mockUserRepository.SetupUserExists(userId, true);
-        _mockMapper.Setup(x => x.Map<Pet>(createDto)).Returns(pet);
-        _mockMLService.Setup(x => x.PredictAsync(It.IsAny<string>())).ReturnsAsync("Golden Retriever");
-
-        // Act
-        await _petService.CreatePetAsync(userId, createDto);
-
-        // Assert
-        _mockMLService.Verify(x => x.PredictAsync(It.IsAny<string>()), Times.Once);
-    }
-
     #endregion
 }

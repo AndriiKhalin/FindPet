@@ -316,13 +316,11 @@ public class AdServiceTests
         var petId = Guid.NewGuid();
         var userId = Guid.NewGuid();
         var createDto = TestDataBuilder.BuildAdForCreateDto().With(x => x.Photo = "ads/photo.jpg");
-        var mappedAd = TestDataBuilder.BuildAd();
-
+        var photoPath = "ads/uploaded-photo.jpg";
+        var mappedAd = TestDataBuilder.BuildAd().With(x => x.Photo = photoPath);
 
         var pet = TestDataBuilder.BuildBasicPet(petId);
         var user = TestDataBuilder.BuildBasicUser(userId);
-        var newAdId = Guid.NewGuid();
-        var photoPath = "uploaded-photo.jpg";
 
         _mockPetRepository.Setup(x => x.GetAsync(petId)).ReturnsAsync(pet);
         _mockUserRepository.Setup(x => x.GetAsync(userId)).ReturnsAsync(user);

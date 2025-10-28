@@ -289,16 +289,17 @@ public class UserServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var user = TestDataBuilder.BuildBasicUser(userId);
+        var user = TestDataBuilder.BuildBasicUser(id: userId, photo: "users/test.jpg");
 
         _userRepositoryMock.SetupUserExists(userId, true);
         _userRepositoryMock.SetupGetUser(userId, user);
+        _mediaStorageServer.Setup(x => x.DeleteFileAsync(user.Photo));
 
         // Act
         await _userService.DeleteUserAsync(userId);
 
         // Assert
-        _imageServiceMock.VerifyImageDelete(user.Photo);
+        _mediaStorageServer.VerifyFIleDelete(user.Photo!);
         _userRepositoryMock.Verify(x => x.DeleteAsync(userId), Times.Once);
         _unitOfWorkMock.Verify(x => x.SaveAsync(), Times.Once);
     }
@@ -347,18 +348,26 @@ public class UserServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var updateDto = TestDataBuilder.BuildUserForUpdateDtoWithPhoto();
-        var existingUser = TestDataBuilder.BuildUserWithPhoto().With(u => u.Id = userId);
+        var existingUser = TestDataBuilder.BuildBasicUser(id: userId, photo: "users/old_photo.jpg");
+        var updateDto = TestDataBuilder.BuildUserForUpdateDto(photo: "users/new_photo.jpg");
 
         _userRepositoryMock.SetupUserExists(userId, true);
         _userRepositoryMock.SetupGetUser(userId, existingUser);
-
+        _mediaStorageServer.Setup(x => x.DeleteFileAsync(existingUser.Photo));
+        _mapperMock.Setup(x => x.Map<User>(updateDto)).Returns(existingUser);
+        _userRepositoryMock.Setup(x => x.UpdateAsync(existingUser));
+        _unitOfWorkMock.SetupSaveAsync();
         // Act
         await _userService.UpdateUserAsync(userId, updateDto);
 
         // Assert
-        _imageServiceMock.VerifyImageDelete(existingUser.Photo);
-        _imageServiceMock.VerifyImageUpload(updateDto.Photo, userId);
+
+        _userRepositoryMock.Verify(x => x.IsExistAsync(userId), Times.AtLeast(2));
+        _userRepositoryMock.Verify(x => x.GetAsync(userId), Times.AtLeastOnce);
+        _mediaStorageServer.VerifyFIleDelete(existingUser.Photo);
+        _mapperMock.Verify(x => x.Map(updateDto, existingUser), Times.Once);
+        _userRepositoryMock.Verify(x => x.UpdateAsync(existingUser), Times.Once);
+        _unitOfWorkMock.Verify(x => x.SaveAsync(), Times.Once);
     }
 
     [Fact]
@@ -446,11 +455,11 @@ public class UserServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var user = TestDataBuilder.BuildBasicUser(userId);
+        var user = TestDataBuilder.BuildBasicUser(id: userId, photo: "users/test.jpg");
 
         _userRepositoryMock.SetupUserExists(userId, true);
         _userRepositoryMock.SetupGetUser(userId, user);
-
+        _mediaStorageServer.Setup(x => x.DeleteFileAsync(user.Photo));
         // Act
         await _userService.DeleteUserAsync(userId);
 
@@ -458,7 +467,7 @@ public class UserServiceTests
         _userRepositoryMock.Verify(x => x.IsExistAsync(userId),
             Times.Exactly(2)); // Once in DeleteUserAsync, once in GetUserByIdAsync
         _userRepositoryMock.Verify(x => x.GetAsync(userId), Times.Once);
-        _imageServiceMock.Verify(x => x.DeletePhoto(user.Photo), Times.Once);
+        _mediaStorageServer.Verify(x => x.DeleteFileAsync(user.Photo), Times.Once);
         _userRepositoryMock.Verify(x => x.DeleteAsync(userId), Times.Once);
         _unitOfWorkMock.Verify(x => x.SaveAsync(), Times.Once);
     }

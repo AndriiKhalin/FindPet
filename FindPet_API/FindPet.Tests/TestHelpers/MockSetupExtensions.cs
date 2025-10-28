@@ -78,9 +78,9 @@ public static class MockSetupExtensions
         imageServiceMock.Verify(x => x.UploadPhotoAsync(photo, userId), Times.Once);
     }
 
-    public static void VerifyImageDelete(this Mock<IManageImage<User>> imageServiceMock, string photo)
+    public static void VerifyFIleDelete(this Mock<IMediaStorageService> mediaStorageService, string photo)
     {
-        imageServiceMock.Verify(x => x.DeletePhoto(photo), Times.Once);
+        mediaStorageService.Verify(x => x.DeleteFileAsync(photo), Times.Once);
     }
 
     //---------------------------------------------------------
@@ -1064,15 +1064,16 @@ public static class MockSetupExtensions
         return mockImageService;
     }
 
-    public static void VerifyImageUpload<T>(this Mock<IManageImage<T>> imageServiceMock, string photo, Guid userId)
-        where T : class
+    public static Mock<IMediaStorageService> SetupPredictTypePet(
+        this Mock<IMediaStorageService> mockMediaStorageService, string photoPath)
     {
-        imageServiceMock.Verify(x => x.UploadPhotoAsync(photo, userId), Times.Once);
-    }
+        mockMediaStorageService.Setup(x => x.FileExistsAsync(photoPath)).ReturnsAsync(true);
 
-    public static void VerifyImageDelete<T>(this Mock<IManageImage<T>> imageServiceMock, string photo) where T : class
-    {
-        imageServiceMock.Verify(x => x.DeletePhoto(photo), Times.Once);
+        var mockImageStream = new MemoryStream(new byte[] { 0x00, 0x01, 0x02 });
+        mockMediaStorageService.Setup(x => x.GetFileAsync(photoPath))
+            .ReturnsAsync(mockImageStream);
+
+        return mockMediaStorageService;
     }
 
     /// <summary>

@@ -422,19 +422,35 @@ public class MLServiceTests : IDisposable
 public class IMLServiceContractTests
 {
     [Fact]
-    public void IMLService_ShouldHavePredictAsyncMethod()
+    public void IMLService_ShouldHavePredictAsyncWithStringParameter()
     {
         // Arrange
         var interfaceType = typeof(IMLService);
 
         // Act
-        var method = interfaceType.GetMethod("PredictAsync");
+        var method = interfaceType.GetMethod("PredictAsync", new[] { typeof(string) });
 
         // Assert
-        method.Should().NotBeNull();
+        method.Should().NotBeNull("interface should have PredictAsync(string) method");
         method!.ReturnType.Should().Be(typeof(Task<string>));
         method.GetParameters().Should().HaveCount(1);
         method.GetParameters()[0].ParameterType.Should().Be(typeof(string));
+    }
+
+    [Fact]
+    public void IMLService_ShouldHavePredictAsyncWithStreamParameter()
+    {
+        // Arrange
+        var interfaceType = typeof(IMLService);
+
+        // Act
+        var method = interfaceType.GetMethod("PredictAsync", new[] { typeof(Stream) });
+
+        // Assert
+        method.Should().NotBeNull("interface should have PredictAsync(Stream) method");
+        method!.ReturnType.Should().Be(typeof(Task<string>));
+        method.GetParameters().Should().HaveCount(1);
+        method.GetParameters()[0].ParameterType.Should().Be(typeof(Stream));
     }
 
     [Fact]
@@ -464,19 +480,6 @@ public class MLServiceDependencyInjectionTests
         // Assert
         service.Should().NotBeNull();
         service.Should().BeAssignableTo<IMLService>();
-    }
-
-    [Fact]
-    public void MLService_ShouldHaveParameterlessConstructor()
-    {
-        // Arrange
-        var serviceType = typeof(FindPet.BusinessLogicLayer.Services.MLService.MLService);
-
-        // Act
-        var constructor = serviceType.GetConstructor(Type.EmptyTypes);
-
-        // Assert
-        constructor.Should().NotBeNull();
     }
 }
 

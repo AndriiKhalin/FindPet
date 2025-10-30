@@ -33,7 +33,15 @@ public class UploadFileCommandHandler(IMediaStorageService mediaStorageService)
         {
             throw new BadRequestException($"File upload failed: {ex.Message}");
         }
-        catch (Exception ex)
+        catch (IOException ex)
+        {
+            throw new FileProcessingException("upload", ex.Message, request.File.FileName);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            throw new FileProcessingException("upload", ex.Message, request.File.FileName);
+        }
+        catch (InvalidOperationException ex)
         {
             throw new FileProcessingException("upload", ex.Message, request.File.FileName);
         }

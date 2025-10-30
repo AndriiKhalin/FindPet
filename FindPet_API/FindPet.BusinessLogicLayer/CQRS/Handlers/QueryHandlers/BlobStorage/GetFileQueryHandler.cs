@@ -37,7 +37,7 @@ public class GetFileQueryHandler : IQueryHandler<GetFileQuery, GetFileResponse>
         {
             throw;
         }
-        catch (Exception ex)
+        catch (IOException ex)
         {
             throw new FileProcessingException("download", ex.Message);
         }

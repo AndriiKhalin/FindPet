@@ -20,7 +20,7 @@ public class DeleteFileCommandHandler(IMediaStorageService mediaStorageService)
                 Message = success ? "File deleted successfully" : "File not found or could not be deleted"
             };
         }
-        catch (Exception ex)
+        catch (IOException ex)
         {
             throw new FileProcessingException("delete", ex.Message);
         }

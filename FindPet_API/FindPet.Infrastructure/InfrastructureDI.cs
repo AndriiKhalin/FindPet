@@ -32,6 +32,5 @@ public static class InfrastructureDI
     {
         services.AddDataAccessServices(configuration);
         services.AddBusinessLogicServices();
-        services.AddMediaServices();
     }
 }

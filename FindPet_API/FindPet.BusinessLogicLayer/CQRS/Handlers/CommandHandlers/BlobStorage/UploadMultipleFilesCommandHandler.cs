@@ -49,7 +49,7 @@ public class UploadMultipleFilesCommandHandler(IMediaStorageService mediaStorage
             var secureUrl = await mediaStorageService.GetFileUrlAsync(filePath, TimeSpan.FromHours(24));
             return (true, filePath, secureUrl, null);
         }
-        catch (Exception ex)
+        catch (IOException ex)
         {
             return (false, null, null, $"Failed to upload {file.FileName}: {ex.Message}");
         }

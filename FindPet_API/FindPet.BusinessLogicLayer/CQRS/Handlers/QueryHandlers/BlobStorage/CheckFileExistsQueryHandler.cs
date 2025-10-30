@@ -19,7 +19,7 @@ public class CheckFileExistsQueryHandler(IMediaStorageService mediaStorageServic
                 FilePath = request.FilePath
             };
         }
-        catch (Exception)
+        catch (IOException)
         {
             return new CheckFileExistsResponse
             {

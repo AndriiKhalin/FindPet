@@ -40,10 +40,11 @@ public class DownloadFileQueryHandler : IQueryHandler<DownloadFileQuery, Downloa
         {
             throw;
         }
-        catch (Exception ex)
+        catch (IOException ex)
         {
             throw new FileProcessingException("download", ex.Message, request.FilePath);
         }
+
     }
 
     private static string GetContentType(string fileName)

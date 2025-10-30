@@ -1,11 +1,7 @@
-﻿using FindPet.BusinessLogicLayer.CQRS.Commands.Image;
-using FindPet.BusinessLogicLayer.CQRS.Commands.User;
+﻿using FindPet.BusinessLogicLayer.CQRS.Commands.User;
 using FindPet.BusinessLogicLayer.CQRS.Queries.User;
-using FindPet.Domain.DTOs;
 using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
-using FindPet.Domain.Enums;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FindPet.WebApi.Controllers;
@@ -81,13 +77,13 @@ public class UserController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
-    [AllowAnonymous]
-    [HttpPost("uploadImage")]
-    [DisableRequestSizeLimit]
-    [Consumes("multipart/form-data")]
-    public async Task<IActionResult> UploadImage([FromForm] FileUploadDto file)
-    {
-        var response = await mediator.Send(new UploadImageCommand(file.ImageFile, EntityType.User));
-        return Ok(response);
-    }
+    //[AllowAnonymous]
+    //[HttpPost("uploadImage")]
+    //[DisableRequestSizeLimit]
+    //[Consumes("multipart/form-data")]
+    //public async Task<IActionResult> UploadImage([FromForm] FileUploadDto file)
+    //{
+    //    var response = await mediator.Send(new UploadFileCommand(file.File, "users"));
+    //    return Ok(response);
+    //}
 }

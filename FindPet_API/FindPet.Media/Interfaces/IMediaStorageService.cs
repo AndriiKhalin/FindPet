@@ -1,10 +1,20 @@
-﻿namespace FindPet.Media.Interfaces;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace FindPet.Media.Interfaces;
 
 public interface IMediaStorageService
 {
-    Task<string> UploadImageAsync(Stream imageStream, string fileName);
+    Task<string> UploadFileAsync(IFormFile file, Guid? entityId = null, string? subfolder = null);
 
-    Task<bool> DeleteImageAsync(string imageUrl);
+    Task<List<string>> UploadMultipleFilesAsync(List<IFormFile> files, Guid? entityId = null, string? subfolder = null);
 
-    Task<Stream> GetImageAsync(string imageUrl);
+    Task<Stream> DownloadFileAsync(string filePath);
+
+    Task<bool> DeleteFileAsync(string filePath);
+
+    Task<Stream> GetFileAsync(string filePath);
+
+    Task<string> GetFileUrlAsync(string filePath, TimeSpan? expiryTime = null);
+
+    Task<bool> FileExistsAsync(string filePath);
 }

@@ -1,5 +1,5 @@
-﻿using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
-using FindPet.BusinessLogicLayer.Services.LoggerService;
+﻿using FindPet.BusinessLogicLayer.Services.LoggerService;
+using FindPet.Domain.Interfaces.ILoggerService;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 

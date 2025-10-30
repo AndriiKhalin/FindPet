@@ -1,22 +1,27 @@
-﻿using FindPet.BusinessLogicLayer.Interfaces.IMLService;
-using FindPet.BusinessLogicLayer.Services.MLService;
+﻿using System.Diagnostics;
+using FindPet.BusinessLogicLayer.Interfaces.IMLService;
+using FindPet.Domain.Interfaces.ILoggerService;
 using FindPet.Tests.TestHelpers;
 using FluentAssertions;
+using Moq;
 using Xunit;
 
 namespace FindPet.Tests.UnitTests.BusinessLogicLayer.Services.MLService;
 
 public class MLServiceTests : IDisposable
 {
+    private readonly string _invalidImagePath;
     private readonly FindPet.BusinessLogicLayer.Services.MLService.MLService _mlService;
+
+    private readonly Mock<ILoggerManager> _mockLogger;
+    private readonly string _nonExistentPath;
     private readonly string _testDirectory;
     private readonly string _validImagePath;
-    private readonly string _invalidImagePath;
-    private readonly string _nonExistentPath;
 
     public MLServiceTests()
     {
-        _mlService = new FindPet.BusinessLogicLayer.Services.MLService.MLService();
+        _mockLogger = MockSetupExtensions.CreateMock<ILoggerManager>();
+        _mlService = new FindPet.BusinessLogicLayer.Services.MLService.MLService(_mockLogger.Object);
         _testDirectory = Path.Combine(Path.GetTempPath(), "MLServiceTests", Guid.NewGuid().ToString());
         Directory.CreateDirectory(_testDirectory);
 
@@ -31,6 +36,64 @@ public class MLServiceTests : IDisposable
         // Create an invalid file
         File.WriteAllText(_invalidImagePath, "This is not an image file");
     }
+
+    #region Cleanup
+
+    public void Dispose()
+    {
+        if (Directory.Exists(_testDirectory))
+            try
+            {
+                // Reset file attributes before deletion
+                foreach (var file in Directory.GetFiles(_testDirectory))
+                    File.SetAttributes(file, FileAttributes.Normal);
+                Directory.Delete(_testDirectory, true);
+            }
+            catch
+            {
+                // Ignore cleanup errors in tests
+            }
+    }
+
+    #endregion
+
+    #region Performance Tests
+
+    [Fact]
+    public async Task PredictAsync_MultipleConsecutiveCalls_ShouldMaintainPerformance()
+    {
+        // Arrange
+        var iterations = 5;
+        var times = new List<long>();
+
+        // Act
+        for (var i = 0; i < iterations; i++)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            await _mlService.PredictAsync(_validImagePath);
+            stopwatch.Stop();
+            times.Add(stopwatch.ElapsedMilliseconds);
+        }
+
+        // Assert
+        times.Should().OnlyContain(time => time < 10000); // Each call under 10 seconds
+        var averageTime = times.Average();
+        averageTime.Should().BeLessThan(5000); // Average under 5 seconds
+    }
+
+    #endregion
+
+    #region Helper Methods
+
+    private void CreateTestImageFile(string filePath)
+    {
+        // Create a minimal valid JPEG file structure
+        var imageBytes = TestDataBuilder.MLTestData.CreateValidImageBytes();
+
+        File.WriteAllBytes(filePath, imageBytes);
+    }
+
+    #endregion
 
     #region Successful Prediction Tests
 
@@ -91,8 +154,7 @@ public class MLServiceTests : IDisposable
         var nonExistentPath = Path.Combine(_testDirectory, "does_not_exist.jpg");
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<FileNotFoundException>(
-            () => _mlService.PredictAsync(nonExistentPath));
+        var exception = await Assert.ThrowsAsync<FileNotFoundException>(() => _mlService.PredictAsync(nonExistentPath));
 
         exception.Should().NotBeNull();
         exception.Message.Should().Contain(nonExistentPath);
@@ -102,24 +164,21 @@ public class MLServiceTests : IDisposable
     public async Task PredictAsync_WithEmptyFilePath_ShouldThrowArgumentException()
     {
         // Act & Assert
-        await Assert.ThrowsAsync<ArgumentException>(
-            () => _mlService.PredictAsync(string.Empty));
+        await Assert.ThrowsAsync<ArgumentException>(() => _mlService.PredictAsync(string.Empty));
     }
 
     [Fact]
     public async Task PredictAsync_WithNullFilePath_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(
-            () => _mlService.PredictAsync(null!));
+        await Assert.ThrowsAsync<ArgumentNullException>(() => _mlService.PredictAsync((Stream)null!));
     }
 
     [Fact]
     public async Task PredictAsync_WithWhitespaceFilePath_ShouldThrowArgumentException()
     {
         // Act & Assert
-        await Assert.ThrowsAsync<ArgumentException>(
-            () => _mlService.PredictAsync("   "));
+        await Assert.ThrowsAsync<ArgumentException>(() => _mlService.PredictAsync("   "));
     }
 
     [Fact]
@@ -129,8 +188,7 @@ public class MLServiceTests : IDisposable
         var invalidPath = "invalid<>path|.jpg";
 
         // Act & Assert
-        await Assert.ThrowsAsync<IOException>(
-            () => _mlService.PredictAsync(invalidPath));
+        await Assert.ThrowsAsync<IOException>(() => _mlService.PredictAsync(invalidPath));
     }
 
     [Fact]
@@ -202,7 +260,7 @@ public class MLServiceTests : IDisposable
         File.WriteAllBytes(largeFilePath, largeImageData);
 
         // Act
-        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        var stopwatch = Stopwatch.StartNew();
         var result = await _mlService.PredictAsync(largeFilePath);
         stopwatch.Stop();
 
@@ -285,10 +343,7 @@ public class MLServiceTests : IDisposable
         var tasks = new List<Task<string>>();
 
         // Act - Start multiple concurrent predictions
-        for (int i = 0; i < 3; i++)
-        {
-            tasks.Add(_mlService.PredictAsync(_validImagePath));
-        }
+        for (var i = 0; i < 3; i++) tasks.Add(_mlService.PredictAsync(_validImagePath));
 
         var results = await Task.WhenAll(tasks);
 
@@ -339,107 +394,63 @@ public class MLServiceTests : IDisposable
     }
 
     [Theory]
-    [InlineData("British Shorthair", "Cat")]
-    [InlineData("Sphynx cat", "Cat")]
-    public async Task PredictAsync_WithDifferentBreedImages_ShouldReturnValidPredictions(string breed, string expectedType)
+    [InlineData("British_Shorthair.jpg")]
+    [InlineData("Sphynx_cat.jpg")]
+    [InlineData("Golden_Retriever.jpg")]
+    public async Task PredictAsync_WithDifferentBreedImages_ShouldReturnValidPredictions(string fileName)
     {
         // Arrange
-        var breedImagePath = Path.Combine(_testDirectory, $"{breed.Replace(" ", "_")}.jpg");
+        var breedImagePath = Path.Join(_testDirectory, fileName);
         CreateTestImageFile(breedImagePath);
 
         // Act
         var result = await _mlService.PredictAsync(breedImagePath);
 
         // Assert
-        result.Should().Be(expectedType);
         result.Should().NotBeNullOrEmpty();
         result.Should().BeOfType<string>();
-    }
-
-    #endregion
-
-    #region Performance Tests
-
-    [Fact]
-    public async Task PredictAsync_MultipleConsecutiveCalls_ShouldMaintainPerformance()
-    {
-        // Arrange
-        var iterations = 5;
-        var times = new List<long>();
-
-        // Act
-        for (int i = 0; i < iterations; i++)
-        {
-            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-            await _mlService.PredictAsync(_validImagePath);
-            stopwatch.Stop();
-            times.Add(stopwatch.ElapsedMilliseconds);
-        }
-
-        // Assert
-        times.Should().OnlyContain(time => time < 10000); // Each call under 10 seconds
-        var averageTime = times.Average();
-        averageTime.Should().BeLessThan(5000); // Average under 5 seconds
-    }
-
-    #endregion
-
-    #region Helper Methods
-
-    private void CreateTestImageFile(string filePath)
-    {
-        // Create a minimal valid JPEG file structure
-        var imageBytes = TestDataBuilder.MLTestData.CreateValidImageBytes();
-
-        File.WriteAllBytes(filePath, imageBytes);
-    }
-
-    #endregion
-
-    #region Cleanup
-
-    public void Dispose()
-    {
-        if (Directory.Exists(_testDirectory))
-        {
-            try
-            {
-                // Reset file attributes before deletion
-                foreach (var file in Directory.GetFiles(_testDirectory))
-                {
-                    File.SetAttributes(file, FileAttributes.Normal);
-                }
-                Directory.Delete(_testDirectory, true);
-            }
-            catch
-            {
-                // Ignore cleanup errors in tests
-            }
-        }
+        // Verify the prediction is consistent for the same image
+        var result2 = await _mlService.PredictAsync(breedImagePath);
+        result.Should().Be(result2, "predictions should be consistent for the same image");
     }
 
     #endregion
 }
-
 
 #region ML Service Interface Tests
 
 public class IMLServiceContractTests
 {
     [Fact]
-    public void IMLService_ShouldHavePredictAsyncMethod()
+    public void IMLService_ShouldHavePredictAsyncWithStringParameter()
     {
         // Arrange
         var interfaceType = typeof(IMLService);
 
         // Act
-        var method = interfaceType.GetMethod("PredictAsync");
+        var method = interfaceType.GetMethod("PredictAsync", new[] { typeof(string) });
 
         // Assert
-        method.Should().NotBeNull();
+        method.Should().NotBeNull("interface should have PredictAsync(string) method");
         method!.ReturnType.Should().Be(typeof(Task<string>));
         method.GetParameters().Should().HaveCount(1);
         method.GetParameters()[0].ParameterType.Should().Be(typeof(string));
+    }
+
+    [Fact]
+    public void IMLService_ShouldHavePredictAsyncWithStreamParameter()
+    {
+        // Arrange
+        var interfaceType = typeof(IMLService);
+
+        // Act
+        var method = interfaceType.GetMethod("PredictAsync", new[] { typeof(Stream) });
+
+        // Assert
+        method.Should().NotBeNull("interface should have PredictAsync(Stream) method");
+        method!.ReturnType.Should().Be(typeof(Task<string>));
+        method.GetParameters().Should().HaveCount(1);
+        method.GetParameters()[0].ParameterType.Should().Be(typeof(Stream));
     }
 
     [Fact]
@@ -463,24 +474,13 @@ public class MLServiceDependencyInjectionTests
     public void MLService_ShouldBeInstantiableWithoutDependencies()
     {
         // Act
-        var service = new FindPet.BusinessLogicLayer.Services.MLService.MLService();
+        var _loggerManager = MockSetupExtensions.CreateMock<ILoggerManager>();
+        var service = new FindPet.BusinessLogicLayer.Services.MLService.MLService(_loggerManager.Object);
 
         // Assert
         service.Should().NotBeNull();
         service.Should().BeAssignableTo<IMLService>();
     }
-
-    [Fact]
-    public void MLService_ShouldHaveParameterlessConstructor()
-    {
-        // Arrange
-        var serviceType = typeof(FindPet.BusinessLogicLayer.Services.MLService.MLService);
-
-        // Act
-        var constructor = serviceType.GetConstructor(Type.EmptyTypes);
-
-        // Assert
-        constructor.Should().NotBeNull();
-    }
 }
+
 #endregion

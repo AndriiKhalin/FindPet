@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
-using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using FindPet.Domain.DTOs.EntitiesDTOs.AdDTO;
 using FindPet.Domain.Entities;
 using FindPet.Domain.Exceptions;
+using FindPet.Domain.Interfaces.ILoggerService;
+using FindPet.Media.Interfaces;
 
 namespace FindPet.BusinessLogicLayer.Services.EntityService;
 
@@ -14,14 +15,17 @@ public class AdService : IAdService
     private readonly ILoggerManager _logger;
     private readonly IManageImage<Ad> _manageImage;
     private readonly IMapper _mapper;
+    private readonly IMediaStorageService _mediaStorageService;
     private readonly IUnitOfWork _unitOfWorkRep;
 
-    public AdService(IUnitOfWork unitOfWorkRep, IMapper mapper, IManageImage<Ad> manageImage, ILoggerManager logger)
+    public AdService(IUnitOfWork unitOfWorkRep, IMapper mapper, IManageImage<Ad> manageImage, ILoggerManager logger,
+        IMediaStorageService mediaStorageService)
     {
         _unitOfWorkRep = unitOfWorkRep;
         _mapper = mapper;
         _manageImage = manageImage;
         _logger = logger;
+        _mediaStorageService = mediaStorageService;
     }
 
     public IEnumerable<Ad> GetAds()
@@ -77,7 +81,8 @@ public class AdService : IAdService
 
         var adEntityForDelete = await GetAdAsync(adId);
 
-        _manageImage.DeletePhoto(adEntityForDelete.Photo);
+        if (!string.IsNullOrEmpty(adEntityForDelete.Photo))
+            await _mediaStorageService.DeleteFileAsync(adEntityForDelete.Photo);
 
         await _unitOfWorkRep.Ad.DeleteAsync(adId);
 
@@ -106,12 +111,8 @@ public class AdService : IAdService
 
         var adEntity = await GetAdAsync(adId);
 
-        if (ad.Photo is not null)
-        {
-            _manageImage.DeletePhoto(adEntity.Photo);
-            var photoPath = await _manageImage.UploadPhotoAsync(ad.Photo, adId);
-            adEntity.Photo = photoPath;
-        }
+        if (!string.IsNullOrEmpty(ad.Photo) && !string.IsNullOrEmpty(adEntity.Photo) && ad.Photo != adEntity.Photo)
+            await _mediaStorageService.DeleteFileAsync(adEntity.Photo);
 
         _mapper.Map(ad, adEntity);
 
@@ -134,7 +135,6 @@ public class AdService : IAdService
         var adMap = _mapper.Map<Ad>(ad);
         adMap.UserId = userEntity.Id;
         adMap.PetId = petEntity.Id;
-        adMap.Photo = await _manageImage.UploadPhotoAsync(ad.Photo, adMap.Id);
         adMap.DateCreateUpdate = DateTime.UtcNow;
 
         await _unitOfWorkRep.Ad.CreateAsync(adMap);

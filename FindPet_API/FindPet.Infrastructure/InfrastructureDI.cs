@@ -21,6 +21,7 @@ public static class InfrastructureDI
         services.Configure_FileProvider();
         services.ConfigureForm();
         services.ConfigureIISIntegration();
+        services.ConfigureStorageService(configuration);
         services.ConfigureLoggerService();
         services.AddIdentityConfiguration();
         services.AddJwtAuthentication(configuration);

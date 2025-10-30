@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
+namespace FindPet.Domain.Interfaces.ILoggerService;
 
 public interface ILoggerManager
 {

@@ -18,6 +18,7 @@
     <ProjectReference Include="..\FindPet.BusinessLogicLayer\FindPet.BusinessLogicLayer.csproj" />
     <ProjectReference Include="..\FindPet.DataAccessLayer\FindPet.DataAccessLayer.csproj" />
     <ProjectReference Include="..\FindPet.Domain\FindPet.Domain.csproj" />
+    <ProjectReference Include="..\FindPet.Media\FindPet.Media.csproj" />
   </ItemGroup>
 
   <ItemGroup>

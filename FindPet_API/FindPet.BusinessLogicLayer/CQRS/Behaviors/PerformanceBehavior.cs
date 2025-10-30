@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
+using FindPet.Domain.Interfaces.ILoggerService;
 using MediatR;
 
 namespace FindPet.BusinessLogicLayer.CQRS.Behaviors;

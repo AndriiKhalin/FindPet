@@ -1,18 +1,53 @@
-﻿using FindPet.BusinessLogicLayer.Services.ImageService;
+﻿using System.Diagnostics;
+using System.Text;
+using FindPet.BusinessLogicLayer.Services.ImageService;
+using FindPet.Domain.Entities;
+using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Moq;
-using System.Text;
-using FindPet.BusinessLogicLayer.Interfaces.IImageService;
-using FindPet.Domain.Entities;
-using FindPet.Tests.TestHelpers;
-using FluentAssertions;
 using Xunit;
 
 namespace FindPet.Tests.UnitTests.BusinessLogicLayer.Services.ImageService;
 
 public class ManageImageTests : IDisposable
 {
+    #region Performance Tests
+
+    [Fact]
+    public async Task UploadPhotoAsync_WithManySmallFiles_ShouldPerformEfficiently()
+    {
+        // Arrange
+        var fileCount = 10;
+        var tasks = new List<Task<string>>();
+
+        // Act
+        var stopwatch = Stopwatch.StartNew();
+
+        for (var i = 0; i < fileCount; i++)
+        {
+            var formFile = CreateMockFormFile($"file{i}.jpg", $"content {i}");
+            tasks.Add(_manageImageService.UploadPhotoAsync(formFile, Guid.NewGuid()));
+        }
+
+        var results = await Task.WhenAll(tasks);
+        stopwatch.Stop();
+
+        // Assert
+        results.Should().HaveCount(fileCount);
+        results.Should().OnlyContain(r => r != null);
+        stopwatch.ElapsedMilliseconds.Should().BeLessThan(5000, "Multiple uploads should complete efficiently");
+
+        // Verify all files exist
+        foreach (var result in results)
+        {
+            var filePath = Path.Join(_testRootPath, result.TrimStart('\\'));
+            File.Exists(filePath).Should().BeTrue();
+        }
+    }
+
+    #endregion
+
     #region Test Setup and Cleanup
 
     private readonly Mock<IWebHostEnvironment> _mockWebHostEnvironment;
@@ -43,10 +78,7 @@ public class ManageImageTests : IDisposable
     public void Dispose()
     {
         // Cleanup test directories
-        if (Directory.Exists(_testRootPath))
-        {
-            Directory.Delete(_testRootPath, true);
-        }
+        if (Directory.Exists(_testRootPath)) Directory.Delete(_testRootPath, true);
     }
 
     #endregion
@@ -255,7 +287,6 @@ public class ManageImageTests : IDisposable
             // Exception is also an acceptable response to invalid input
             true.Should().BeTrue(); // Just to have an assertion
         }
-
     }
 
     [Fact]
@@ -284,7 +315,7 @@ public class ManageImageTests : IDisposable
         await File.WriteAllTextAsync(sourceFilePath, largeContent);
 
         // Act
-        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        var stopwatch = Stopwatch.StartNew();
         var result = await _manageImageService.UploadPhotoAsync(sourceFilePath, testId);
         stopwatch.Stop();
 
@@ -467,7 +498,8 @@ public class ManageImageTests : IDisposable
     }
 
     [Theory]
-    [InlineData("test-image.jpg", "12345678-1234-1234-1234-123456789012", "test-image(12345678-1234-1234-1234-123456789012).jpg")]
+    [InlineData("test-image.jpg", "12345678-1234-1234-1234-123456789012",
+        "test-image(12345678-1234-1234-1234-123456789012).jpg")]
     [InlineData("photo.png", "87654321-4321-4321-4321-210987654321", "photo(87654321-4321-4321-4321-210987654321).png")]
     [InlineData("document", "11111111-2222-3333-4444-555555555555", "document(11111111-2222-3333-4444-555555555555)")]
     public void GetUniqueFileName_WithValidInputs_ShouldReturnFormattedName(
@@ -513,10 +545,7 @@ public class ManageImageTests : IDisposable
 
         // Assert
         result.Should().Contain($"({id})");
-        if (!string.IsNullOrEmpty(expectedBase))
-        {
-            result.Should().StartWith(expectedBase);
-        }
+        if (!string.IsNullOrEmpty(expectedBase)) result.Should().StartWith(expectedBase);
     }
 
     [Fact]
@@ -673,42 +702,6 @@ public class ManageImageTests : IDisposable
 
     #endregion
 
-    #region Performance Tests
-
-    [Fact]
-    public async Task UploadPhotoAsync_WithManySmallFiles_ShouldPerformEfficiently()
-    {
-        // Arrange
-        var fileCount = 10;
-        var tasks = new List<Task<string>>();
-
-        // Act
-        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-
-        for (int i = 0; i < fileCount; i++)
-        {
-            var formFile = CreateMockFormFile($"file{i}.jpg", $"content {i}");
-            tasks.Add(_manageImageService.UploadPhotoAsync(formFile, Guid.NewGuid()));
-        }
-
-        var results = await Task.WhenAll(tasks);
-        stopwatch.Stop();
-
-        // Assert
-        results.Should().HaveCount(fileCount);
-        results.Should().OnlyContain(r => r != null);
-        stopwatch.ElapsedMilliseconds.Should().BeLessThan(5000, "Multiple uploads should complete efficiently");
-
-        // Verify all files exist
-        foreach (var result in results)
-        {
-            var filePath = Path.Combine(_testRootPath, result.TrimStart('\\'));
-            File.Exists(filePath).Should().BeTrue();
-        }
-    }
-
-    #endregion
-
     #region Test Helper Methods
 
     private static IFormFile CreateMockFormFile(string fileName, string content)
@@ -727,11 +720,11 @@ public class ManageImageTests : IDisposable
         formFile.Setup(f => f.ContentType).Returns(mimeType);
         formFile.Setup(f => f.OpenReadStream()).Returns(stream);
         formFile.Setup(f => f.CopyToAsync(It.IsAny<Stream>(), It.IsAny<CancellationToken>()))
-               .Returns((Stream target, CancellationToken token) =>
-               {
-                   stream.Position = 0;
-                   return stream.CopyToAsync(target, token);
-               });
+            .Returns((Stream target, CancellationToken token) =>
+            {
+                stream.Position = 0;
+                return stream.CopyToAsync(target, token);
+            });
 
         return formFile.Object;
     }

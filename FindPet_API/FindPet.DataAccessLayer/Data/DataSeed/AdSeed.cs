@@ -16,7 +16,7 @@ public class AdSeed : IEntityTypeConfiguration<Ad>
                 //UserId = vanya.Id,
                 Description = "I saw a similar dog on the street. Shevchenko",
                 Location = "st. Shevchenko, 30",
-                Photo = "https://example.com/dog_sighting.jpg",
+                Photo = "ads/dog_sighting.jpg",
                 DateCreateUpdate = new DateTime(2024, 04, 30)
             },
             new()
@@ -25,7 +25,7 @@ public class AdSeed : IEntityTypeConfiguration<Ad>
                 //UserId = andrew.Id,
                 Description = "Found a cat in the entrance of house No. 5",
                 Location = "Mira St., 5",
-                Photo = "https://example.com/cat_sighting.jpg",
+                Photo = "ads/cat_sighting.jpg",
                 DateCreateUpdate = new DateTime(2024, 05, 02)
             },
             new()
@@ -34,7 +34,7 @@ public class AdSeed : IEntityTypeConfiguration<Ad>
                 //UserId = vlad.Id,
                 Description = "Found a cat in the entrance of house No. 5",
                 Location = "Mira St., 5",
-                Photo = "https://example.com/cat_sighting.jpg",
+                Photo = "ads/cat_sighting.jpg",
                 DateCreateUpdate = new DateTime(2024, 05, 02)
             }
         };

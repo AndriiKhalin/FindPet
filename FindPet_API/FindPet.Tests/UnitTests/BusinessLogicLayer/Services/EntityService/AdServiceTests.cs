@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
-using FindPet.BusinessLogicLayer.Interfaces.ILoggerService;
 using FindPet.BusinessLogicLayer.Services.EntityService;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using FindPet.Domain.DTOs.EntitiesDTOs.AdDTO;
 using FindPet.Domain.Entities;
 using FindPet.Domain.Exceptions;
+using FindPet.Domain.Interfaces.ILoggerService;
+using FindPet.Media.Interfaces;
 using FindPet.Tests.TestHelpers;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -15,15 +16,17 @@ namespace FindPet.Tests.UnitTests.BusinessLogicLayer.Services.EntityService;
 
 public class AdServiceTests
 {
-    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
-    private readonly Mock<IMapper> _mockMapper;
-    private readonly Mock<IManageImage<Ad>> _mockImageService;
-    private readonly Mock<ILoggerManager> _mockLogger;
     private readonly AdService _adService;
+
 
     // Repository mocks
     private readonly Mock<IAdRepository> _mockAdRepository;
+    private readonly Mock<IManageImage<Ad>> _mockImageService;
+    private readonly Mock<ILoggerManager> _mockLogger;
+    private readonly Mock<IMapper> _mockMapper;
+    private readonly Mock<IMediaStorageService> _mockMediaStorageService;
     private readonly Mock<IPetRepository> _mockPetRepository;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
     private readonly Mock<IUserRepository<User>> _mockUserRepository;
 
     public AdServiceTests()
@@ -32,6 +35,7 @@ public class AdServiceTests
         _mockMapper = MockSetupExtensions.SetupMapperMock();
         _mockImageService = MockSetupExtensions.SetupImageServiceMock<Ad>();
         _mockLogger = MockSetupExtensions.SetupLoggerMock();
+        _mockMediaStorageService = MockSetupExtensions.CreateMock<IMediaStorageService>();
 
         // Setup repository mocks
         _mockAdRepository = new Mock<IAdRepository>();
@@ -43,7 +47,8 @@ public class AdServiceTests
         _mockUnitOfWork.Setup(x => x.Pet).Returns(_mockPetRepository.Object);
         _mockUnitOfWork.Setup(x => x.User).Returns(_mockUserRepository.Object);
 
-        _adService = new AdService(_mockUnitOfWork.Object, _mockMapper.Object, _mockImageService.Object, _mockLogger.Object);
+        _adService = new AdService(_mockUnitOfWork.Object, _mockMapper.Object, _mockImageService.Object,
+            _mockLogger.Object, _mockMediaStorageService.Object);
     }
 
     #region GetAds Tests
@@ -52,7 +57,7 @@ public class AdServiceTests
     public void GetAds_ShouldReturnAllAds()
     {
         // Arrange
-        var expectedAds = TestDataBuilder.BuildAdList(3);
+        var expectedAds = TestDataBuilder.BuildAdList();
         _mockAdRepository.Setup(x => x.Gets()).Returns(expectedAds);
 
         // Act
@@ -194,7 +199,7 @@ public class AdServiceTests
         // Assert
         _mockAdRepository.Verify(x => x.IsExistAsync(adId), Times.AtLeast(2));
         _mockAdRepository.Verify(x => x.GetAsync(adId), Times.Once);
-        _mockImageService.Verify(x => x.DeletePhoto(existingAd.Photo), Times.Once);
+        _mockMediaStorageService.Verify(x => x.DeleteFileAsync(existingAd.Photo), Times.Once);
         _mockAdRepository.Verify(x => x.DeleteAsync(adId), Times.Once);
         _mockUnitOfWork.Verify(x => x.SaveAsync(), Times.Once);
     }
@@ -228,12 +233,13 @@ public class AdServiceTests
         var adId = Guid.NewGuid();
         var existingAd = TestDataBuilder.BuildAd(adId, photo: "old-photo.jpg");
         var updateDto = TestDataBuilder.BuildAdForUpdateDto();
-        var mockFile = TestDataBuilder.MLTestData.CreateValidImageFile();
-        updateDto.Photo = mockFile;
+        updateDto.Photo = "ads/photo.jpg";
 
         _mockAdRepository.Setup(x => x.IsExistAsync(adId)).ReturnsAsync(true);
         _mockAdRepository.Setup(x => x.GetAsync(adId)).ReturnsAsync(existingAd);
-        _mockImageService.Setup(x => x.UploadPhotoAsync(updateDto.Photo, adId)).ReturnsAsync("new-photo.jpg");
+
+        _mockMediaStorageService.Setup(x => x.DeleteFileAsync("old-photo.jpg")).ReturnsAsync(true);
+
         _mockMapper.Setup(x => x.Map(updateDto, existingAd));
         //_mockAdRepository.SetupUpdate();
         _mockAdRepository.Setup(x => x.UpdateAsync(existingAd)).Returns(Task.CompletedTask);
@@ -245,8 +251,8 @@ public class AdServiceTests
         // Assert
         _mockAdRepository.Verify(x => x.IsExistAsync(adId), Times.AtLeast(2));
         _mockAdRepository.Verify(x => x.GetAsync(adId), Times.Once);
-        _mockImageService.Verify(x => x.DeletePhoto("old-photo.jpg"), Times.Once);
-        _mockImageService.Verify(x => x.UploadPhotoAsync(updateDto.Photo, adId), Times.Once);
+        _mockMediaStorageService.Verify(x => x.DeleteFileAsync("old-photo.jpg"), Times.Once);
+
         _mockMapper.Verify(x => x.Map(updateDto, existingAd), Times.Once);
         _mockAdRepository.Verify(x => x.UpdateAsync(existingAd), Times.Once);
         _mockUnitOfWork.Verify(x => x.SaveAsync(), Times.Once);
@@ -279,7 +285,8 @@ public class AdServiceTests
         var exception = await Assert.ThrowsAsync<NotFoundException>(() => _adService.UpdateAdAsync(adId, updateDto));
 
         Assert.Equal($"Ad with ID '{adId}' was not found", exception.Message);
-        _mockLogger.VerifyLogError($"Ad with id: {adId}, hasn't been found in db."); ;
+        _mockLogger.VerifyLogError($"Ad with id: {adId}, hasn't been found in db.");
+        ;
         _mockAdRepository.Verify(x => x.IsExistAsync(adId), Times.Once);
         _mockAdRepository.Verify(x => x.GetAsync(adId), Times.Never);
     }
@@ -308,19 +315,16 @@ public class AdServiceTests
         // Arrange
         var petId = Guid.NewGuid();
         var userId = Guid.NewGuid();
-        var createDto = TestDataBuilder.BuildAdForCreateDto().With(x => x.Photo = TestDataBuilder.MLTestData.CreateValidImageFile());
-        var mappedAd = TestDataBuilder.BuildAd();
-
+        var createDto = TestDataBuilder.BuildAdForCreateDto().With(x => x.Photo = "ads/photo.jpg");
+        var photoPath = "ads/uploaded-photo.jpg";
+        var mappedAd = TestDataBuilder.BuildAd().With(x => x.Photo = photoPath);
 
         var pet = TestDataBuilder.BuildBasicPet(petId);
         var user = TestDataBuilder.BuildBasicUser(userId);
-        var newAdId = Guid.NewGuid();
-        var photoPath = "uploaded-photo.jpg";
 
         _mockPetRepository.Setup(x => x.GetAsync(petId)).ReturnsAsync(pet);
         _mockUserRepository.Setup(x => x.GetAsync(userId)).ReturnsAsync(user);
         _mockMapper.Setup(x => x.Map<Ad>(createDto)).Returns(mappedAd);
-        _mockImageService.Setup(x => x.UploadPhotoAsync(createDto.Photo, mappedAd.Id)).ReturnsAsync(photoPath);
         _mockAdRepository.Setup(x => x.CreateAsync(mappedAd)).Returns(Task.CompletedTask);
         _mockUnitOfWork.Setup(x => x.SaveAsync()).Returns(Task.CompletedTask);
 
@@ -337,15 +341,14 @@ public class AdServiceTests
         _mockPetRepository.Verify(x => x.GetAsync(petId), Times.Once);
         _mockUserRepository.Verify(x => x.GetAsync(userId), Times.Once);
         _mockMapper.Verify(x => x.Map<Ad>(createDto), Times.Once);
-        _mockImageService.Verify(x => x.UploadPhotoAsync(createDto.Photo, mappedAd.Id), Times.Once);
         _mockAdRepository.Verify(x => x.CreateAsync(mappedAd), Times.Once);
         _mockUnitOfWork.Verify(x => x.SaveAsync(), Times.Once);
     }
 
     [Theory]
-    [InlineData(true, true, false)]   // petId valid, userId valid, dto null
-    [InlineData(true, false, true)]   // petId valid, userId empty, dto valid
-    [InlineData(false, true, true)]   // petId empty, userId valid, dto valid
+    [InlineData(true, true, false)] // petId valid, userId valid, dto null
+    [InlineData(true, false, true)] // petId valid, userId empty, dto valid
+    [InlineData(false, true, true)] // petId empty, userId valid, dto valid
     public async Task CreateAdAsync_WithInvalidInput_ShouldThrowArgumentNullException(
         bool isPetIdValid, bool isUserIdValid, bool isDtoValid)
     {
@@ -380,7 +383,8 @@ public class AdServiceTests
         _mockPetRepository.Setup(x => x.GetAsync(petId)).ReturnsAsync(pet);
         _mockUserRepository.Setup(x => x.GetAsync(userId)).ReturnsAsync(user);
         _mockMapper.Setup(x => x.Map<Ad>(createDto)).Returns(new Ad());
-        _mockImageService.Setup(x => x.UploadPhotoAsync(It.IsAny<IFormFile>(), It.IsAny<Guid>())).ReturnsAsync("photo.jpg");
+        _mockImageService.Setup(x => x.UploadPhotoAsync(It.IsAny<IFormFile>(), It.IsAny<Guid>()))
+            .ReturnsAsync("photo.jpg");
         _mockAdRepository.Setup(x => x.CreateAsync(It.IsAny<Ad>())).Returns(Task.CompletedTask);
         _mockUnitOfWork.Setup(x => x.SaveAsync()).Returns(Task.CompletedTask);
 
@@ -400,14 +404,13 @@ public class AdServiceTests
         // Arrange
         var adId = Guid.NewGuid();
         var originalPhoto = "original-photo.jpg";
-        var newPhoto = "new-photo.jpg";
+        var newPhoto = "ads/new-photo.jpg";
         var existingAd = TestDataBuilder.BuildAd(adId, photo: originalPhoto);
-        var updateDto = TestDataBuilder.BuildAdForUpdateDto().With(x => x.Photo = TestDataBuilder.MLTestData.CreateValidImageFile());
+        var updateDto = TestDataBuilder.BuildAdForUpdateDto().With(x => x.Photo = "ads/photo.jpg");
 
         // Setup for update
         _mockAdRepository.Setup(x => x.IsExistAsync(adId)).ReturnsAsync(true);
         _mockAdRepository.Setup(x => x.GetAsync(adId)).ReturnsAsync(existingAd);
-        _mockImageService.Setup(x => x.UploadPhotoAsync(updateDto.Photo, adId)).ReturnsAsync(newPhoto);
         _mockAdRepository.Setup(x => x.UpdateAsync(existingAd)).Returns(Task.CompletedTask);
         _mockUnitOfWork.Setup(x => x.SaveAsync()).Returns(Task.CompletedTask);
 
@@ -422,9 +425,10 @@ public class AdServiceTests
         await _adService.DeleteAdAsync(adId);
 
         // Assert
-        _mockImageService.Verify(x => x.DeletePhoto(originalPhoto), Times.Once, "Original photo should be deleted during update");
-        _mockImageService.Verify(x => x.UploadPhotoAsync(updateDto.Photo, adId), Times.Once, "New photo should be uploaded during update");
-        _mockImageService.Verify(x => x.DeletePhoto(newPhoto), Times.Once, "New photo should be deleted during ad deletion");
+        _mockMediaStorageService.Verify(x => x.DeleteFileAsync(originalPhoto), Times.Once,
+            "Original photo should be deleted during update");
+        _mockMediaStorageService.Verify(x => x.DeleteFileAsync(newPhoto), Times.Once,
+            "New photo should be deleted during ad deletion");
     }
 
     #endregion
@@ -439,10 +443,7 @@ public class AdServiceTests
         var adId = Guid.Parse(guidString);
 
         // Act & Assert
-        if (adId == Guid.Empty)
-        {
-            await Assert.ThrowsAsync<BadRequestException>(() => _adService.GetAdAsync(adId));
-        }
+        if (adId == Guid.Empty) await Assert.ThrowsAsync<BadRequestException>(() => _adService.GetAdAsync(adId));
     }
 
     [Fact]
@@ -457,10 +458,7 @@ public class AdServiceTests
 
         // Act - Simulate concurrent reads
         var tasks = new List<Task<Ad?>>();
-        for (int i = 0; i < 10; i++)
-        {
-            tasks.Add(_adService.GetAdAsync(adId));
-        }
+        for (var i = 0; i < 10; i++) tasks.Add(_adService.GetAdAsync(adId));
 
         var results = await Task.WhenAll(tasks);
 

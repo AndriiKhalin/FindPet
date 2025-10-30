@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Diagnostics;
+using AutoMapper;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
 using FindPet.BusinessLogicLayer.Interfaces.IMLService;
 using FindPet.BusinessLogicLayer.Services.EntityService;
@@ -10,8 +11,6 @@ using FindPet.Media.Interfaces;
 using FindPet.Tests.TestHelpers;
 using Microsoft.AspNetCore.Hosting;
 using Moq;
-using System;
-using System.Diagnostics;
 using Xunit;
 
 namespace FindPet.Tests.UnitTests.BusinessLogicLayer.Services.EntityService;
@@ -480,7 +479,7 @@ public class PetServiceTests
         _mockMediaStorageService.Setup(x => x.FileExistsAsync(createDto.Photo))
             .ReturnsAsync(true);
 
-        var mockImageStream = new MemoryStream(new byte[] { 0x00, 0x01, 0x02 });
+        using var mockImageStream = new MemoryStream(new byte[] { 0x00, 0x01, 0x02 });
         _mockMediaStorageService.Setup(x => x.GetFileAsync(createDto.Photo))
             .ReturnsAsync(mockImageStream);
 
@@ -542,7 +541,7 @@ public class PetServiceTests
         _mockMediaStorageService.Setup(x => x.FileExistsAsync(createDto.Photo))
             .ReturnsAsync(true);
 
-        var mockImageStream = new MemoryStream(new byte[] { 0x00, 0x01, 0x02 });
+        using var mockImageStream = new MemoryStream(new byte[] { 0x00, 0x01, 0x02 });
         _mockMediaStorageService.Setup(x => x.GetFileAsync(createDto.Photo))
             .ReturnsAsync(mockImageStream);
 
@@ -659,7 +658,7 @@ public class PetServiceTests
         _mockMediaStorageService.Setup(x => x.FileExistsAsync(createDto.Photo))
             .ReturnsAsync(true);
 
-        var mockImageStream = new MemoryStream(new byte[] { 0x00, 0x01, 0x02 });
+        using var mockImageStream = new MemoryStream(new byte[] { 0x00, 0x01, 0x02 });
         _mockMediaStorageService.Setup(x => x.GetFileAsync(createDto.Photo))
             .ReturnsAsync(mockImageStream);
 
@@ -698,5 +697,6 @@ public class PetServiceTests
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => _petService.DeletePetAsync(petId));
     }
+
     #endregion
 }

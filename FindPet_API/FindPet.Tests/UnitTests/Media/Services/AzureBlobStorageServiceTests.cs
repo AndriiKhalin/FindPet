@@ -184,7 +184,7 @@ public class AzureBlobStorageServiceTests : IDisposable
 
         // Assert
         result.Should().BeFalse();
-        VerifyErrorLogged("Failed to delete file");
+        VerifyErrorLogged("Azure request failed while deleting file");
     }
 
     #endregion
@@ -196,7 +196,6 @@ public class AzureBlobStorageServiceTests : IDisposable
     {
         // Arrange
         var testContent = Encoding.UTF8.GetBytes(TEST_FILE_CONTENT);
-        var testStream = new MemoryStream(testContent);
 
         SetupFileExistenceCheck(true);
 
@@ -255,7 +254,7 @@ public class AzureBlobStorageServiceTests : IDisposable
 
         exception.Message.Should().Contain("Failed to download file");
         exception.InnerException.Should().BeOfType<RequestFailedException>();
-        VerifyErrorLogged("Failed to download file");
+        VerifyErrorLogged("Azure request failed while downloading file");
     }
 
     #endregion
@@ -318,7 +317,7 @@ public class AzureBlobStorageServiceTests : IDisposable
 
         // Assert
         result.Should().BeSameAs(Stream.Null);
-        VerifyErrorLogged("Failed to get file");
+        VerifyErrorLogged("Azure request failed while getting file");
     }
 
     #endregion
@@ -620,6 +619,7 @@ public class AzureBlobStorageServiceTests : IDisposable
         var result = method.Invoke(_azureBlobStorageService, new object[] { input }) as string;
 
         // Assert
+        result.Should().NotBeNull();
         result.Should().Be(expected);
     }
 
@@ -659,6 +659,7 @@ public class AzureBlobStorageServiceTests : IDisposable
         var result = method.Invoke(null, new object[] { fileName }) as string;
 
         // Assert
+        result.Should().NotBeNullOrEmpty();
         result.Should().Be(expected);
     }
 
@@ -676,6 +677,7 @@ public class AzureBlobStorageServiceTests : IDisposable
         var result = method.Invoke(_azureBlobStorageService, new object[] { input }) as string;
 
         // Assert
+        result.Should().NotBeNullOrEmpty();
         result.Should().Be(expected);
     }
 

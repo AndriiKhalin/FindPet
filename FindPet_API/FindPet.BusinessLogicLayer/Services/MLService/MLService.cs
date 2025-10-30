@@ -19,10 +19,7 @@ public class MLService(ILoggerManager logger) : IMLService
 
     public async Task<string> PredictAsync(Stream imageStream)
     {
-        if (imageStream == null)
-        {
-            throw new ArgumentNullException(nameof(imageStream), "Image stream cannot be null.");
-        }
+        if (imageStream == null) throw new ArgumentNullException(nameof(imageStream), "Image stream cannot be null.");
 
         try
         {
@@ -39,13 +36,29 @@ public class MLService(ILoggerManager logger) : IMLService
 
             return output.PredictedLabel;
         }
-        catch (ArgumentNullException)
+        catch (ArgumentNullException ex)
         {
-            throw;
+            logger.LogError($"Image stream cannot be null: {ex.Message}");
+            return "Unknown";
+        }
+        catch (IOException ex)
+        {
+            logger.LogError($"IO error during prediction: {ex.Message}");
+            return "Unknown";
+        }
+        catch (InvalidOperationException ex)
+        {
+            logger.LogError($"Invalid operation during prediction: {ex.Message}");
+            return "Unknown";
+        }
+        catch (FormatException ex)
+        {
+            logger.LogError($"Format error during prediction: {ex.Message}");
+            return "Unknown";
         }
         catch (Exception ex)
         {
-            logger.LogError($"Failed to predict from stream: {ex.Message}");
+            logger.LogError("Failed to predict pet type");
             return "Unknown";
         }
     }

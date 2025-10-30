@@ -400,7 +400,7 @@ public class MLServiceTests : IDisposable
     public async Task PredictAsync_WithDifferentBreedImages_ShouldReturnValidPredictions(string fileName)
     {
         // Arrange
-        var breedImagePath = Path.Combine(_testDirectory, fileName);
+        var breedImagePath = Path.Join(_testDirectory, fileName);
         CreateTestImageFile(breedImagePath);
 
         // Act

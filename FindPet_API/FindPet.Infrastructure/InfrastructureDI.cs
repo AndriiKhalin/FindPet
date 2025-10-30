@@ -2,7 +2,6 @@
 using FindPet.DataAccessLayer;
 using FindPet.Infrastructure.Configurations.AuthExtensions;
 using FindPet.Infrastructure.Configurations.ServiceExtensions;
-using FindPet.Media;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

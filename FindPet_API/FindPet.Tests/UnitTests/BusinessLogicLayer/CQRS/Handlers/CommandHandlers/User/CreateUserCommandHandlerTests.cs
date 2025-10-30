@@ -137,8 +137,7 @@ public class CreateUserCommandHandlerTests
             .ThrowsAsync(new ArgumentException("Invalid user data"));
 
         // Act & Assert
-        var exception =
-            await Assert.ThrowsAsync<ArgumentException>(() => _handler.Handle(command, CancellationToken.None));
+        await Assert.ThrowsAsync<ArgumentException>(() => _handler.Handle(command, CancellationToken.None));
 
         _userServiceMock.Verify(x => x.CreateUserAsync(invalidDto), Times.Once);
         _mapperMock.Verify(x => x.Map<UserDto>(It.IsAny<Domain.Entities.User>()), Times.Never);

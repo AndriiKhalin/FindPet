@@ -41,7 +41,7 @@ public class ManageImageTests : IDisposable
         // Verify all files exist
         foreach (var result in results)
         {
-            var filePath = Path.Combine(_testRootPath, result.TrimStart('\\'));
+            var filePath = Path.Join(_testRootPath, result.TrimStart('\\'));
             File.Exists(filePath).Should().BeTrue();
         }
     }

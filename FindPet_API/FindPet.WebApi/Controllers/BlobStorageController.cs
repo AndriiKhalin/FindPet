@@ -100,6 +100,7 @@ public class BlobStorageController : ControllerBase
     [ProducesResponseType(200, Type = typeof(DeleteFileResponse))]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
+    [Authorize]
     public async Task<IActionResult> DeleteFile([FromQuery] string filePath)
     {
         var command = new DeleteFileCommand(filePath);

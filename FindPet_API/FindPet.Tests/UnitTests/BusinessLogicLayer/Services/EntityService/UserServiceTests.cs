@@ -289,7 +289,7 @@ public class UserServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var user = TestDataBuilder.BuildBasicUser(id: userId, photo: "users/test.jpg");
+        var user = TestDataBuilder.BuildBasicUser(userId, photo: "users/test.jpg");
 
         _userRepositoryMock.SetupUserExists(userId, true);
         _userRepositoryMock.SetupGetUser(userId, user);
@@ -348,7 +348,7 @@ public class UserServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var existingUser = TestDataBuilder.BuildBasicUser(id: userId, photo: "users/old_photo.jpg");
+        var existingUser = TestDataBuilder.BuildBasicUser(userId, photo: "users/old_photo.jpg");
         var updateDto = TestDataBuilder.BuildUserForUpdateDto(photo: "users/new_photo.jpg");
 
         _userRepositoryMock.SetupUserExists(userId, true);
@@ -455,7 +455,7 @@ public class UserServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var user = TestDataBuilder.BuildBasicUser(id: userId, photo: "users/test.jpg");
+        var user = TestDataBuilder.BuildBasicUser(userId, photo: "users/test.jpg");
 
         _userRepositoryMock.SetupUserExists(userId, true);
         _userRepositoryMock.SetupGetUser(userId, user);

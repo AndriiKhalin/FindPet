@@ -224,9 +224,24 @@ public class PetService : IPetService
 
             return predictedType;
         }
+        catch (FileNotFoundException ex)
+        {
+            _logger.LogError($"Photo file not found in storage: {photoPath}. {ex.Message}");
+            return "Unknown";
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogError($"Invalid argument for photo {photoPath}: {ex.Message}");
+            return "Unknown";
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogError($"Operation failed for photo {photoPath}: {ex.Message}");
+            return "Unknown";
+        }
         catch (Exception ex)
         {
-            _logger.LogError($"Failed to predict pet type for photo {photoPath}: {ex.Message}");
+            _logger.LogError("Failed to predict pet type");
             return "Unknown";
         }
     }

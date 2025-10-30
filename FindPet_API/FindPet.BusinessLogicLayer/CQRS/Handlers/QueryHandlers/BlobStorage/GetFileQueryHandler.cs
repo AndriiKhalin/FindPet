@@ -33,10 +33,6 @@ public class GetFileQueryHandler : IQueryHandler<GetFileQuery, GetFileResponse>
                 FileName = fileName
             };
         }
-        catch (NotFoundException)
-        {
-            throw;
-        }
         catch (IOException ex)
         {
             throw new FileProcessingException("download", ex.Message);

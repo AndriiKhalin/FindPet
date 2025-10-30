@@ -220,8 +220,7 @@ public class UpdateUserCommandHandlerTests
         // Arrange
         var userId = Guid.NewGuid();
         var userForUpdate = TestDataBuilder.BuildUserForUpdateDto(
-            "UpdatedName",
-            "updated@example.com");
+            "UpdatedName");
         var command = new UpdateUserCommand(userId, userForUpdate);
 
         _mockUserService

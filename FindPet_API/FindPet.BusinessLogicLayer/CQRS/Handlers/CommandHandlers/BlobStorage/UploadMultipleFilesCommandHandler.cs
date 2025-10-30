@@ -28,11 +28,15 @@ public class UploadMultipleFilesCommandHandler(IMediaStorageService mediaStorage
             response.FileSecureUrls.AddRange(secureUrls);
             response.SuccessfulUploads = filePaths.Count;
         }
-        catch (Exception ex)
+        catch (IOException ioEx)
         {
-            // Handle batch upload failure
             response.FailedUploads = request.Files.Count;
-            response.ErrorMessages.Add($"Batch upload failed: {ex.Message}");
+            response.ErrorMessages.Add($"IO error during batch upload: {ioEx.Message}");
+        }
+        catch (ArgumentException argEx)
+        {
+            response.FailedUploads = request.Files.Count;
+            response.ErrorMessages.Add($"Invalid argument: {argEx.Message}");
         }
 
         return response;

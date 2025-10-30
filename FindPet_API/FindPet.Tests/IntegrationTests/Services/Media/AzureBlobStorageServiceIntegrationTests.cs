@@ -1,4 +1,5 @@
-﻿using Azure.Storage.Blobs;
+﻿using Azure;
+using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using FindPet.Domain.Interfaces.ILoggerService;
 using FindPet.Domain.ValueObjects;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Moq;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.PixelFormats;
 using Xunit;
 using Image = SixLabors.ImageSharp.Image;
@@ -15,7 +17,7 @@ using Image = SixLabors.ImageSharp.Image;
 namespace FindPet.Tests.IntegrationTests.Services.Media;
 
 /// <summary>
-/// Integration tests for AzureBlobStorageService focusing on image optimization functionality
+///     Integration tests for AzureBlobStorageService focusing on image optimization functionality
 /// </summary>
 [Collection("AzureStorage")]
 public class AzureBlobStorageServiceIntegrationTests : IAsyncLifetime
@@ -25,8 +27,8 @@ public class AzureBlobStorageServiceIntegrationTests : IAsyncLifetime
     private readonly string _testConnectionString;
     private readonly string _testContainerName;
     private readonly List<string> _uploadedBlobs;
-    private BlobContainerClient _containerClient;
     private bool _azureStorageAvailable;
+    private BlobContainerClient _containerClient;
 
     public AzureBlobStorageServiceIntegrationTests()
     {
@@ -58,28 +60,70 @@ public class AzureBlobStorageServiceIntegrationTests : IAsyncLifetime
 
             _azureStorageAvailable = true;
         }
-        catch (Exception ex)
+        catch (RequestFailedException ex)
         {
             _azureStorageAvailable = false;
             Console.WriteLine($"Azure Storage not available: {ex.Message}");
-            Console.WriteLine("Skipping integration tests. Please start Azure Storage Emulator or provide connection string.");
+            Console.WriteLine(
+                "Skipping integration tests. Please start Azure Storage Emulator or provide connection string.");
+        }
+        catch (TimeoutException ex)
+        {
+            _azureStorageAvailable = false;
+            Console.WriteLine($"Azure Storage connection timed out: {ex.Message}");
+            Console.WriteLine(
+                "Skipping integration tests. Please start Azure Storage Emulator or provide connection string.");
         }
     }
 
     public async Task DisposeAsync()
     {
         if (_azureStorageAvailable && _containerClient != null)
-        {
             try
             {
                 await _containerClient.DeleteIfExistsAsync();
             }
-            catch (Exception ex)
+            catch (RequestFailedException ex)
             {
-                Console.WriteLine($"Failed to cleanup test container: {ex.Message}");
+                Console.WriteLine($"Failed to cleanup test container (Azure error): {ex.Message}");
             }
-        }
+            catch (TimeoutException ex)
+            {
+                Console.WriteLine($"Failed to cleanup test container (timeout): {ex.Message}");
+            }
     }
+
+    #region Format Conversion Tests
+
+    [Theory]
+    [InlineData("image/png", "test.png")]
+    [InlineData("image/jpeg", "test.jpg")]
+    [InlineData("image/gif", "test.gif")]
+    public async Task UploadFileAsync_WithDifferentFormats_ShouldConvertToJPEG(string contentType, string fileName)
+    {
+        if (!_azureStorageAvailable) return;
+
+        // Arrange
+        var service = CreateService();
+        var testImage = CreateTestImage(800, 600, fileName, contentType);
+        var entityId = Guid.NewGuid();
+
+        // Act
+        var result = await service.UploadFileAsync(testImage, entityId, "format");
+
+        // Assert
+        result.Should().NotBeNullOrEmpty();
+        _uploadedBlobs.Add(result);
+
+        var downloadedStream = await service.DownloadFileAsync(result);
+        using var image = await Image.LoadAsync(downloadedStream);
+
+        image.Should().NotBeNull();
+        image.Width.Should().Be(800);
+        image.Height.Should().Be(600);
+    }
+
+    #endregion
 
     #region Image Optimization Tests
 
@@ -88,10 +132,8 @@ public class AzureBlobStorageServiceIntegrationTests : IAsyncLifetime
     {
         // Skip if Azure Storage not available
         if (!_azureStorageAvailable)
-        {
             // Use Skip.If when available, or just return
             return;
-        }
 
         // Arrange
         var service = CreateService();
@@ -251,7 +293,6 @@ public class AzureBlobStorageServiceIntegrationTests : IAsyncLifetime
 
         // Create a more complex image that will actually compress
         var largeImage = CreateComplexTestImage(1920, 1920, "large_compress_test.jpg");
-        var originalSize = largeImage.Length;
         var entityId = Guid.NewGuid();
 
         // Act
@@ -286,38 +327,6 @@ public class AzureBlobStorageServiceIntegrationTests : IAsyncLifetime
 
     #endregion
 
-    #region Format Conversion Tests
-
-    [Theory]
-    [InlineData("image/png", "test.png")]
-    [InlineData("image/jpeg", "test.jpg")]
-    [InlineData("image/gif", "test.gif")]
-    public async Task UploadFileAsync_WithDifferentFormats_ShouldConvertToJPEG(string contentType, string fileName)
-    {
-        if (!_azureStorageAvailable) return;
-
-        // Arrange
-        var service = CreateService();
-        var testImage = CreateTestImage(800, 600, fileName, contentType);
-        var entityId = Guid.NewGuid();
-
-        // Act
-        var result = await service.UploadFileAsync(testImage, entityId, "format");
-
-        // Assert
-        result.Should().NotBeNullOrEmpty();
-        _uploadedBlobs.Add(result);
-
-        var downloadedStream = await service.DownloadFileAsync(result);
-        using var image = await Image.LoadAsync(downloadedStream);
-
-        image.Should().NotBeNull();
-        image.Width.Should().Be(800);
-        image.Height.Should().Be(600);
-    }
-
-    #endregion
-
     #region Memory Management Tests
 
     [Fact]
@@ -332,7 +341,7 @@ public class AzureBlobStorageServiceIntegrationTests : IAsyncLifetime
         var initialMemory = GC.GetTotalMemory(true);
 
         // Act
-        for (int i = 0; i < uploadCount; i++)
+        for (var i = 0; i < uploadCount; i++)
         {
             var testImage = CreateTestImage(1024, 768, $"memory_test_{i}.jpg");
             var result = await service.UploadFileAsync(testImage, entityId, "memory");
@@ -465,117 +474,99 @@ public class AzureBlobStorageServiceIntegrationTests : IAsyncLifetime
 
     private IFormFile CreateTestImage(int width, int height, string fileName, string contentType = "image/jpeg")
     {
-        var image = new Image<Rgba32>(width, height);
+        using var image = new Image<Rgba32>(width, height);
 
         // Fill with a test pattern for more realistic compression
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
+        for (var y = 0; y < height; y++)
+            for (var x = 0; x < width; x++)
             {
                 var color = new Rgba32(
-                    (byte)((x * 255) / width),
-                    (byte)((y * 255) / height),
-                    (byte)(((x + y) * 255) / (width + height))
+                    (byte)(x * 255 / width),
+                    (byte)(y * 255 / height),
+                    (byte)((x + y) * 255 / (width + height))
                 );
                 image[x, y] = color;
             }
-        }
 
-        var stream = new MemoryStream();
+        using var stream = new MemoryStream();
         image.SaveAsJpeg(stream);
         stream.Position = 0;
 
-        image.Dispose();
+        // Copy the stream to a buffer before disposing
+        var buffer = stream.ToArray();
 
         var fileMock = new Mock<IFormFile>();
         fileMock.Setup(f => f.FileName).Returns(fileName);
         fileMock.Setup(f => f.ContentType).Returns(contentType);
-        fileMock.Setup(f => f.Length).Returns(stream.Length);
+        fileMock.Setup(f => f.Length).Returns(buffer.Length);
 
-        // Create a new stream for each OpenReadStream call
-        fileMock.Setup(f => f.OpenReadStream()).Returns(() =>
-        {
-            var memoryStream = new MemoryStream();
-            stream.Position = 0;
-            stream.CopyTo(memoryStream);
-            memoryStream.Position = 0;
-            return memoryStream;
-        });
+        // Return a new MemoryStream for each OpenReadStream call
+        fileMock.Setup(f => f.OpenReadStream()).Returns(() => new MemoryStream(buffer));
 
         fileMock.Setup(f => f.CopyToAsync(It.IsAny<Stream>(), It.IsAny<CancellationToken>()))
             .Returns<Stream, CancellationToken>(async (s, ct) =>
             {
-                stream.Position = 0;
-                await stream.CopyToAsync(s, ct);
+                using var ms = new MemoryStream(buffer);
+                ms.Position = 0;
+                await ms.CopyToAsync(s, ct);
             });
 
         return fileMock.Object;
     }
 
     /// <summary>
-    /// Creates a more complex test image with realistic patterns that will compress better
+    ///     Creates a more complex test image with realistic patterns that will compress better
     /// </summary>
     private IFormFile CreateComplexTestImage(int width, int height, string fileName)
     {
-        var image = new Image<Rgba32>(width, height);
+        using var image = new Image<Rgba32>(width, height);
         var random = new Random(42); // Seed for reproducibility
 
         // Create a more complex pattern with noise, gradients, and blocks
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
+        for (var y = 0; y < height; y++)
+            for (var x = 0; x < width; x++)
             {
                 // Mix of gradient and random noise
-                var baseR = (byte)((x * 255) / width);
-                var baseG = (byte)((y * 255) / height);
-                var baseB = (byte)(((x + y) * 255) / (width + height));
+                var baseR = (byte)(x * 255 / width);
+                var baseG = (byte)(y * 255 / height);
+                var baseB = (byte)((x + y) * 255 / (width + height));
 
                 // Add noise
-                var noiseR = (byte)(random.Next(-20, 20));
-                var noiseG = (byte)(random.Next(-20, 20));
-                var noiseB = (byte)(random.Next(-20, 20));
+                var noiseR = (byte)random.Next(-20, 20);
+                var noiseG = (byte)random.Next(-20, 20);
+                var noiseB = (byte)random.Next(-20, 20);
 
                 // Add blocks of solid color for more realistic compression
-                if ((x / 100) % 2 == 0 && (y / 100) % 2 == 0)
-                {
-                    image[x, y] = new Rgba32(200, 150, 100);
-                }
-                else
-                {
-                    image[x, y] = new Rgba32(
+                image[x, y] = x / 100 % 2 == 0 && y / 100 % 2 == 0
+                    ? new Rgba32(200, 150, 100)
+                    : new Rgba32(
                         (byte)Math.Clamp(baseR + noiseR, 0, 255),
                         (byte)Math.Clamp(baseG + noiseG, 0, 255),
                         (byte)Math.Clamp(baseB + noiseB, 0, 255)
                     );
-                }
             }
-        }
 
-        var stream = new MemoryStream();
-        image.SaveAsJpeg(stream, new SixLabors.ImageSharp.Formats.Jpeg.JpegEncoder { Quality = 95 });
+        using var stream = new MemoryStream();
+        image.SaveAsJpeg(stream, new JpegEncoder { Quality = 95 });
         stream.Position = 0;
 
-        image.Dispose();
+        // Buffer the image bytes before disposing the stream
+        var buffer = stream.ToArray();
 
         var fileMock = new Mock<IFormFile>();
         fileMock.Setup(f => f.FileName).Returns(fileName);
         fileMock.Setup(f => f.ContentType).Returns("image/jpeg");
-        fileMock.Setup(f => f.Length).Returns(stream.Length);
+        fileMock.Setup(f => f.Length).Returns(buffer.Length);
 
-        fileMock.Setup(f => f.OpenReadStream()).Returns(() =>
-        {
-            var memoryStream = new MemoryStream();
-            stream.Position = 0;
-            stream.CopyTo(memoryStream);
-            memoryStream.Position = 0;
-            return memoryStream;
-        });
+        // Return a new MemoryStream for each OpenReadStream call
+        fileMock.Setup(f => f.OpenReadStream()).Returns(() => new MemoryStream(buffer));
 
         fileMock.Setup(f => f.CopyToAsync(It.IsAny<Stream>(), It.IsAny<CancellationToken>()))
             .Returns<Stream, CancellationToken>(async (s, ct) =>
             {
-                stream.Position = 0;
-                await stream.CopyToAsync(s, ct);
+                using var ms = new MemoryStream(buffer);
+                ms.Position = 0;
+                await ms.CopyToAsync(s, ct);
             });
 
         return fileMock.Object;

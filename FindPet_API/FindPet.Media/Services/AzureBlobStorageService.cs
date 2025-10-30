@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
@@ -49,9 +50,14 @@ public class AzureBlobStorageService : IMediaStorageService
 
             return response.Value;
         }
-        catch (Exception ex)
+        catch (RequestFailedException ex)
         {
-            _logger.LogError($"Failed to delete file: {filePath}. Error: {ex.Message}");
+            _logger.LogError($"Azure request failed while deleting file: {filePath}. Error: {ex.Message}");
+            return false;
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogError($"Invalid argument for file deletion: {filePath}. Error: {ex.Message}");
             return false;
         }
     }
@@ -68,13 +74,14 @@ public class AzureBlobStorageService : IMediaStorageService
             var response = await blobClient.DownloadStreamingAsync();
             return response.Value.Content;
         }
-        catch (FileNotFoundException)
+        catch (RequestFailedException ex)
         {
-            throw;
+            _logger.LogError($"Azure request failed while downloading file: {filePath}. Error: {ex.Message}");
+            throw new InvalidOperationException($"Failed to download file: {filePath}", ex);
         }
-        catch (Exception ex)
+        catch (ArgumentException ex)
         {
-            _logger.LogError($"Failed to download file: {filePath}. Error: {ex.Message}");
+            _logger.LogError($"Invalid argument for file download: {filePath}. Error: {ex.Message}");
             throw new InvalidOperationException($"Failed to download file: {filePath}", ex);
         }
     }
@@ -91,9 +98,14 @@ public class AzureBlobStorageService : IMediaStorageService
             var response = await blobClient.DownloadStreamingAsync();
             return response.Value.Content;
         }
-        catch (Exception ex)
+        catch (RequestFailedException ex)
         {
-            _logger.LogError($"Failed to get file: {filePath}. Error: {ex.Message}");
+            _logger.LogError($"Azure request failed while getting file: {filePath}. Error: {ex.Message}");
+            return Stream.Null;
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogError($"Invalid argument for file retrieval: {filePath}. Error: {ex.Message}");
             return Stream.Null;
         }
     }
@@ -135,8 +147,14 @@ public class AzureBlobStorageService : IMediaStorageService
             var response = await blobClient.ExistsAsync();
             return response.Value;
         }
-        catch
+        catch (RequestFailedException ex)
         {
+            _logger.LogError($"Azure request failed while checking file existence: {filePath}. Error: {ex.Message}");
+            return false;
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogError($"Invalid argument for file existence check: {filePath}. Error: {ex.Message}");
             return false;
         }
     }

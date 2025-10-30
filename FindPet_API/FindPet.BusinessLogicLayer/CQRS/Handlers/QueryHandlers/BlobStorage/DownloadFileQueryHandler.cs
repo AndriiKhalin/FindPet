@@ -36,15 +36,10 @@ public class DownloadFileQueryHandler : IQueryHandler<DownloadFileQuery, Downloa
         {
             throw new NotFoundException("File", request.FilePath);
         }
-        catch (NotFoundException)
-        {
-            throw;
-        }
         catch (IOException ex)
         {
             throw new FileProcessingException("download", ex.Message, request.FilePath);
         }
-
     }
 
     private static string GetContentType(string fileName)

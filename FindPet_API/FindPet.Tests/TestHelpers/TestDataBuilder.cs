@@ -5,6 +5,7 @@ using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
 using FindPet.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 
 namespace FindPet.Tests.TestHelpers;
 
@@ -84,16 +85,36 @@ public static class TestDataBuilder
 
         public static IFormFile CreateValidImageFile(string fileName = "test-pet.jpg")
         {
-            var content = CreateValidImageBytes();
-            var stream = new MemoryStream(content);
+            // Generate image bytes (e.g., from a test image or pattern)
+            var imageBytes = CreateValidImageBytes(); // or your actual image bytes
 
-            var file = new FormFile(stream, 0, content.Length, "file", fileName)
-            {
-                Headers = new HeaderDictionary(),
-                ContentType = "image/jpeg"
-            };
+            // Buffer the bytes
+            var buffer = imageBytes.ToArray();
 
-            return file;
+            // Always return a new MemoryStream for each OpenReadStream call
+            var fileMock = new Mock<IFormFile>();
+            fileMock.Setup(f => f.FileName).Returns(fileName);
+            fileMock.Setup(f => f.ContentType).Returns("image/jpeg");
+            fileMock.Setup(f => f.Length).Returns(buffer.Length);
+            fileMock.Setup(f => f.OpenReadStream()).Returns(() => new MemoryStream(buffer));
+            fileMock.Setup(f => f.CopyToAsync(It.IsAny<Stream>(), It.IsAny<CancellationToken>()))
+                .Returns<Stream, CancellationToken>(async (s, ct) =>
+                {
+                    using var ms = new MemoryStream(buffer);
+                    ms.Position = 0;
+                    await ms.CopyToAsync(s, ct);
+                });
+            return fileMock.Object;
+            //var content = CreateValidImageBytes();
+            //using var stream = new MemoryStream(content);
+
+            //var file = new FormFile(stream, 0, content.Length, "file", fileName)
+            //{
+            //    Headers = new HeaderDictionary(),
+            //    ContentType = "image/jpeg"
+            //};
+
+            //return file;
         }
 
         public static string[] GetTestBreeds()

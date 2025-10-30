@@ -28,7 +28,6 @@ public class MLServiceIntegrationTests
     public async Task MLService_ShouldWorkInPetProcessingWorkflow()
     {
         // Arrange - Set up a workflow similar to what would happen in the system
-        var mockUnitOfWork = MockSetupExtensions.ScenarioMocks.Integration.CreatePetWithMLPrediction().Item1;
         var mockImageService = MockSetupExtensions.ServiceMocks.SetupImageService<Pet>();
 
         // Create a temporary file to simulate uploaded image
@@ -106,16 +105,23 @@ public class MLServiceIntegrationTests
     public async Task MLService_ShouldHandleFormFileInput()
     {
         // Arrange
-        var formFile = TestDataBuilder.MLTestData.CreateValidImageFile();
+        var imageBytes = TestDataBuilder.MLTestData.CreateValidImageBytes();
+        var stream = new MemoryStream(imageBytes);
+        var formFile = new FormFile(stream, 0, imageBytes.Length, "file", "test.jpg")
+        {
+            Headers = new HeaderDictionary(),
+            ContentType = "image/jpeg"
+        };
         var predictedBreed = "Labrador";
 
         // In a real scenario, we'd save the form file to a temp location and pass that to MLService
         var tempPath = Path.GetTempFileName();
 
         // Mock saving formFile to disk
-        using (var stream = new FileStream(tempPath, FileMode.Create))
+        using (var fileStream = new FileStream(tempPath, FileMode.Create))
         {
-            await formFile.CopyToAsync(stream);
+            stream.Position = 0;
+            await formFile.CopyToAsync(fileStream);
         }
 
         try
@@ -134,6 +140,7 @@ public class MLServiceIntegrationTests
         finally
         {
             if (File.Exists(tempPath)) File.Delete(tempPath);
+            stream.Dispose();
         }
     }
 

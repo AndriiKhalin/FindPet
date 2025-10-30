@@ -1069,7 +1069,7 @@ public static class MockSetupExtensions
     {
         mockMediaStorageService.Setup(x => x.FileExistsAsync(photoPath)).ReturnsAsync(true);
 
-        var mockImageStream = new MemoryStream(new byte[] { 0x00, 0x01, 0x02 });
+        using var mockImageStream = new MemoryStream(new byte[] { 0x00, 0x01, 0x02 });
         mockMediaStorageService.Setup(x => x.GetFileAsync(photoPath))
             .ReturnsAsync(mockImageStream);
 

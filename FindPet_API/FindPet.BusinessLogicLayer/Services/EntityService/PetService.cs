@@ -239,7 +239,7 @@ public class PetService : IPetService
             _logger.LogError($"Operation failed for photo {photoPath}: {ex.Message}");
             return "Unknown";
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             _logger.LogError("Failed to predict pet type");
             return "Unknown";

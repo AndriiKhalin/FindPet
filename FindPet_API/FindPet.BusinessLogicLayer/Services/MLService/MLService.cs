@@ -56,7 +56,7 @@ public class MLService(ILoggerManager logger) : IMLService
             logger.LogError($"Format error during prediction: {ex.Message}");
             return "Unknown";
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             logger.LogError("Failed to predict pet type");
             return "Unknown";

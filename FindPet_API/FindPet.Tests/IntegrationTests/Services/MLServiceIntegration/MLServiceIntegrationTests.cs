@@ -106,7 +106,7 @@ public class MLServiceIntegrationTests
     {
         // Arrange
         var imageBytes = TestDataBuilder.MLTestData.CreateValidImageBytes();
-        var stream = new MemoryStream(imageBytes);
+        using var stream = new MemoryStream(imageBytes);
         var formFile = new FormFile(stream, 0, imageBytes.Length, "file", "test.jpg")
         {
             Headers = new HeaderDictionary(),

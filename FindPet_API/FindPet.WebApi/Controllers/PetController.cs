@@ -1,4 +1,5 @@
-﻿using FindPet.BusinessLogicLayer.CQRS.Commands.Pet;
+﻿using Asp.Versioning;
+using FindPet.BusinessLogicLayer.CQRS.Commands.Pet;
 using FindPet.BusinessLogicLayer.CQRS.Queries.Pet;
 using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
 using MediatR;
@@ -7,6 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FindPet.WebApi.Controllers;
 
+[ApiVersion("1.0")]
+[ApiVersion("2.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
 [Route("api/[controller]")]
 [ApiController]
 public class PetController : ControllerBase
@@ -20,11 +24,21 @@ public class PetController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet]
+    [MapToApiVersion("1.0")]
     [ProducesResponseType(200, Type = typeof(IEnumerable<PetDto>))]
     public async Task<IActionResult> GetPets()
     {
         var pets = await _mediator.Send(new GetAllPetsQuery());
         return Ok(pets);
+    }
+
+    [AllowAnonymous]
+    [HttpGet]
+    [MapToApiVersion("2.0")]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<PetDto>))]
+    public async Task<IActionResult> GetPetsV2()
+    {
+        return Ok(StatusCodes.Status200OK);
     }
 
     [AllowAnonymous]

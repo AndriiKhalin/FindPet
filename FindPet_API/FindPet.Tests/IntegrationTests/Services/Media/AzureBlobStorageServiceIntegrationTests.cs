@@ -478,15 +478,15 @@ public class AzureBlobStorageServiceIntegrationTests : IAsyncLifetime
 
         // Fill with a test pattern for more realistic compression
         for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++)
-            {
-                var color = new Rgba32(
-                    (byte)(x * 255 / width),
-                    (byte)(y * 255 / height),
-                    (byte)((x + y) * 255 / (width + height))
-                );
-                image[x, y] = color;
-            }
+        for (var x = 0; x < width; x++)
+        {
+            var color = new Rgba32(
+                (byte)(x * 255 / width),
+                (byte)(y * 255 / height),
+                (byte)((x + y) * 255 / (width + height))
+            );
+            image[x, y] = color;
+        }
 
         using var stream = new MemoryStream();
         image.SaveAsJpeg(stream);
@@ -524,27 +524,27 @@ public class AzureBlobStorageServiceIntegrationTests : IAsyncLifetime
 
         // Create a more complex pattern with noise, gradients, and blocks
         for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++)
-            {
-                // Mix of gradient and random noise
-                var baseR = (byte)(x * 255 / width);
-                var baseG = (byte)(y * 255 / height);
-                var baseB = (byte)((x + y) * 255 / (width + height));
+        for (var x = 0; x < width; x++)
+        {
+            // Mix of gradient and random noise
+            var baseR = (byte)(x * 255 / width);
+            var baseG = (byte)(y * 255 / height);
+            var baseB = (byte)((x + y) * 255 / (width + height));
 
-                // Add noise
-                var noiseR = (byte)random.Next(-20, 20);
-                var noiseG = (byte)random.Next(-20, 20);
-                var noiseB = (byte)random.Next(-20, 20);
+            // Add noise
+            var noiseR = (byte)random.Next(-20, 20);
+            var noiseG = (byte)random.Next(-20, 20);
+            var noiseB = (byte)random.Next(-20, 20);
 
-                // Add blocks of solid color for more realistic compression
-                image[x, y] = x / 100 % 2 == 0 && y / 100 % 2 == 0
-                    ? new Rgba32(200, 150, 100)
-                    : new Rgba32(
-                        (byte)Math.Clamp(baseR + noiseR, 0, 255),
-                        (byte)Math.Clamp(baseG + noiseG, 0, 255),
-                        (byte)Math.Clamp(baseB + noiseB, 0, 255)
-                    );
-            }
+            // Add blocks of solid color for more realistic compression
+            image[x, y] = x / 100 % 2 == 0 && y / 100 % 2 == 0
+                ? new Rgba32(200, 150, 100)
+                : new Rgba32(
+                    (byte)Math.Clamp(baseR + noiseR, 0, 255),
+                    (byte)Math.Clamp(baseG + noiseG, 0, 255),
+                    (byte)Math.Clamp(baseB + noiseB, 0, 255)
+                );
+        }
 
         using var stream = new MemoryStream();
         image.SaveAsJpeg(stream, new JpegEncoder { Quality = 95 });

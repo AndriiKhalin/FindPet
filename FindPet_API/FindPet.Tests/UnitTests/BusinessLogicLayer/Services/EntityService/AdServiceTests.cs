@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FindPet.BusinessLogicLayer.Interfaces.ICacheService;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
 using FindPet.BusinessLogicLayer.Services.EntityService;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
@@ -28,6 +29,7 @@ public class AdServiceTests
     private readonly Mock<IPetRepository> _mockPetRepository;
     private readonly Mock<IUnitOfWork> _mockUnitOfWork;
     private readonly Mock<IUserRepository<User>> _mockUserRepository;
+    private readonly Mock<IRedisCacheService> _mockCacheRedisService;
 
     public AdServiceTests()
     {
@@ -36,6 +38,7 @@ public class AdServiceTests
         _mockImageService = MockSetupExtensions.SetupImageServiceMock<Ad>();
         _mockLogger = MockSetupExtensions.SetupLoggerMock();
         _mockMediaStorageService = MockSetupExtensions.CreateMock<IMediaStorageService>();
+        _mockCacheRedisService = MockSetupExtensions.CreateMock<IRedisCacheService>();
 
         // Setup repository mocks
         _mockAdRepository = new Mock<IAdRepository>();
@@ -48,7 +51,7 @@ public class AdServiceTests
         _mockUnitOfWork.Setup(x => x.User).Returns(_mockUserRepository.Object);
 
         _adService = new AdService(_mockUnitOfWork.Object, _mockMapper.Object, _mockImageService.Object,
-            _mockLogger.Object, _mockMediaStorageService.Object);
+            _mockLogger.Object, _mockMediaStorageService.Object, _mockCacheRedisService.Object);
     }
 
     #region GetAds Tests

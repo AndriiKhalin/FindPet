@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using AutoMapper;
+using FindPet.BusinessLogicLayer.Interfaces.ICacheService;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
 using FindPet.BusinessLogicLayer.Interfaces.IMLService;
 using FindPet.BusinessLogicLayer.Services.EntityService;
@@ -28,6 +29,7 @@ public class PetServiceTests
         _mockLogger = MockSetupExtensions.SetupLoggerMock();
         _mockHostingEnvironment = MockSetupExtensions.CreateMock<IWebHostEnvironment>();
         _mockMediaStorageService = MockSetupExtensions.CreateMock<IMediaStorageService>();
+        _mockCacheRedisService = MockSetupExtensions.CreateMock<IRedisCacheService>();
 
         _mockPetRepository = MockSetupExtensions.SetupPetRepositoryMock();
         _mockUserRepository = MockSetupExtensions.SetupUserRepositoryMock();
@@ -43,7 +45,8 @@ public class PetServiceTests
             _mockMLService.Object,
             _mockLogger.Object,
             _mockHostingEnvironment.Object,
-            _mockMediaStorageService.Object
+            _mockMediaStorageService.Object,
+            _mockCacheRedisService.Object
         );
     }
 
@@ -99,7 +102,7 @@ public class PetServiceTests
 
         // Act
         var stopwatch = Stopwatch.StartNew();
-        var result = _petService.GetPets();
+        var result = _petService.GetPetsAsync();
         stopwatch.Stop();
 
         // Assert
@@ -121,6 +124,7 @@ public class PetServiceTests
     private readonly Mock<IUserRepository<User>> _mockUserRepository;
     private readonly Mock<IMediaStorageService> _mockMediaStorageService;
     private readonly PetService _petService;
+    private readonly Mock<IRedisCacheService> _mockCacheRedisService;
 
     #endregion
 
@@ -134,7 +138,7 @@ public class PetServiceTests
         _mockPetRepository.SetupGetPets(pets);
 
         // Act
-        var result = _petService.GetPets();
+        var result = _petService.GetPetsAsync();
 
         // Assert
         Assert.NotNull(result);
@@ -150,7 +154,7 @@ public class PetServiceTests
         _mockPetRepository.SetupGetPets(new List<Pet>());
 
         // Act
-        var result = _petService.GetPets();
+        var result = _petService.GetPetsAsync();
 
         // Assert
         Assert.NotNull(result);

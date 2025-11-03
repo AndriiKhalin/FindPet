@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using FindPet.BusinessLogicLayer.Interfaces.ICacheService;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
+using FindPet.Domain.Constants;
 using FindPet.Domain.DTOs.EntitiesDTOs.AdDTO;
 using FindPet.Domain.Entities;
 using FindPet.Domain.Exceptions;
@@ -17,33 +19,50 @@ public class AdService : IAdService
     private readonly IMapper _mapper;
     private readonly IMediaStorageService _mediaStorageService;
     private readonly IUnitOfWork _unitOfWorkRep;
+    private readonly IRedisCacheService _cache;
 
     public AdService(IUnitOfWork unitOfWorkRep, IMapper mapper, IManageImage<Ad> manageImage, ILoggerManager logger,
-        IMediaStorageService mediaStorageService)
+        IMediaStorageService mediaStorageService,
+        IRedisCacheService cache)
     {
         _unitOfWorkRep = unitOfWorkRep;
         _mapper = mapper;
         _manageImage = manageImage;
         _logger = logger;
         _mediaStorageService = mediaStorageService;
+        _cache = cache;
     }
 
     public IEnumerable<Ad> GetAds()
     {
-        return _unitOfWorkRep.Ad.Gets();
+        return _cache.GetValueOrInitializeAsync(
+            CacheKeys.AllAds,
+            async () => _unitOfWorkRep.Ad.Gets(),
+            CacheKeys.Duration.Short
+        ).GetAwaiter().GetResult();
     }
 
     public async Task<Ad?> GetAdAsync(Guid adId)
     {
         if (adId == Guid.Empty) throw new BadRequestException("AdId must be a valid non-empty GUID");
 
-        if (!await AdExistsAsync(adId))
+
+        var cacheKey = CacheKeys.GetAdByIdKey(adId);
+
+
+        var ad = await _cache.GetValueOrInitializeAsync(
+            cacheKey,
+            async () => await _unitOfWorkRep.Ad.GetAsync(adId),
+            CacheKeys.Duration.Medium
+        );
+
+        if (ad == null)
         {
             _logger.LogError($"Ad with id: {adId}, hasn't been found in db.");
             throw new NotFoundException("Ad", adId);
         }
 
-        return await _unitOfWorkRep.Ad.GetAsync(adId);
+        return ad;
     }
 
     //public async Task<Pet?> GetPetByAd(Guid adId)
@@ -85,8 +104,9 @@ public class AdService : IAdService
             await _mediaStorageService.DeleteFileAsync(adEntityForDelete.Photo);
 
         await _unitOfWorkRep.Ad.DeleteAsync(adId);
-
         await _unitOfWorkRep.SaveAsync();
+
+        await InvalidateAdCaches(adId, adEntityForDelete.UserId);
     }
 
     public async Task UpdateAdAsync(Guid adId, AdForUpdateDto ad)
@@ -117,8 +137,9 @@ public class AdService : IAdService
         _mapper.Map(ad, adEntity);
 
         await _unitOfWorkRep.Ad.UpdateAsync(adEntity);
-
         await _unitOfWorkRep.SaveAsync();
+
+        await InvalidateAdCaches(adId, adEntity.UserId);
     }
 
     public async Task<Ad> CreateAdAsync(Guid petId, Guid userId, AdForCreateDto ad)
@@ -138,9 +159,26 @@ public class AdService : IAdService
         adMap.DateCreateUpdate = DateTime.UtcNow;
 
         await _unitOfWorkRep.Ad.CreateAsync(adMap);
-
         await _unitOfWorkRep.SaveAsync();
 
+        await InvalidateAdCaches(null, userId);
+
         return adMap;
+    }
+
+    private async Task InvalidateAdCaches(Guid? adId, Guid? userId)
+    {
+        await _cache.RemoveAsync(CacheKeys.AllAds);
+        await _cache.RemoveAsync(CacheKeys.RecentAds);
+
+        if (adId.HasValue)
+        {
+            await _cache.RemoveAsync(CacheKeys.GetAdByIdKey(adId.Value));
+        }
+
+        if (userId.HasValue)
+        {
+            await _cache.RemoveAsync(CacheKeys.GetAdsByUserKey(userId.Value));
+        }
     }
 }

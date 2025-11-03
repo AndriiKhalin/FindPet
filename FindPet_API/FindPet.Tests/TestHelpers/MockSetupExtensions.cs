@@ -817,7 +817,7 @@ public static class MockSetupExtensions
 
     public static Mock<IPetService> SetupGetPets(this Mock<IPetService> mockService, IEnumerable<Pet> pets)
     {
-        mockService.Setup(s => s.GetPets()).Returns(pets);
+        mockService.Setup(s => s.GetPetsAsync()).Returns(pets);
         return mockService;
     }
 
@@ -921,7 +921,7 @@ public static class MockSetupExtensions
             pets ??= TestDataBuilder.BuildPetList();
             var mock = new Mock<IPetService>();
 
-            mock.Setup(x => x.GetPets()).Returns(pets);
+            mock.Setup(x => x.GetPetsAsync()).Returns(pets);
             mock.Setup(x => x.GetPetByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync((Guid id) => pets.FirstOrDefault(p => p.Id == id));
 

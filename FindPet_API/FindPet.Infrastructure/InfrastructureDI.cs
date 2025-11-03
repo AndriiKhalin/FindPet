@@ -25,6 +25,7 @@ public static class InfrastructureDI
         services.ConfigureLoggerService();
         services.AddIdentityConfiguration();
         services.AddJwtAuthentication(configuration);
+        services.ConfigureRedisCache(configuration);
     }
 
     private static void AddLayersServices(this IServiceCollection services, IConfiguration configuration)

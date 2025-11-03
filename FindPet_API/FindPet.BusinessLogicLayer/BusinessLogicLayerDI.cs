@@ -1,8 +1,10 @@
 ﻿using System.Reflection;
 using FindPet.BusinessLogicLayer.CQRS.Behaviors;
+using FindPet.BusinessLogicLayer.Interfaces.ICacheService;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
 using FindPet.BusinessLogicLayer.Interfaces.IMLService;
+using FindPet.BusinessLogicLayer.Services.CacheService;
 using FindPet.BusinessLogicLayer.Services.EntityService;
 using FindPet.BusinessLogicLayer.Services.ImageService;
 using FindPet.BusinessLogicLayer.Services.MLService;
@@ -17,6 +19,7 @@ public static class BusinessLogicLayerDI
     public static void AddBusinessLogicServices(this IServiceCollection services)
     {
         // Entity Services
+        services.AddScoped<IRedisCacheService, RedisCacheService>();
         services.AddScoped<IPetService, PetService>();
         services.AddScoped<IAdService, AdService>();
         services.AddScoped<IUserService, UserService>();

@@ -50,7 +50,7 @@ public class GetAllUsersQueryHandlerTests
         result.Should().NotBeNull();
         result.Should().HaveCount(2);
 
-        _mockUserService.Verify(x => x.GetUsers(), Times.Once);
+        _mockUserService.Verify(x => x.GetUsersAsync(), Times.Once);
         _mockMapper.Verify(x => x.Map<IEnumerable<UserDto>>(users), Times.Once);
     }
 
@@ -86,7 +86,7 @@ public class GetAllUsersQueryHandlerTests
         result.Should().HaveCount(3);
         result.Should().BeEquivalentTo(expectedUserDtos);
 
-        _mockUserService.Verify(x => x.GetUsers(), Times.Once);
+        _mockUserService.Verify(x => x.GetUsersAsync(), Times.Once);
         _mockMapper.Verify(x => x.Map<IEnumerable<UserDto>>(users), Times.Once);
     }
 
@@ -110,7 +110,7 @@ public class GetAllUsersQueryHandlerTests
         result.Should().HaveCount(1);
         result.First().Should().BeEquivalentTo(userDto);
 
-        _mockUserService.Verify(x => x.GetUsers(), Times.Once);
+        _mockUserService.Verify(x => x.GetUsersAsync(), Times.Once);
         _mockMapper.Verify(x => x.Map<IEnumerable<UserDto>>(users), Times.Once);
     }
 
@@ -131,7 +131,7 @@ public class GetAllUsersQueryHandlerTests
         result.Should().NotBeNull();
         result.Should().BeEmpty();
 
-        _mockUserService.Verify(x => x.GetUsers(), Times.Once);
+        _mockUserService.Verify(x => x.GetUsersAsync(), Times.Once);
         _mockMapper.Verify(x => x.Map<IEnumerable<UserDto>>(emptyUsers), Times.Once);
     }
 
@@ -152,7 +152,7 @@ public class GetAllUsersQueryHandlerTests
         result.Should().NotBeNull();
         result.Should().HaveCount(1000);
 
-        _mockUserService.Verify(x => x.GetUsers(), Times.Once);
+        _mockUserService.Verify(x => x.GetUsersAsync(), Times.Once);
         _mockMapper.Verify(x => x.Map<IEnumerable<UserDto>>(users), Times.Once);
     }
 
@@ -167,7 +167,7 @@ public class GetAllUsersQueryHandlerTests
         var expectedException = new BadRequestException("Invalid request parameters");
 
         _mockUserService
-            .Setup(x => x.GetUsers())
+            .Setup(x => x.GetUsersAsync())
             .Throws(expectedException);
 
         // Act & Assert
@@ -175,7 +175,7 @@ public class GetAllUsersQueryHandlerTests
             await Assert.ThrowsAsync<BadRequestException>(() => _handler.Handle(_query, CancellationToken.None));
 
         exception.Message.Should().Be("Invalid request parameters");
-        _mockUserService.Verify(x => x.GetUsers(), Times.Once);
+        _mockUserService.Verify(x => x.GetUsersAsync(), Times.Once);
         _mockMapper.VerifyNoOtherCalls();
     }
 
@@ -186,7 +186,7 @@ public class GetAllUsersQueryHandlerTests
         var expectedException = new NotFoundException("Users", "collection");
 
         _mockUserService
-            .Setup(x => x.GetUsers())
+            .Setup(x => x.GetUsersAsync())
             .Throws(expectedException);
 
         // Act & Assert
@@ -194,7 +194,7 @@ public class GetAllUsersQueryHandlerTests
             await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(_query, CancellationToken.None));
 
         exception.Message.Should().Contain("Users");
-        _mockUserService.Verify(x => x.GetUsers(), Times.Once);
+        _mockUserService.Verify(x => x.GetUsersAsync(), Times.Once);
         _mockMapper.VerifyNoOtherCalls();
     }
 
@@ -205,7 +205,7 @@ public class GetAllUsersQueryHandlerTests
         var expectedException = new InvalidOperationException("Database connection failed");
 
         _mockUserService
-            .Setup(x => x.GetUsers())
+            .Setup(x => x.GetUsersAsync())
             .Throws(expectedException);
 
         // Act & Assert
@@ -213,7 +213,7 @@ public class GetAllUsersQueryHandlerTests
             await Assert.ThrowsAsync<InvalidOperationException>(() => _handler.Handle(_query, CancellationToken.None));
 
         exception.Message.Should().Be("Database connection failed");
-        _mockUserService.Verify(x => x.GetUsers(), Times.Once);
+        _mockUserService.Verify(x => x.GetUsersAsync(), Times.Once);
         _mockMapper.VerifyNoOtherCalls();
     }
 
@@ -224,14 +224,14 @@ public class GetAllUsersQueryHandlerTests
         var expectedException = new Exception("Unexpected error occurred");
 
         _mockUserService
-            .Setup(x => x.GetUsers())
+            .Setup(x => x.GetUsersAsync())
             .Throws(expectedException);
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(_query, CancellationToken.None));
 
         exception.Message.Should().Be("Unexpected error occurred");
-        _mockUserService.Verify(x => x.GetUsers(), Times.Once);
+        _mockUserService.Verify(x => x.GetUsersAsync(), Times.Once);
         _mockMapper.VerifyNoOtherCalls();
     }
 
@@ -256,7 +256,7 @@ public class GetAllUsersQueryHandlerTests
             await Assert.ThrowsAsync<AutoMapperMappingException>(() => _handler.Handle(_query, CancellationToken.None));
 
         exception.Message.Should().Contain("Mapping failed");
-        _mockUserService.Verify(x => x.GetUsers(), Times.Once);
+        _mockUserService.Verify(x => x.GetUsersAsync(), Times.Once);
         _mockMapper.Verify(x => x.Map<IEnumerable<UserDto>>(users), Times.Once);
     }
 
@@ -277,7 +277,7 @@ public class GetAllUsersQueryHandlerTests
             await Assert.ThrowsAsync<ArgumentNullException>(() => _handler.Handle(_query, CancellationToken.None));
 
         exception.ParamName.Should().Be("source");
-        _mockUserService.Verify(x => x.GetUsers(), Times.Once);
+        _mockUserService.Verify(x => x.GetUsersAsync(), Times.Once);
         _mockMapper.Verify(x => x.Map<IEnumerable<UserDto>>(users), Times.Once);
     }
 
@@ -293,8 +293,8 @@ public class GetAllUsersQueryHandlerTests
         var emptyUserDtos = new List<UserDto>();
 
         _mockUserService
-            .Setup(x => x.GetUsers())
-            .Returns(nullUsers!);
+            .Setup(x => x.GetUsersAsync())
+            .ReturnsAsync(nullUsers!);
 
         _mockMapper
             .Setup(x => x.Map<IEnumerable<UserDto>>(nullUsers!))
@@ -307,7 +307,7 @@ public class GetAllUsersQueryHandlerTests
         result.Should().NotBeNull();
         result.Should().BeEmpty();
 
-        _mockUserService.Verify(x => x.GetUsers(), Times.Once);
+        _mockUserService.Verify(x => x.GetUsersAsync(), Times.Once);
         _mockMapper.Verify(x => x.Map<IEnumerable<UserDto>>(nullUsers!), Times.Once);
     }
 
@@ -329,7 +329,7 @@ public class GetAllUsersQueryHandlerTests
         // Assert
         result.Should().BeNull();
 
-        _mockUserService.Verify(x => x.GetUsers(), Times.Once);
+        _mockUserService.Verify(x => x.GetUsersAsync(), Times.Once);
         _mockMapper.Verify(x => x.Map<IEnumerable<UserDto>>(users), Times.Once);
     }
 
@@ -381,7 +381,7 @@ public class GetAllUsersQueryHandlerTests
         resultList[1].Name.Should().Be("Jane");
         resultList[1].Email.Should().Be("jane.smith@example.com");
 
-        _mockUserService.Verify(x => x.GetUsers(), Times.Once);
+        _mockUserService.Verify(x => x.GetUsersAsync(), Times.Once);
         _mockMapper.Verify(x => x.Map<IEnumerable<UserDto>>(users), Times.Once);
     }
 
@@ -403,7 +403,7 @@ public class GetAllUsersQueryHandlerTests
         result.Should().NotBeNull();
         result.Should().HaveCount(2);
 
-        _mockUserService.Verify(x => x.GetUsers(), Times.Once);
+        _mockUserService.Verify(x => x.GetUsersAsync(), Times.Once);
         _mockMapper.Verify(x => x.Map<IEnumerable<UserDto>>(users), Times.Once);
     }
 
@@ -426,7 +426,7 @@ public class GetAllUsersQueryHandlerTests
         await _handler.Handle(_query, CancellationToken.None);
 
         // Assert
-        _mockUserService.Verify(x => x.GetUsers(), Times.Exactly(2));
+        _mockUserService.Verify(x => x.GetUsersAsync(), Times.Exactly(2));
         _mockMapper.Verify(x => x.Map<IEnumerable<UserDto>>(users), Times.Exactly(2));
     }
 

@@ -14,12 +14,12 @@ namespace FindPet.BusinessLogicLayer.Services.EntityService;
 
 public class AdService : IAdService
 {
+    private readonly IRedisCacheService _cache;
     private readonly ILoggerManager _logger;
     private readonly IManageImage<Ad> _manageImage;
     private readonly IMapper _mapper;
     private readonly IMediaStorageService _mediaStorageService;
     private readonly IUnitOfWork _unitOfWorkRep;
-    private readonly IRedisCacheService _cache;
 
     public AdService(IUnitOfWork unitOfWorkRep, IMapper mapper, IManageImage<Ad> manageImage, ILoggerManager logger,
         IMediaStorageService mediaStorageService,
@@ -33,13 +33,13 @@ public class AdService : IAdService
         _cache = cache;
     }
 
-    public IEnumerable<Ad> GetAds()
+    public async Task<IEnumerable<Ad>> GetAdsAsync()
     {
-        return _cache.GetValueOrInitializeAsync(
+        return await _cache.GetValueOrInitializeAsync(
             CacheKeys.AllAds,
-            async () => _unitOfWorkRep.Ad.Gets(),
+            async () => await _unitOfWorkRep.Ad.GetsAsync(),
             CacheKeys.Duration.Short
-        ).GetAwaiter().GetResult();
+        );
     }
 
     public async Task<Ad?> GetAdAsync(Guid adId)
@@ -171,14 +171,8 @@ public class AdService : IAdService
         await _cache.RemoveAsync(CacheKeys.AllAds);
         await _cache.RemoveAsync(CacheKeys.RecentAds);
 
-        if (adId.HasValue)
-        {
-            await _cache.RemoveAsync(CacheKeys.GetAdByIdKey(adId.Value));
-        }
+        if (adId.HasValue) await _cache.RemoveAsync(CacheKeys.GetAdByIdKey(adId.Value));
 
-        if (userId.HasValue)
-        {
-            await _cache.RemoveAsync(CacheKeys.GetAdsByUserKey(userId.Value));
-        }
+        if (userId.HasValue) await _cache.RemoveAsync(CacheKeys.GetAdsByUserKey(userId.Value));
     }
 }

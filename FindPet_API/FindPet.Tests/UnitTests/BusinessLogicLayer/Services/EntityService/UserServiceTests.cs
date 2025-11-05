@@ -47,31 +47,31 @@ public class UserServiceTests
     #region GetUsers Tests
 
     [Fact]
-    public void GetUsers_WhenCalled_ShouldReturnAllUsers()
+    public async Task GetUsers_WhenCalled_ShouldReturnAllUsers()
     {
         // Arrange
         var expectedUsers = TestDataBuilder.BuildUserList();
         _userRepositoryMock.SetupGetUsers(expectedUsers);
 
         // Act
-        var result = _userService.GetUsers();
+        var result = await _userService.GetUsersAsync();
 
         // Assert
         result.Should().NotBeNull();
         result.Should().HaveCount(3);
         result.Should().BeEquivalentTo(expectedUsers);
-        _userRepositoryMock.Verify(x => x.Gets(), Times.Once);
+        _userRepositoryMock.Verify(x => x.GetsAsync(), Times.Once);
     }
 
     [Fact]
-    public void GetUsers_WhenNoUsers_ShouldReturnEmptyCollection()
+    public async Task GetUsers_WhenNoUsers_ShouldReturnEmptyCollection()
     {
         // Arrange
         var emptyUsers = new List<User>();
         _userRepositoryMock.SetupGetUsers(emptyUsers);
 
         // Act
-        var result = _userService.GetUsers();
+        var result = await _userService.GetUsersAsync();
 
         // Assert
         result.Should().NotBeNull();

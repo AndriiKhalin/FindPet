@@ -22,6 +22,7 @@ public class AdServiceTests
 
     // Repository mocks
     private readonly Mock<IAdRepository> _mockAdRepository;
+    private readonly Mock<IRedisCacheService> _mockCacheRedisService;
     private readonly Mock<IManageImage<Ad>> _mockImageService;
     private readonly Mock<ILoggerManager> _mockLogger;
     private readonly Mock<IMapper> _mockMapper;
@@ -29,7 +30,6 @@ public class AdServiceTests
     private readonly Mock<IPetRepository> _mockPetRepository;
     private readonly Mock<IUnitOfWork> _mockUnitOfWork;
     private readonly Mock<IUserRepository<User>> _mockUserRepository;
-    private readonly Mock<IRedisCacheService> _mockCacheRedisService;
 
     public AdServiceTests()
     {
@@ -57,36 +57,36 @@ public class AdServiceTests
     #region GetAds Tests
 
     [Fact]
-    public void GetAds_ShouldReturnAllAds()
+    public async Task GetAds_ShouldReturnAllAds()
     {
         // Arrange
         var expectedAds = TestDataBuilder.BuildAdList();
-        _mockAdRepository.Setup(x => x.Gets()).Returns(expectedAds);
+        _mockAdRepository.Setup(x => x.GetsAsync()).ReturnsAsync(expectedAds);
 
         // Act
-        var result = _adService.GetAds();
+        var result = await _adService.GetAdsAsync();
 
         // Assert
         Assert.NotNull(result);
         Assert.Equal(expectedAds.Count, result.Count());
         Assert.Equal(expectedAds, result);
-        _mockAdRepository.Verify(x => x.Gets(), Times.Once);
+        _mockAdRepository.Verify(x => x.GetsAsync(), Times.Once);
     }
 
     [Fact]
-    public void GetAds_ShouldReturnEmptyList_WhenNoAdsExist()
+    public async Task GetAds_ShouldReturnEmptyList_WhenNoAdsExist()
     {
         // Arrange
         var emptyAdList = new List<Ad>();
-        _mockAdRepository.Setup(x => x.Gets()).Returns(emptyAdList);
+        _mockAdRepository.Setup(x => x.GetsAsync()).ReturnsAsync(emptyAdList);
 
         // Act
-        var result = _adService.GetAds();
+        var result = await _adService.GetAdsAsync();
 
         // Assert
         Assert.NotNull(result);
         Assert.Empty(result);
-        _mockAdRepository.Verify(x => x.Gets(), Times.Once);
+        _mockAdRepository.Verify(x => x.GetsAsync(), Times.Once);
     }
 
     #endregion

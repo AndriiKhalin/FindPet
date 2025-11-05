@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using FindPet.BusinessLogicLayer.Interfaces.ICacheService;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
@@ -19,9 +18,9 @@ public class UserService(
 )
     : IUserService
 {
-    public IEnumerable<User> GetUsers()
+    public async Task<IEnumerable<User>> GetUsersAsync()
     {
-        return unitOfWorkRep.User.Gets();
+        return await unitOfWorkRep.User.GetsAsync();
     }
 
     public async Task<User?> GetUserByIdAsync(Guid userId)

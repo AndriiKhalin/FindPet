@@ -1,15 +1,16 @@
-﻿using FindPet.BusinessLogicLayer.Interfaces.ICacheService;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using FindPet.BusinessLogicLayer.Interfaces.ICacheService;
 using FindPet.Domain.Interfaces.ILoggerService;
 using StackExchange.Redis;
-using System.Text.Json;
 
 namespace FindPet.BusinessLogicLayer.Services.CacheService;
 
 public class RedisCacheService : IRedisCacheService
 {
-    private readonly IConnectionMultiplexer _redis;
-    private readonly ILoggerManager _logger;
     private readonly JsonSerializerOptions _jsonOptions;
+    private readonly ILoggerManager _logger;
+    private readonly IConnectionMultiplexer _redis;
 
     public RedisCacheService(IConnectionMultiplexer redis, ILoggerManager logger)
     {
@@ -20,24 +21,19 @@ public class RedisCacheService : IRedisCacheService
         {
             PropertyNameCaseInsensitive = true,
             WriteIndented = false,
-            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
     }
-    private IDatabase GetDatabase()
-    {
-        try
-        {
-            return _redis.GetDatabase();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"Failed to get Redis database: {ex.Message}");
-            throw new InvalidOperationException("Redis connection unavailable", ex);
-        }
-    }
+
     //IServer? GetServer() => redis.GetServers().LastOrDefault();
     public async Task SetValueAsync<T>(string key, T value, TimeSpan expiration)
     {
+        if (!IsConnected())
+        {
+            _logger.LogDebug($"Cache set skipped for key: {key} (Redis not available)");
+            return;
+        }
+
         if (string.IsNullOrWhiteSpace(key))
             throw new ArgumentException("Cache key cannot be null or empty", nameof(key));
 
@@ -55,13 +51,10 @@ public class RedisCacheService : IRedisCacheService
             var success = await db.StringSetAsync(key, json, expiration);
 
             if (success)
-            {
-                _logger.LogDebug($"Successfully cached data for key: {key} with expiration: {expiration.TotalMinutes} minutes");
-            }
+                _logger.LogDebug(
+                    $"Successfully cached data for key: {key} with expiration: {expiration.TotalMinutes} minutes");
             else
-            {
                 _logger.LogWarn($"Failed to cache data for key: {key}");
-            }
         }
         catch (RedisException ex)
         {
@@ -77,8 +70,14 @@ public class RedisCacheService : IRedisCacheService
         }
     }
 
-    public async Task<T> GetValueAsync<T>(string key)
+    public async Task<T> GetValueAsync<T>(string key, TimeSpan slidingExpiration)
     {
+        if (!IsConnected())
+        {
+            _logger.LogDebug($"Cache get skipped for key: {key} (Redis not available)");
+            return default;
+        }
+
         if (string.IsNullOrWhiteSpace(key))
             throw new ArgumentException("Cache key cannot be null or empty", nameof(key));
 
@@ -93,6 +92,7 @@ public class RedisCacheService : IRedisCacheService
                 return default;
             }
 
+            await RefreshExpirationAsync(key, slidingExpiration);
             var result = JsonSerializer.Deserialize<T>(data!, _jsonOptions);
             _logger.LogDebug($"Cache hit for key: {key}");
 
@@ -118,6 +118,12 @@ public class RedisCacheService : IRedisCacheService
 
     public async Task<T> GetValueOrInitializeAsync<T>(string key, Func<Task<T>> functionToObtain, TimeSpan duration)
     {
+        if (!IsConnected())
+        {
+            _logger.LogDebug($"Cache get and set skipped for key: {key}");
+            return await functionToObtain.Invoke();
+        }
+
         if (string.IsNullOrWhiteSpace(key))
             throw new ArgumentException("Cache key cannot be null or empty", nameof(key));
 
@@ -126,12 +132,9 @@ public class RedisCacheService : IRedisCacheService
 
         try
         {
-            var cachedValue = await GetValueAsync<T>(key);
+            var cachedValue = await GetValueAsync<T>(key, duration);
 
-            if (cachedValue != null && !EqualityComparer<T>.Default.Equals(cachedValue, default))
-            {
-                return cachedValue;
-            }
+            if (cachedValue != null && !EqualityComparer<T>.Default.Equals(cachedValue, default)) return cachedValue;
 
             // Cache miss - execute function
             _logger.LogDebug($"Cache miss for key: {key}, fetching from source");
@@ -139,9 +142,7 @@ public class RedisCacheService : IRedisCacheService
 
             // Cache the result if not null
             if (value != null && !EqualityComparer<T>.Default.Equals(value, default))
-            {
                 await SetValueAsync(key, value, duration);
-            }
 
             return value;
         }
@@ -155,6 +156,12 @@ public class RedisCacheService : IRedisCacheService
 
     public async Task RemoveAsync(string key)
     {
+        if (!IsConnected())
+        {
+            _logger.LogDebug($"Cache removal skipped for key: {key} (Redis not available)");
+            return;
+        }
+
         if (string.IsNullOrWhiteSpace(key))
             throw new ArgumentException("Cache key cannot be null or empty", nameof(key));
 
@@ -164,13 +171,9 @@ public class RedisCacheService : IRedisCacheService
             var removed = await db.KeyDeleteAsync(key);
 
             if (removed)
-            {
                 _logger.LogDebug($"Successfully removed cache key: {key}");
-            }
             else
-            {
                 _logger.LogDebug($"Cache key not found for removal: {key}");
-            }
         }
         catch (RedisException ex)
         {
@@ -184,6 +187,12 @@ public class RedisCacheService : IRedisCacheService
 
     public async Task<bool> ExistsAsync(string key)
     {
+        if (!IsConnected())
+        {
+            _logger.LogDebug($"Cache existence check skipped for key: {key} (Redis not available)");
+            return false;
+        }
+
         if (string.IsNullOrWhiteSpace(key))
             throw new ArgumentException("Cache key cannot be null or empty", nameof(key));
 
@@ -204,8 +213,21 @@ public class RedisCacheService : IRedisCacheService
         }
     }
 
+    private IDatabase GetDatabase()
+    {
+        try
+        {
+            return _redis.GetDatabase();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Failed to get Redis database: {ex.Message}");
+            throw new InvalidOperationException("Redis connection unavailable", ex);
+        }
+    }
+
     /// <summary>
-    /// Gets Redis connection health status
+    ///     Gets Redis connection health status
     /// </summary>
     public bool IsConnected()
     {
@@ -215,6 +237,40 @@ public class RedisCacheService : IRedisCacheService
         }
         catch
         {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Refreshes the expiration time of an existing cache key (Sliding Expiration)
+    /// </summary>
+    private async Task<bool> RefreshExpirationAsync(string key, TimeSpan duration)
+    {
+        if (string.IsNullOrWhiteSpace(key))
+            throw new ArgumentException("Cache key cannot be null or empty", nameof(key));
+
+        try
+        {
+            var db = GetDatabase();
+
+            // Check if key exists
+            if (!await db.KeyExistsAsync(key))
+            {
+                _logger.LogDebug($"Key does not exist for refresh: {key}");
+                return false;
+            }
+
+            // Refresh expiration
+            var success = await db.KeyExpireAsync(key, duration);
+
+            if (success)
+                _logger.LogDebug($"Successfully refreshed expiration for key: {key}");
+
+            return success;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error refreshing expiration for key '{key}': {ex.Message}");
             return false;
         }
     }

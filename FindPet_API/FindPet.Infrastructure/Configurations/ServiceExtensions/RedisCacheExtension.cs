@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 
@@ -33,11 +32,11 @@ public static class RedisCacheExtension
 
                 // Production-ready settings
                 configurationOptions.AbortOnConnectFail = false; // Continue if Redis is down
-                configurationOptions.ConnectTimeout = 10000;     // 10 seconds
-                configurationOptions.SyncTimeout = 5000;         // 5 seconds
-                configurationOptions.AsyncTimeout = 5000;        // 5 seconds
-                configurationOptions.ConnectRetry = 3;           // Retry 3 times
-                configurationOptions.KeepAlive = 60;             // Keep connection alive
+                configurationOptions.ConnectTimeout = 10000; // 10 seconds
+                configurationOptions.SyncTimeout = 5000; // 5 seconds
+                configurationOptions.AsyncTimeout = 5000; // 5 seconds
+                configurationOptions.ConnectRetry = 3; // Retry 3 times
+                configurationOptions.KeepAlive = 60; // Keep connection alive
                 configurationOptions.ReconnectRetryPolicy = new ExponentialRetry(5000); // Exponential backoff
 
                 // Logging
@@ -56,12 +55,10 @@ public static class RedisCacheExtension
                     logger.LogInformation("Redis connection restored");
                 };
 
-                multiplexer.ErrorMessage += (sender, args) =>
-                {
-                    logger.LogError($"Redis error: {args.Message}");
-                };
+                multiplexer.ErrorMessage += (sender, args) => { logger.LogError($"Redis error: {args.Message}"); };
 
                 logger.LogInformation("Redis connection established successfully");
+
                 return multiplexer;
             }
             catch (RedisConnectionException ex)

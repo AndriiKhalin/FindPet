@@ -4,7 +4,7 @@ namespace FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 
 public interface IBaseRepository<T> where T : class
 {
-    IEnumerable<T> Gets();
+    Task<IEnumerable<T>> GetsAsync();
 
     Task<T?> GetAsync(Guid entityId);
 

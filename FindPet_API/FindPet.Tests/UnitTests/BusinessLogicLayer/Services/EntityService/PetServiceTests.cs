@@ -102,7 +102,7 @@ public class PetServiceTests
 
         // Act
         var stopwatch = Stopwatch.StartNew();
-        var result = _petService.GetPetsAsync();
+        var result = await _petService.GetPetsAsync();
         stopwatch.Stop();
 
         // Assert
@@ -131,35 +131,35 @@ public class PetServiceTests
     #region GetPets Tests
 
     [Fact]
-    public void GetPets_ShouldReturnAllPets_WhenCalled()
+    public async Task GetPets_ShouldReturnAllPets_WhenCalled()
     {
         // Arrange
         var pets = TestDataBuilder.BuildPetList();
         _mockPetRepository.SetupGetPets(pets);
 
         // Act
-        var result = _petService.GetPetsAsync();
+        var result = await _petService.GetPetsAsync();
 
         // Assert
         Assert.NotNull(result);
         Assert.Equal(3, result.Count());
         Assert.Equal(pets, result);
-        _mockPetRepository.Verify(x => x.Gets(), Times.Once);
+        _mockPetRepository.Verify(x => x.GetsAsync(), Times.Once);
     }
 
     [Fact]
-    public void GetPets_ShouldReturnEmptyCollection_WhenNoPetsExist()
+    public async Task GetPets_ShouldReturnEmptyCollection_WhenNoPetsExist()
     {
         // Arrange
         _mockPetRepository.SetupGetPets(new List<Pet>());
 
         // Act
-        var result = _petService.GetPetsAsync();
+        var result = await _petService.GetPetsAsync();
 
         // Assert
         Assert.NotNull(result);
         Assert.Empty(result);
-        _mockPetRepository.Verify(x => x.Gets(), Times.Once);
+        _mockPetRepository.Verify(x => x.GetsAsync(), Times.Once);
     }
 
     #endregion

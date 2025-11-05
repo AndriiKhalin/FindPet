@@ -3,7 +3,7 @@
 public interface IRedisCacheService
 {
     Task SetValueAsync<T>(string key, T value, TimeSpan expiration);
-    Task<T> GetValueAsync<T>(string key);
+    Task<T> GetValueAsync<T>(string key, TimeSpan slidingExpiration);
 
     Task<T> GetValueOrInitializeAsync<T>(string key, Func<Task<T>> functionToObtain, TimeSpan duration);
     Task RemoveAsync(string key);

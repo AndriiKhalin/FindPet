@@ -1,7 +1,6 @@
 ﻿using FindPet.DataAccessLayer.Data;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using FindPet.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace FindPet.DataAccessLayer.Repositories.EntityRepository;
 
@@ -21,6 +20,6 @@ public class UserRepository : BaseRepository<User>, IUserRepository<User>
 
     public async Task<User?> GetUserAsync(string userName)
     {
-        return await GetByCondition(x => x.Name == userName).FirstOrDefaultAsync();
+        return await GetSingleByConditionAsync(x => x.Name == userName);
     }
 }

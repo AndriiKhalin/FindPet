@@ -2,7 +2,6 @@
 using FindPet.DataAccessLayer.Data;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using FindPet.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace FindPet.DataAccessLayer.Repositories.EntityRepository;
 
@@ -15,15 +14,14 @@ public class BaseRepository<T> : HelperBaseRepository<T>, IBaseRepository<T> whe
         _context = context;
     }
 
-    public IEnumerable<T> Gets()
+    public async Task<IEnumerable<T>> GetsAsync()
     {
-        return GetAll();
+        return await GetAllAsync();
     }
 
     public async Task<T?> GetAsync(Guid Id)
     {
-        var query = GetByCondition(x => x.Id == Id);
-        return await query.FirstOrDefaultAsync();
+        return await GetSingleByConditionAsync(x => x.Id == Id);
     }
 
     public async Task<bool> IsExistAsync(Guid Id)

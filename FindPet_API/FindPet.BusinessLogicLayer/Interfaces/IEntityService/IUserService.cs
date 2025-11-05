@@ -5,7 +5,7 @@ namespace FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 
 public interface IUserService
 {
-    IEnumerable<User> GetUsers();
+    Task<IEnumerable<User>> GetUsersAsync();
 
     Task<User?> GetUserByIdAsync(Guid UserId);
 

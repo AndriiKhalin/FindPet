@@ -13,8 +13,6 @@ public class GetAllPetsQueryHandler(IPetService petService, IMapper mapper)
     {
         var pets = await petService.GetPetsAsync();
 
-        var petsDto = mapper.Map<IEnumerable<PetDto>>(pets);
-
-        return petsDto;
+        return mapper.Map<IEnumerable<PetDto>>(pets);
     }
 }

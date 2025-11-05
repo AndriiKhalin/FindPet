@@ -2,15 +2,6 @@
 
 public static class CacheKeys
 {
-    // Cache durations
-    public static class Duration
-    {
-        public static readonly TimeSpan Short = TimeSpan.FromMinutes(5);
-        public static readonly TimeSpan Medium = TimeSpan.FromMinutes(15);
-        public static readonly TimeSpan Long = TimeSpan.FromHours(1);
-        public static readonly TimeSpan VeryLong = TimeSpan.FromHours(24);
-    }
-
     // Pet-related keys
     public const string AllPets = "pets:all";
     public const string PetById = "pet:{0}";
@@ -31,9 +22,37 @@ public static class CacheKeys
     public const string AllRoles = "roles:all";
 
     // Helper methods
-    public static string GetPetByIdKey(Guid petId) => string.Format(PetById, petId);
-    public static string GetPetsByUserKey(Guid userId) => string.Format(PetsByUser, userId);
-    public static string GetAdByIdKey(Guid adId) => string.Format(AdById, adId);
-    public static string GetAdsByUserKey(Guid userId) => string.Format(AdsByUser, userId);
-    public static string GetUserByIdKey(Guid userId) => string.Format(UserById, userId);
+    public static string GetPetByIdKey(Guid petId)
+    {
+        return string.Format(PetById, petId);
+    }
+
+    public static string GetPetsByUserKey(Guid userId)
+    {
+        return string.Format(PetsByUser, userId);
+    }
+
+    public static string GetAdByIdKey(Guid adId)
+    {
+        return string.Format(AdById, adId);
+    }
+
+    public static string GetAdsByUserKey(Guid userId)
+    {
+        return string.Format(AdsByUser, userId);
+    }
+
+    public static string GetUserByIdKey(Guid userId)
+    {
+        return string.Format(UserById, userId);
+    }
+
+    // Cache durations
+    public static class Duration
+    {
+        public static readonly TimeSpan Short = TimeSpan.FromMinutes(5);
+        public static readonly TimeSpan Medium = TimeSpan.FromMinutes(15);
+        public static readonly TimeSpan Long = TimeSpan.FromHours(1);
+        public static readonly TimeSpan VeryLong = TimeSpan.FromHours(24);
+    }
 }

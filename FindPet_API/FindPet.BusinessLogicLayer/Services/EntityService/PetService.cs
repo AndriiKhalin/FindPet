@@ -16,6 +16,7 @@ namespace FindPet.BusinessLogicLayer.Services.EntityService;
 
 public class PetService : IPetService
 {
+    private readonly IRedisCacheService _cache;
     private readonly IWebHostEnvironment _hostingEnvironment;
     private readonly ILoggerManager _logger;
     private readonly IManageImage<Pet> _manageImage;
@@ -23,7 +24,6 @@ public class PetService : IPetService
     private readonly IMediaStorageService _mediaStorageService;
     private readonly IMLService _mlService;
     private readonly IUnitOfWork _unitOfWorkRep;
-    private readonly IRedisCacheService _cache;
 
     public PetService(IUnitOfWork unitOfWorkRep,
         IMapper mapper,
@@ -44,13 +44,31 @@ public class PetService : IPetService
         _cache = cache;
     }
 
-    public Task<IEnumerable<Pet>> GetPetsAsync()
+    public async Task<IEnumerable<Pet>> GetPetsAsync()
     {
-        return _cache.GetValueOrInitializeAsync(
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+        var result = await _cache.GetValueOrInitializeAsync(
             CacheKeys.AllPets,
-            async () => _unitOfWorkRep.Pet.Gets(),
+            async () =>
+            {
+                _logger.LogInfo("Fetching pets from database...");
+                var dbStopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+                var pets = await _unitOfWorkRep.Pet.GetsAsync();
+
+                dbStopwatch.Stop();
+                _logger.LogInfo($"Database fetch took: {dbStopwatch.ElapsedMilliseconds}ms");
+
+                return pets;
+            },
             CacheKeys.Duration.Short
         );
+
+        stopwatch.Stop();
+        _logger.LogInfo($"GetPetsAsync total time: {stopwatch.ElapsedMilliseconds}ms");
+
+        return result;
     }
 
     public async Task<Pet?> GetPetByIdAsync(Guid petId)
@@ -71,7 +89,8 @@ public class PetService : IPetService
             throw new NotFoundException("Pet", petId);
         }
 
-        return pet; ;
+        return pet;
+        ;
     }
 
     //public async Task<IEnumerable<Ad>?> GetAdsByPetAsync(Guid petId)
@@ -271,15 +290,9 @@ public class PetService : IPetService
         await _cache.RemoveAsync(CacheKeys.RecentPets);
 
         // Invalidate specific pet cache
-        if (petId.HasValue)
-        {
-            await _cache.RemoveAsync(CacheKeys.GetPetByIdKey(petId.Value));
-        }
+        if (petId.HasValue) await _cache.RemoveAsync(CacheKeys.GetPetByIdKey(petId.Value));
 
         // Invalidate user-specific pet caches
-        if (userId.HasValue)
-        {
-            await _cache.RemoveAsync(CacheKeys.GetPetsByUserKey(userId.Value));
-        }
+        if (userId.HasValue) await _cache.RemoveAsync(CacheKeys.GetPetsByUserKey(userId.Value));
     }
 }

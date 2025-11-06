@@ -235,14 +235,15 @@ public class RedisCacheService : IRedisCacheService
         {
             return _redis.IsConnected;
         }
-        catch
+        catch (Exception ex)
         {
+            _logger.LogError($"Error checking Redis connection: {ex.Message}");
             return false;
         }
     }
 
     /// <summary>
-    /// Refreshes the expiration time of an existing cache key (Sliding Expiration)
+    ///     Refreshes the expiration time of an existing cache key (Sliding Expiration)
     /// </summary>
     private async Task<bool> RefreshExpirationAsync(string key, TimeSpan duration)
     {

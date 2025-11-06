@@ -38,6 +38,20 @@ public class PetServiceTests
         _mockUnitOfWork.Setup(x => x.User).Returns(_mockUserRepository.Object);
         _mockHostingEnvironment.Setup(x => x.WebRootPath).Returns("/test/wwwroot");
 
+        _mockCacheRedisService
+            .Setup(x => x.GetValueOrInitializeAsync(
+                It.IsAny<string>(),
+                It.IsAny<Func<Task<Pet?>>>(),
+                It.IsAny<TimeSpan>()))
+            .Returns<string, Func<Task<Pet?>>, TimeSpan>(async (key, func, duration) => await func());
+
+        _mockCacheRedisService
+            .Setup(x => x.GetValueOrInitializeAsync(
+                It.IsAny<string>(),
+                It.IsAny<Func<Task<IEnumerable<Pet>>>>(),
+                It.IsAny<TimeSpan>()))
+            .Returns<string, Func<Task<IEnumerable<Pet>>>, TimeSpan>(async (key, func, duration) => await func());
+
         _petService = new PetService(
             _mockUnitOfWork.Object,
             _mockMapper.Object,
@@ -173,7 +187,6 @@ public class PetServiceTests
         var petId = Guid.NewGuid();
         var pet = TestDataBuilder.BuildBasicPet(petId);
 
-        _mockPetRepository.SetupPetExists(petId, true);
         _mockPetRepository.SetupGetPet(petId, pet);
 
         // Act
@@ -182,7 +195,6 @@ public class PetServiceTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal(petId, result.Id);
-        _mockPetRepository.Verify(x => x.IsExistAsync(petId), Times.Once);
         _mockPetRepository.Verify(x => x.GetAsync(petId), Times.Once);
     }
 
@@ -197,7 +209,6 @@ public class PetServiceTests
 
         Assert.Equal("PetId must be a valid non-empty GUID", exception.Message);
         _mockPetRepository.Verify(r => r.GetAsync(It.IsAny<Guid>()), Times.Never);
-        _mockPetRepository.Verify(x => x.IsExistAsync(It.IsAny<Guid>()), Times.Never);
     }
 
     [Fact]
@@ -205,15 +216,13 @@ public class PetServiceTests
     {
         // Arrange
         var petId = Guid.NewGuid();
-        _mockPetRepository.SetupPetExists(petId, false);
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<NotFoundException>(() => _petService.GetPetByIdAsync(petId));
 
         Assert.Contains("Pet", exception.Message);
         Assert.Contains(petId.ToString(), exception.Message);
-        _mockPetRepository.Verify(r => r.IsExistAsync(petId), Times.Once);
-        _mockPetRepository.Verify(r => r.GetAsync(It.IsAny<Guid>()), Times.Never);
+        _mockPetRepository.Verify(r => r.GetAsync(It.IsAny<Guid>()), Times.Once);
         _mockLogger.VerifyLogError($"Pet with id: {petId}, hasn't been found in db.");
     }
 
@@ -275,7 +284,7 @@ public class PetServiceTests
         await _petService.DeletePetAsync(petId);
 
         // Assert
-        _mockPetRepository.Verify(r => r.IsExistAsync(petId), Times.AtLeast(2));
+        _mockPetRepository.Verify(r => r.IsExistAsync(petId), Times.Once);
         _mockMediaStorageService.Verify(x => x.DeleteFileAsync(pet.Photo), Times.Once);
         _mockPetRepository.Verify(x => x.DeleteAsync(petId), Times.Once);
         _mockUnitOfWork.Verify(x => x.SaveAsync(), Times.Once);
@@ -329,7 +338,7 @@ public class PetServiceTests
         await _petService.DeletePetAsync(petId);
 
         // Assert
-        _mockPetRepository.Verify(r => r.IsExistAsync(petId), Times.AtLeast(2));
+        _mockPetRepository.Verify(r => r.IsExistAsync(petId), Times.Once);
         _mockPetRepository.Verify(r => r.DeleteAsync(petId), Times.Once);
         _mockMediaStorageService.Verify(i => i.DeleteFileAsync(null!), Times.Never); // Will be called with null
         _mockUnitOfWork.Verify(u => u.SaveAsync(), Times.Once);
@@ -356,7 +365,7 @@ public class PetServiceTests
         await _petService.UpdatePetAsync(petId, updateDto);
 
         // Assert
-        _mockPetRepository.Verify(r => r.IsExistAsync(petId), Times.AtLeast(2));
+        _mockPetRepository.Verify(r => r.IsExistAsync(petId), Times.Once);
         _mockMapper.Verify(x => x.Map(updateDto, existingPet), Times.Once);
         _mockPetRepository.Verify(x => x.UpdateAsync(existingPet), Times.Once);
         _mockUnitOfWork.Verify(x => x.SaveAsync(), Times.Once);
@@ -382,7 +391,7 @@ public class PetServiceTests
         await _petService.UpdatePetAsync(petId, updateDto);
 
         // Assert
-        _mockPetRepository.Verify(r => r.IsExistAsync(petId), Times.AtLeast(2));
+        _mockPetRepository.Verify(r => r.IsExistAsync(petId), Times.Once);
         _mockPetRepository.Verify(r => r.UpdateAsync(existingPet), Times.Once);
         _mockUnitOfWork.Verify(u => u.SaveAsync(), Times.Once);
         _mockMediaStorageService.Verify(x => x.DeleteFileAsync(existingPet.Photo), Times.Once);
@@ -407,7 +416,7 @@ public class PetServiceTests
         await _petService.UpdatePetAsync(petId, updateDto);
 
         // Assert
-        _mockPetRepository.Verify(r => r.IsExistAsync(petId), Times.AtLeast(2));
+        _mockPetRepository.Verify(r => r.IsExistAsync(petId), Times.Once);
         _mockManageImage.Verify(i => i.DeletePhoto(It.IsAny<string>()), Times.Never);
         _mockManageImage.Verify(i => i.UploadPhotoAsync(It.IsAny<string>(), It.IsAny<Guid>()), Times.Never);
         _mockPetRepository.Verify(r => r.UpdateAsync(pet), Times.Once);

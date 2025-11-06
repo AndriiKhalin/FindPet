@@ -72,7 +72,6 @@ public class PetService : IPetService
         }
 
         return pet;
-        ;
     }
 
     //public async Task<IEnumerable<Ad>?> GetAdsByPetAsync(Guid petId)

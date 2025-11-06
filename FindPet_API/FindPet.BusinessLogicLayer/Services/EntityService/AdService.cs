@@ -44,6 +44,7 @@ public class AdService : IAdService
 
     public async Task<Ad?> GetAdAsync(Guid adId)
     {
+        //TODO: Check How to handle when we have incorrect Guid and cannot find Ad
         if (adId == Guid.Empty) throw new BadRequestException("AdId must be a valid non-empty GUID");
 
 

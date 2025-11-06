@@ -50,6 +50,21 @@ public class AdServiceTests
         _mockUnitOfWork.Setup(x => x.Pet).Returns(_mockPetRepository.Object);
         _mockUnitOfWork.Setup(x => x.User).Returns(_mockUserRepository.Object);
 
+        // Setup default cache behavior - always execute the factory function (simulating cache miss)
+        _mockCacheRedisService
+            .Setup(x => x.GetValueOrInitializeAsync(
+                It.IsAny<string>(),
+                It.IsAny<Func<Task<Ad?>>>(),
+                It.IsAny<TimeSpan>()))
+            .Returns<string, Func<Task<Ad?>>, TimeSpan>(async (key, func, duration) => await func());
+
+        _mockCacheRedisService
+            .Setup(x => x.GetValueOrInitializeAsync(
+                It.IsAny<string>(),
+                It.IsAny<Func<Task<IEnumerable<Ad>>>>(),
+                It.IsAny<TimeSpan>()))
+            .Returns<string, Func<Task<IEnumerable<Ad>>>, TimeSpan>(async (key, func, duration) => await func());
+
         _adService = new AdService(_mockUnitOfWork.Object, _mockMapper.Object, _mockImageService.Object,
             _mockLogger.Object, _mockMediaStorageService.Object, _mockCacheRedisService.Object);
     }
@@ -100,7 +115,6 @@ public class AdServiceTests
         var adId = Guid.NewGuid();
         var expectedAd = TestDataBuilder.BuildAd(adId);
 
-        _mockAdRepository.Setup(x => x.IsExistAsync(adId)).ReturnsAsync(true);
         _mockAdRepository.Setup(x => x.GetAsync(adId)).ReturnsAsync(expectedAd);
 
         // Act
@@ -110,7 +124,6 @@ public class AdServiceTests
         Assert.NotNull(result);
         Assert.Equal(expectedAd, result);
         Assert.Equal(adId, result.Id);
-        _mockAdRepository.Verify(x => x.IsExistAsync(adId), Times.Once);
         _mockAdRepository.Verify(x => x.GetAsync(adId), Times.Once);
     }
 
@@ -133,7 +146,6 @@ public class AdServiceTests
     {
         // Arrange
         var adId = Guid.NewGuid();
-        _mockAdRepository.Setup(x => x.IsExistAsync(adId)).ReturnsAsync(false);
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<NotFoundException>(() => _adService.GetAdAsync(adId));
@@ -142,8 +154,7 @@ public class AdServiceTests
 
         Assert.Equal($"Ad with ID '{adId}' was not found", exception.Message);
         _mockLogger.VerifyLogError($"Ad with id: {adId}, hasn't been found in db.");
-        _mockAdRepository.Verify(x => x.IsExistAsync(adId), Times.Once);
-        _mockAdRepository.Verify(x => x.GetAsync(It.IsAny<Guid>()), Times.Never);
+        _mockAdRepository.Verify(x => x.GetAsync(It.IsAny<Guid>()), Times.Once);
     }
 
     #endregion
@@ -200,8 +211,14 @@ public class AdServiceTests
         await _adService.DeleteAdAsync(adId);
 
         // Assert
-        _mockAdRepository.Verify(x => x.IsExistAsync(adId), Times.AtLeast(2));
+        _mockAdRepository.Verify(x => x.IsExistAsync(adId), Times.Once);
         _mockAdRepository.Verify(x => x.GetAsync(adId), Times.Once);
+        _mockCacheRedisService.Verify(
+            x => x.GetValueOrInitializeAsync(
+                It.IsAny<string>(),
+                It.IsAny<Func<Task<Ad?>>>(),
+                It.IsAny<TimeSpan>()),
+            Times.Once);
         _mockMediaStorageService.Verify(x => x.DeleteFileAsync(existingAd.Photo), Times.Once);
         _mockAdRepository.Verify(x => x.DeleteAsync(adId), Times.Once);
         _mockUnitOfWork.Verify(x => x.SaveAsync(), Times.Once);
@@ -252,7 +269,7 @@ public class AdServiceTests
         await _adService.UpdateAdAsync(adId, updateDto);
 
         // Assert
-        _mockAdRepository.Verify(x => x.IsExistAsync(adId), Times.AtLeast(2));
+        _mockAdRepository.Verify(x => x.IsExistAsync(adId), Times.Once);
         _mockAdRepository.Verify(x => x.GetAsync(adId), Times.Once);
         _mockMediaStorageService.Verify(x => x.DeleteFileAsync("old-photo.jpg"), Times.Once);
 
@@ -461,13 +478,26 @@ public class AdServiceTests
 
         // Act - Simulate concurrent reads
         var tasks = new List<Task<Ad?>>();
-        for (var i = 0; i < 10; i++) tasks.Add(_adService.GetAdAsync(adId));
+        for (var i = 0; i < 10; i++)
+            tasks.Add(_adService.GetAdAsync(adId));
 
         var results = await Task.WhenAll(tasks);
 
         // Assert
-        Assert.All(results, result => Assert.Equal(ad, result));
-        _mockAdRepository.Verify(x => x.GetAsync(adId), Times.Exactly(10));
+        Assert.All(results, result =>
+        {
+            Assert.NotNull(result);
+            Assert.Equal(ad.Id, result.Id);
+        });
+
+        // Verify repository was called (may be less than 10 times due to caching behavior)
+        _mockAdRepository.Verify(x => x.GetAsync(adId), Times.AtLeastOnce());
+        _mockCacheRedisService.Verify(
+            x => x.GetValueOrInitializeAsync(
+                It.IsAny<string>(),
+                It.IsAny<Func<Task<Ad?>>>(),
+                It.IsAny<TimeSpan>()),
+            Times.Exactly(10));
     }
 
     #endregion

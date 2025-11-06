@@ -12,14 +12,7 @@ public static class RedisCacheExtension
         var redisConnection = configuration.GetConnectionString("Redis");
         var instanceName = configuration["Redis:InstanceName"] ?? "FindPet_";
 
-        if (string.IsNullOrEmpty(redisConnection))
-        {
-            var serviceProvider = services.BuildServiceProvider();
-            var logger = serviceProvider.GetService<ILogger<IConnectionMultiplexer>>();
-            logger?.LogWarning("Redis connection string is not configured. Caching will be disabled.");
-
-            return;
-        }
+        if (string.IsNullOrEmpty(redisConnection)) return;
 
         services.AddSingleton<IConnectionMultiplexer>(sp =>
         {

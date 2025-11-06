@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using FindPet.BusinessLogicLayer.Interfaces.ICacheService;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
 using FindPet.BusinessLogicLayer.Interfaces.IMLService;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
+using FindPet.Domain.Constants;
 using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
 using FindPet.Domain.Entities;
 using FindPet.Domain.Exceptions;
@@ -14,6 +16,7 @@ namespace FindPet.BusinessLogicLayer.Services.EntityService;
 
 public class PetService : IPetService
 {
+    private readonly IRedisCacheService _cache;
     private readonly IWebHostEnvironment _hostingEnvironment;
     private readonly ILoggerManager _logger;
     private readonly IManageImage<Pet> _manageImage;
@@ -28,8 +31,8 @@ public class PetService : IPetService
         IMLService mlService,
         ILoggerManager logger,
         IWebHostEnvironment hostingEnvironment,
-        IMediaStorageService mediaStorageService
-    )
+        IMediaStorageService mediaStorageService,
+        IRedisCacheService cache)
     {
         _unitOfWorkRep = unitOfWorkRep;
         _mapper = mapper;
@@ -38,23 +41,37 @@ public class PetService : IPetService
         _logger = logger;
         _hostingEnvironment = hostingEnvironment;
         _mediaStorageService = mediaStorageService;
+        _cache = cache;
     }
 
-    public IEnumerable<Pet> GetPets()
+    public async Task<IEnumerable<Pet>> GetPetsAsync()
     {
-        return _unitOfWorkRep.Pet.Gets();
+        return await _cache.GetValueOrInitializeAsync(
+            CacheKeys.AllPets,
+            async () => await _unitOfWorkRep.Pet.GetsAsync(),
+            CacheKeys.Duration.Short
+        );
     }
 
     public async Task<Pet?> GetPetByIdAsync(Guid petId)
     {
         if (petId == Guid.Empty) throw new BadRequestException("PetId must be a valid non-empty GUID");
-        if (!await PetExistsAsync(petId))
+
+        var cacheKey = CacheKeys.GetPetByIdKey(petId);
+
+        var pet = await _cache.GetValueOrInitializeAsync(
+            cacheKey,
+            async () => await _unitOfWorkRep.Pet.GetAsync(petId),
+            CacheKeys.Duration.Medium
+        );
+
+        if (pet == null)
         {
             _logger.LogError($"Pet with id: {petId}, hasn't been found in db.");
             throw new NotFoundException("Pet", petId);
         }
 
-        return await _unitOfWorkRep.Pet.GetAsync(petId);
+        return pet;
     }
 
     //public async Task<IEnumerable<Ad>?> GetAdsByPetAsync(Guid petId)
@@ -116,8 +133,9 @@ public class PetService : IPetService
             await _mediaStorageService.DeleteFileAsync(petEntityForDelete.Photo);
 
         await _unitOfWorkRep.Pet.DeleteAsync(petId);
-
         await _unitOfWorkRep.SaveAsync();
+
+        await InvalidatePetCaches(petId, petEntityForDelete.UserId);
     }
 
     public async Task UpdatePetAsync(Guid petId, PetForUpdateDto pet)
@@ -143,16 +161,15 @@ public class PetService : IPetService
             pet.Photo != petEntity.Photo)
         {
             await _mediaStorageService.DeleteFileAsync(petEntity.Photo);
-
-            // Predict type for new photo
             petEntity.Type = await PredictPetTypeAsync(pet.Photo);
         }
 
         _mapper.Map(pet, petEntity);
 
         await _unitOfWorkRep.Pet.UpdateAsync(petEntity);
-
         await _unitOfWorkRep.SaveAsync();
+
+        await InvalidatePetCaches(petId, petEntity.UserId);
     }
 
     public async Task<Pet> CreatePetAsync(Guid userId, PetForCreateDto createPetDto)
@@ -178,8 +195,9 @@ public class PetService : IPetService
         pet.Type = await PredictPetTypeAsync(createPetDto.Photo);
 
         await _unitOfWorkRep.Pet.CreateAsync(pet);
-
         await _unitOfWorkRep.SaveAsync();
+
+        await InvalidatePetCaches(null, userId);
 
         return pet;
     }
@@ -244,5 +262,18 @@ public class PetService : IPetService
             _logger.LogError("Failed to predict pet type");
             return "Unknown";
         }
+    }
+
+    private async Task InvalidatePetCaches(Guid? petId, Guid? userId)
+    {
+        // Always invalidate list caches
+        await _cache.RemoveAsync(CacheKeys.AllPets);
+        await _cache.RemoveAsync(CacheKeys.RecentPets);
+
+        // Invalidate specific pet cache
+        if (petId.HasValue) await _cache.RemoveAsync(CacheKeys.GetPetByIdKey(petId.Value));
+
+        // Invalidate user-specific pet caches
+        if (userId.HasValue) await _cache.RemoveAsync(CacheKeys.GetPetsByUserKey(userId.Value));
     }
 }

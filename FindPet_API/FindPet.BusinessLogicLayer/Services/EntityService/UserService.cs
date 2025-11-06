@@ -18,9 +18,9 @@ public class UserService(
 )
     : IUserService
 {
-    public IEnumerable<User> GetUsers()
+    public async Task<IEnumerable<User>> GetUsersAsync()
     {
-        return unitOfWorkRep.User.Gets();
+        return await unitOfWorkRep.User.GetsAsync();
     }
 
     public async Task<User?> GetUserByIdAsync(Guid userId)

@@ -9,12 +9,10 @@ namespace FindPet.BusinessLogicLayer.CQRS.Handlers.QueryHandlers.Pet;
 public class GetAllPetsQueryHandler(IPetService petService, IMapper mapper)
     : IQueryHandler<GetAllPetsQuery, IEnumerable<PetDto>>
 {
-    public Task<IEnumerable<PetDto>> Handle(GetAllPetsQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<PetDto>> Handle(GetAllPetsQuery request, CancellationToken cancellationToken)
     {
-        var pets = petService.GetPets();
+        var pets = await petService.GetPetsAsync();
 
-        var petsDto = mapper.Map<IEnumerable<PetDto>>(pets);
-
-        return Task.FromResult(petsDto);
+        return mapper.Map<IEnumerable<PetDto>>(pets);
     }
 }

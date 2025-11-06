@@ -30,9 +30,27 @@ public abstract class HelperBaseRepository<T> : IHelperBaseRepository<T> where T
         return _context.Set<T>().Where(expression).AsNoTracking();
     }
 
+    public async Task<IEnumerable<T>> GetByConditionAsync(Expression<Func<T, bool>> expression)
+    {
+        return await _context.Set<T>().Where(expression).AsNoTracking().ToListAsync();
+    }
+
+    public async Task<T?> GetSingleByConditionAsync(Expression<Func<T, bool>> expression)
+    {
+        return await _context.Set<T>()
+            .Where(expression)
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
+    }
+
     public IQueryable<T> GetAll()
     {
         return _context.Set<T>().AsNoTracking();
+    }
+
+    public async Task<IEnumerable<T>> GetAllAsync()
+    {
+        return await _context.Set<T>().AsNoTracking().ToListAsync();
     }
 
     public async Task UpdateAsync(T entity)

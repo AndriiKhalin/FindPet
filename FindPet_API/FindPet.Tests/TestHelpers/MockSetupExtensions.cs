@@ -39,7 +39,7 @@ public static class MockSetupExtensions
 
         var mockUserRepo = new Mock<IUserRepository<User>>();
 
-        if (users != null) mockUserRepo.Setup(r => r.Gets()).Returns(users);
+        if (users != null) mockUserRepo.Setup(r => r.GetsAsync()).ReturnsAsync(users);
 
         if (singleUser != null)
         {
@@ -304,7 +304,7 @@ public static class MockSetupExtensions
     public static Mock<IBaseRepository<T>> SetupGets<T>(this Mock<IBaseRepository<T>> mockRepo, List<T> entities)
         where T : class
     {
-        mockRepo.Setup(repo => repo.Gets()).Returns(entities);
+        mockRepo.Setup(repo => repo.GetsAsync()).ReturnsAsync(entities);
         return mockRepo;
     }
 
@@ -396,7 +396,7 @@ public static class MockSetupExtensions
             var mock = new Mock<IBaseRepository<T>>();
 
             // Gets collection
-            mock.Setup(x => x.Gets()).Returns(data ?? new List<T>());
+            mock.Setup(x => x.GetsAsync()).ReturnsAsync(data ?? new List<T>());
 
             // Get single
             mock.Setup(x => x.GetAsync(It.IsAny<Guid>())).ReturnsAsync(getResult);
@@ -462,7 +462,7 @@ public static class MockSetupExtensions
     public static Mock<IUserRepository<User>> SetupGetUsers(this Mock<IUserRepository<User>> mockRepo,
         IEnumerable<User> users)
     {
-        mockRepo.Setup(repo => repo.Gets()).Returns(users);
+        mockRepo.Setup(repo => repo.GetsAsync()).ReturnsAsync(users);
         return mockRepo;
     }
 
@@ -583,7 +583,7 @@ public static class MockSetupExtensions
 
     public static Mock<IPetRepository> SetupGetPets(this Mock<IPetRepository> mockRepo, IEnumerable<Pet> pets)
     {
-        mockRepo.Setup(repo => repo.Gets()).Returns(pets);
+        mockRepo.Setup(repo => repo.GetsAsync()).ReturnsAsync(pets);
         return mockRepo;
     }
 
@@ -644,7 +644,7 @@ public static class MockSetupExtensions
 
             var mock = new Mock<IPetRepository>();
             var pets = TestDataBuilder.BuildPetList();
-            mock.Setup(x => x.Gets()).Returns(pets);
+            mock.Setup(x => x.GetsAsync()).ReturnsAsync(pets);
             return mock;
         }
 
@@ -678,7 +678,7 @@ public static class MockSetupExtensions
 
     public static Mock<IAdRepository> SetupGetAds(this Mock<IAdRepository> mockRepo, IEnumerable<Ad> ads)
     {
-        mockRepo.Setup(repo => repo.Gets()).Returns(ads);
+        mockRepo.Setup(repo => repo.GetsAsync()).ReturnsAsync(ads);
         return mockRepo;
     }
 
@@ -771,7 +771,7 @@ public static class MockSetupExtensions
 
     public static Mock<IUserService> SetupGetUsers(this Mock<IUserService> mockService, IEnumerable<User> users)
     {
-        mockService.Setup(s => s.GetUsers()).Returns(users);
+        mockService.Setup(s => s.GetUsersAsync()).ReturnsAsync(users);
         return mockService;
     }
 
@@ -817,7 +817,7 @@ public static class MockSetupExtensions
 
     public static Mock<IPetService> SetupGetPets(this Mock<IPetService> mockService, IEnumerable<Pet> pets)
     {
-        mockService.Setup(s => s.GetPets()).Returns(pets);
+        mockService.Setup(s => s.GetPetsAsync()).ReturnsAsync(pets);
         return mockService;
     }
 
@@ -856,7 +856,7 @@ public static class MockSetupExtensions
 
     public static Mock<IAdService> SetupGetAds(this Mock<IAdService> mockService, IEnumerable<Ad> ads)
     {
-        mockService.Setup(s => s.GetAds()).Returns(ads);
+        mockService.Setup(s => s.GetAdsAsync()).ReturnsAsync(ads);
         return mockService;
     }
 
@@ -893,7 +893,7 @@ public static class MockSetupExtensions
             users ??= TestDataBuilder.BuildUserList();
             var mock = new Mock<IUserService>();
 
-            mock.Setup(x => x.GetUsers()).Returns(users);
+            mock.Setup(x => x.GetUsersAsync()).ReturnsAsync(users);
             mock.Setup(x => x.GetUserByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync((Guid id) => users.FirstOrDefault(u => u.Id == id));
 
@@ -921,7 +921,7 @@ public static class MockSetupExtensions
             pets ??= TestDataBuilder.BuildPetList();
             var mock = new Mock<IPetService>();
 
-            mock.Setup(x => x.GetPets()).Returns(pets);
+            mock.Setup(x => x.GetPetsAsync()).ReturnsAsync(pets);
             mock.Setup(x => x.GetPetByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync((Guid id) => pets.FirstOrDefault(p => p.Id == id));
 
@@ -940,7 +940,7 @@ public static class MockSetupExtensions
             ads ??= TestDataBuilder.BuildAdList();
             var mock = new Mock<IAdService>();
 
-            mock.Setup(x => x.GetAds()).Returns(ads);
+            mock.Setup(x => x.GetAdsAsync()).ReturnsAsync(ads);
             mock.Setup(x => x.GetAdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync((Guid id) => ads.FirstOrDefault(a => a.Id == id));
 
@@ -1274,7 +1274,7 @@ public static class MockSetupExtensions
                 mock.Setup(r => r.GetUserAsync(It.IsAny<string>())).ThrowsAsync(new TException());
                 break;
             case "gets":
-                mock.Setup(r => r.Gets()).Throws(new TException());
+                mock.Setup(r => r.GetsAsync()).Throws(new TException());
                 break;
             case "createasync":
                 mock.Setup(r => r.CreateAsync(It.IsAny<User>())).ThrowsAsync(new TException());
@@ -1303,7 +1303,7 @@ public static class MockSetupExtensions
                 mock.Setup(r => r.GetAsync(It.IsAny<Guid>())).ThrowsAsync(new TException());
                 break;
             case "gets":
-                mock.Setup(r => r.Gets()).Throws(new TException());
+                mock.Setup(r => r.GetsAsync()).Throws(new TException());
                 break;
             case "createasync":
                 mock.Setup(r => r.CreateAsync(It.IsAny<Pet>())).ThrowsAsync(new TException());

@@ -9,12 +9,10 @@ namespace FindPet.BusinessLogicLayer.CQRS.Handlers.QueryHandlers.Ad;
 public class GetAllAdsQueryHandler(IAdService adService, IMapper mapper)
     : IQueryHandler<GetAllAdsQuery, IEnumerable<AdDto>>
 {
-    public Task<IEnumerable<AdDto>> Handle(GetAllAdsQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<AdDto>> Handle(GetAllAdsQuery request, CancellationToken cancellationToken)
     {
-        var ads = adService.GetAds();
+        var ads = await adService.GetAdsAsync();
 
-        var adsDto = mapper.Map<IEnumerable<AdDto>>(ads);
-
-        return Task.FromResult(adsDto);
+        return mapper.Map<IEnumerable<AdDto>>(ads);
     }
 }

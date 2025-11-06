@@ -5,7 +5,7 @@ namespace FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 
 public interface IAdService
 {
-    IEnumerable<Ad> GetAds();
+    Task<IEnumerable<Ad>> GetAdsAsync();
 
     Task<Ad?> GetAdAsync(Guid adId);
 

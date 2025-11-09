@@ -13,6 +13,8 @@ public class FindPetDbContext(DbContextOptions<FindPetDbContext> options) : Iden
 
     public DbSet<Ad>? Ads { get; set; } = null!;
 
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         //modelBuilder.Entity<User>().UseTpcMappingStrategy();

@@ -23,6 +23,7 @@ public static class DataAccessLayerDI
         services.AddScoped<IPetRepository, PetRepository>();
         services.AddScoped<IAdRepository, AdRepository>();
         services.AddScoped<IUserRepository<User>, UserRepository>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         //services.AddScoped<IFinderRepository, FinderRepository>();
         //services.AddScoped<IOwnerRepository, OwnerRepository>();
     }

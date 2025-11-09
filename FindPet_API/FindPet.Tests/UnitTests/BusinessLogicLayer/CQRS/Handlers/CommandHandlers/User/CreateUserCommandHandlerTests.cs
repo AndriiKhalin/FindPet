@@ -227,7 +227,7 @@ public class CreateUserCommandHandlerTests
 
     #endregion
 
-    #region Cancellation Token Tests
+    #region Cancellation AccessToken Tests
 
     [Fact]
     public async Task Handle_WithCancellationToken_ShouldPassToService()

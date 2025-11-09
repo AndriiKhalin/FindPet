@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using FindPet.Domain.ValueObjects;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +11,12 @@ public static class JwtAuthenticationExtension
 {
     public static void AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        var jwtSection = configuration.GetSection("JWT");
+        var jwtSetting = configuration.GetSection("JwtSettings").Get<JwtSettings>();
+        if (jwtSetting == null)
+            throw new InvalidOperationException("JWT settings are not configured properly.");
+
+        services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+        services.AddSingleton(jwtSetting);
 
         services.AddAuthentication(opt =>
             {
@@ -28,10 +34,10 @@ public static class JwtAuthenticationExtension
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidAudience = jwtSection["ValidAudience"],
-                    ValidIssuer = jwtSection["ValidIssuer"],
+                    ValidAudience = jwtSetting.ValidAudience,
+                    ValidIssuer = jwtSetting.ValidIssuer,
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(jwtSection["Secret"]!))
+                        Encoding.UTF8.GetBytes(jwtSetting.Secret))
                 };
             });
     }

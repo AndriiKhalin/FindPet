@@ -30,7 +30,7 @@ public class GetAllUsersQueryHandlerTests
         _query = new GetAllUsersQuery();
     }
 
-    #region Cancellation Token Scenarios
+    #region Cancellation AccessToken Scenarios
 
     [Fact]
     public async Task Handle_WithCancelledToken_ShouldNotAffectSynchronousOperations()

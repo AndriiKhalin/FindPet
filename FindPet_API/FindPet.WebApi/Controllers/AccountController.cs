@@ -3,6 +3,7 @@ using FindPet.BusinessLogicLayer.CQRS.Commands.Account;
 using FindPet.BusinessLogicLayer.CQRS.Queries.Account;
 using FindPet.BusinessLogicLayer.Interfaces.IAuthService;
 using FindPet.Domain.DTOs.AuthDTOs;
+using FindPet.Domain.Exceptions;
 using FindPet.Domain.ValueObjects;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -14,12 +15,13 @@ namespace FindPet.WebApi.Controllers;
 [Route("api/[controller]")]
 public class AccountController(IMediator mediator, ITokenService tokenService) : ControllerBase
 {
-    private string GetRefreshTokenFromCookie => Request.Cookies["refreshToken"] ?? string.Empty;
-    private string GetClientIpAddress => HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
+    private string RefreshTokenFromCookie => Request.Cookies["refreshToken"] ?? string.Empty;
+    private string? CurrentUserId => User.FindFirstValue(ClaimTypes.NameIdentifier);
+
     // api/account/register
 
     /// <summary>
-    /// Register a new user
+    ///     Register a new user
     /// </summary>
     [AllowAnonymous]
     [HttpPost("register")]
@@ -37,7 +39,7 @@ public class AccountController(IMediator mediator, ITokenService tokenService) :
     //api/account/login
 
     /// <summary>
-    /// Login with email and password
+    ///     Login with email and password
     /// </summary>
     [AllowAnonymous]
     [HttpPost("login")]
@@ -49,11 +51,14 @@ public class AccountController(IMediator mediator, ITokenService tokenService) :
             return BadRequest(ModelState);
 
         var response = await mediator.Send(new LoginCommand(loginDto));
+
+        SetRefreshTokenCookie(response.RefreshToken!, response.RefreshTokenExpiration);
+
         return Ok(response);
     }
 
     /// <summary>
-    /// Refresh access token using refresh token
+    ///     Refresh access token using refresh token
     /// </summary>
     [AllowAnonymous]
     [HttpPost("refresh-token")]
@@ -61,15 +66,12 @@ public class AccountController(IMediator mediator, ITokenService tokenService) :
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<AuthResponse>> RefreshToken()
     {
-        var refreshToken = GetRefreshTokenFromCookie;
-        var ipAddress = GetClientIpAddress;
-
-        if (string.IsNullOrEmpty(refreshToken))
+        if (string.IsNullOrEmpty(RefreshTokenFromCookie))
             return Unauthorized("Refresh token is required");
 
-        var response = await mediator.Send(new RefreshTokenCommand(refreshToken, ipAddress));
+        var response = await mediator.Send(new RefreshTokenCommand(RefreshTokenFromCookie));
 
-        //SetRefreshTokenCookie(response.RefreshToken!);
+        SetRefreshTokenCookie(response.RefreshToken!, response.RefreshTokenExpiration);
 
         return Ok(response);
     }
@@ -90,28 +92,22 @@ public class AccountController(IMediator mediator, ITokenService tokenService) :
     //}
 
     /// <summary>
-    /// Logout (revoke refresh token)
+    ///     Logout (revoke refresh token)
     /// </summary>
     [Authorize]
     [HttpPost("logout")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Logout()
     {
-        var refreshToken = GetRefreshTokenFromCookie;
-        var ipAddress = GetClientIpAddress;
+        await mediator.Send(new LogoutCommand(RefreshTokenFromCookie));
 
-        if (!string.IsNullOrEmpty(refreshToken))
-        {
-            await tokenService.RevokeTokenAsync(refreshToken, ipAddress);
-        }
-
-        Response.Cookies.Delete("refreshToken");
+        ClearRefreshTokenCookie();
 
         return Ok(new { message = "Logged out successfully" });
     }
 
     /// <summary>
-    /// Get current user details
+    ///     Get current user details
     /// </summary>
     [Authorize]
     [HttpGet("detail")]
@@ -119,17 +115,22 @@ public class AccountController(IMediator mediator, ITokenService tokenService) :
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<UserDetailDto>> GetUserDetail()
     {
-        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(CurrentUserId))
+            return Unauthorized(new { message = "User not authenticated" });
 
-        if (string.IsNullOrEmpty(currentUserId))
-            return Unauthorized();
-
-        var userDetail = await mediator.Send(new GetUserDetailQuery(currentUserId));
-        return Ok(userDetail);
+        try
+        {
+            var userDetail = await mediator.Send(new GetUserDetailQuery(CurrentUserId));
+            return Ok(userDetail);
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
     }
 
     /// <summary>
-    /// Get all users (Admin only)
+    ///     Get all users (Admin only)
     /// </summary>
     [Authorize(Roles = "Admin")]
     [HttpGet]
@@ -138,5 +139,28 @@ public class AccountController(IMediator mediator, ITokenService tokenService) :
     {
         var users = await mediator.Send(new GetAllAuthUsersQuery());
         return Ok(users);
+    }
+
+    private void SetRefreshTokenCookie(string refreshToken, DateTime expirationDate)
+    {
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true, // Prevents JavaScript access
+            Secure = true, // Only send over HTTPS
+            SameSite = SameSiteMode.Strict,
+            Expires = expirationDate // Match refresh token expiration
+        };
+
+        Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+    }
+
+    private void ClearRefreshTokenCookie()
+    {
+        Response.Cookies.Delete("refreshToken", new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict
+        });
     }
 }

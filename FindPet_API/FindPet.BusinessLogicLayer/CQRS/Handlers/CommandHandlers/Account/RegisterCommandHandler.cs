@@ -1,11 +1,7 @@
 ﻿using FindPet.BusinessLogicLayer.CQRS.Commands.Account;
 using FindPet.BusinessLogicLayer.CQRS.Common;
-using FindPet.BusinessLogicLayer.Helpers.UrlHelper;
 using FindPet.BusinessLogicLayer.Interfaces.IAuthService;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
-using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
-using FindPet.Domain.Entities;
-using FindPet.Domain.Exceptions;
 using FindPet.Domain.ValueObjects;
 using Microsoft.AspNetCore.Identity;
 
@@ -13,10 +9,10 @@ namespace FindPet.BusinessLogicLayer.CQRS.Handlers.CommandHandlers.Account;
 
 public class RegisterCommandHandler : ICommandHandler<RegisterCommand, AuthResponse>
 {
+    private readonly IAuthService _authService;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly UserManager<AuthUser> _userManager;
     private readonly IUserService _userService;
-    private readonly IAuthService _authService;
 
     public RegisterCommandHandler(
         UserManager<AuthUser> userManager,

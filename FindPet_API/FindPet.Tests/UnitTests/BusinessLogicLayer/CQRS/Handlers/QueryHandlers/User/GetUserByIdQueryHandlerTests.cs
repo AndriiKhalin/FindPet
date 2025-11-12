@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FindPet.BusinessLogicLayer.CQRS.Handlers.QueryHandlers.User;
 using FindPet.BusinessLogicLayer.CQRS.Queries.User;
+using FindPet.BusinessLogicLayer.Helpers.Resolver.PhotoUrlTransformer;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
 using FindPet.Domain.Exceptions;
@@ -15,13 +16,16 @@ public class GetUserByIdQueryHandlerTests
 {
     private readonly GetUserByIdQueryHandler _handler;
     private readonly Mock<IMapper> _mockMapper;
+    private readonly Mock<IPhotoUrlTransformerService> _mockPhotoUrlTransformerService;
     private readonly Mock<IUserService> _mockUserService;
 
     public GetUserByIdQueryHandlerTests()
     {
         _mockUserService = new Mock<IUserService>();
         _mockMapper = new Mock<IMapper>();
-        _handler = new GetUserByIdQueryHandler(_mockUserService.Object, _mockMapper.Object);
+        _mockPhotoUrlTransformerService = MockSetupExtensions.CreateMock<IPhotoUrlTransformerService>();
+        _handler = new GetUserByIdQueryHandler(_mockUserService.Object, _mockMapper.Object,
+            _mockPhotoUrlTransformerService.Object);
     }
 
     [Theory]

@@ -14,8 +14,8 @@ public class UnitOfWork : IUnitOfWork
 
     private bool _disposedValue;
     private IPetRepository? _pet;
-    private IUserRepository<User> _user;
     private IRefreshTokenRepository _refreshToken;
+    private IUserRepository<User> _user;
 
     public UnitOfWork(FindPetDbContext context)
     {

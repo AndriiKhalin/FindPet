@@ -26,7 +26,7 @@ public class BaseRepository<T> : HelperBaseRepository<T>, IBaseRepository<T> whe
 
     public async Task<bool> IsExistAsync(Guid Id)
     {
-        return await IsExistAsync(x => x.Id == Id);
+        return await base.IsExistAsync(x => x.Id == Id);
     }
 
     public new async Task<bool> IsExistAsync(Expression<Func<T, bool>> expression)

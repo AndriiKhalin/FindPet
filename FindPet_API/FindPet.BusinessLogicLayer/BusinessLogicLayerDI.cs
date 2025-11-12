@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using FindPet.BusinessLogicLayer.CQRS.Behaviors;
+using FindPet.BusinessLogicLayer.Helpers.Resolver.PhotoUrlTransformer;
 using FindPet.BusinessLogicLayer.Interfaces.IAuthService;
 using FindPet.BusinessLogicLayer.Interfaces.ICacheService;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
@@ -33,6 +34,7 @@ public static class BusinessLogicLayerDI
 
         // ML Services
         services.AddScoped<IMLService, MLService>();
+        services.AddScoped<IPhotoUrlTransformerService, PhotoUrlTransformerService>();
 
         // AutoMapper
         //services.AddAutoMapper(typeof(Mapping));

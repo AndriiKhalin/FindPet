@@ -10,9 +10,15 @@ using Microsoft.AspNetCore.Identity;
 
 namespace FindPet.BusinessLogicLayer.Services.AuthService;
 
-public class AuthService(UserManager<AuthUser> userManager, IUserService userService, RoleManager<IdentityRole> roleManager, ITokenService tokenService) : IAuthService
+public class AuthService(
+    UserManager<AuthUser> userManager,
+    IUserService userService,
+    RoleManager<IdentityRole> roleManager,
+    ITokenService tokenService,
+    JwtSettings jwtSettings) : IAuthService
 {
-    public async Task<AuthResponse> RegisterAsync(RegisterDto registerDto, CancellationToken cancellationToken = default)
+    public async Task<AuthResponse> RegisterAsync(RegisterDto registerDto,
+        CancellationToken cancellationToken = default)
     {
         // Validate input
         if (await userManager.FindByEmailAsync(registerDto.Email) != null)
@@ -80,7 +86,7 @@ public class AuthService(UserManager<AuthUser> userManager, IUserService userSer
 
         // Generate tokens
         var accessToken = await tokenService.GenerateAccessTokenAsync(user);
-        var refreshToken = await tokenService.GenerateRefreshTokenAsync(user.Id, String.Empty);
+        var refreshToken = await tokenService.GenerateRefreshTokenAsync(user.Id);
 
         var roles = await userManager.GetRolesAsync(user);
 
@@ -88,7 +94,7 @@ public class AuthService(UserManager<AuthUser> userManager, IUserService userSer
         {
             AccessToken = accessToken,
             RefreshToken = refreshToken.Token,
-            AccessTokenExpiration = DateTime.UtcNow.AddHours(1),
+            AccessTokenExpiration = DateTime.UtcNow.AddMinutes(jwtSettings.AccessTokenExpirationMinutes),
             RefreshTokenExpiration = refreshToken.ExpiresAt,
             IsSuccess = true,
             Message = "Login successful"

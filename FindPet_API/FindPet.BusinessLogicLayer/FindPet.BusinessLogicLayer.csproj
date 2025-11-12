@@ -10,7 +10,9 @@
   <ItemGroup>
     <Folder Include="CQRS\Handlers\CommandHandlers\Image\" />
     <Folder Include="Exceptions\" />
+    <Folder Include="Helpers\Resolver\PhotoUrlTransformer\" />
     <Folder Include="Helpers\UrlHelper\" />
+    <Folder Include="Extensions\" />
     <Folder Include="Services\MLService\" />
     <Folder Include="Utilts\" />
   </ItemGroup>

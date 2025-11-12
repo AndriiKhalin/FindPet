@@ -21,13 +21,32 @@ public class RefreshTokenRepository(FindPetDbContext context)
             .Where(rt => rt.UserId == userId &&
                          rt.RevokedAt == null &&
                          rt.ExpiresAt > DateTime.UtcNow)
+            .OrderByDescending(rt => rt.CreatedAt)
+            .ToListAsync();
+    }
+
+    public async Task<RefreshToken> GetActiveTokenByUserIdAsync(string userId)
+    {
+        return await context.Set<RefreshToken>()
+            .Where(rt => rt.UserId == userId &&
+                         rt.RevokedAt == null &&
+                         rt.ExpiresAt > DateTime.UtcNow)
+            .OrderByDescending(rt => rt.CreatedAt)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<IEnumerable<RefreshToken>> GetAllTokensByUserIdAsync(string userId)
+    {
+        return await context.Set<RefreshToken>()
+            .Where(rt => rt.UserId == userId)
+            .OrderByDescending(rt => rt.CreatedAt)
             .ToListAsync();
     }
 
     public async Task<IEnumerable<RefreshToken>> GetExpiredTokensAsync()
     {
         return await context.Set<RefreshToken>()
-            .Where(rt => rt.ExpiresAt < DateTime.UtcNow)
+            .Where(rt => rt.ExpiresAt < DateTime.UtcNow || rt.RevokedAt != null)
             .ToListAsync();
     }
 }

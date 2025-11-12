@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FindPet.BusinessLogicLayer.CQRS.Handlers.QueryHandlers.User;
 using FindPet.BusinessLogicLayer.CQRS.Queries.User;
+using FindPet.BusinessLogicLayer.Helpers.Resolver.PhotoUrlTransformer;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
 using FindPet.Domain.Exceptions;
@@ -19,6 +20,7 @@ public class GetAllUsersQueryHandlerTests
 {
     private readonly GetAllUsersQueryHandler _handler;
     private readonly Mock<IMapper> _mockMapper;
+    private readonly Mock<IPhotoUrlTransformerService> _mockPhotoTransformerService;
     private readonly Mock<IUserService> _mockUserService;
     private readonly GetAllUsersQuery _query;
 
@@ -26,7 +28,9 @@ public class GetAllUsersQueryHandlerTests
     {
         _mockUserService = new Mock<IUserService>();
         _mockMapper = new Mock<IMapper>();
-        _handler = new GetAllUsersQueryHandler(_mockUserService.Object, _mockMapper.Object);
+        _mockPhotoTransformerService = MockSetupExtensions.CreateMock<IPhotoUrlTransformerService>();
+        _handler = new GetAllUsersQueryHandler(_mockUserService.Object, _mockMapper.Object,
+            _mockPhotoTransformerService.Object);
         _query = new GetAllUsersQuery();
     }
 
@@ -460,7 +464,7 @@ public class GetAllUsersQueryHandlerTests
     public void Constructor_WithNullUserService_ShouldNotThrowException()
     {
         // Act & Assert - Based on the test failure, the constructor doesn't validate null parameters
-        var handler = new GetAllUsersQueryHandler(null!, _mockMapper.Object);
+        var handler = new GetAllUsersQueryHandler(null!, _mockMapper.Object, _mockPhotoTransformerService.Object);
         handler.Should().NotBeNull();
     }
 
@@ -468,7 +472,7 @@ public class GetAllUsersQueryHandlerTests
     public void Constructor_WithNullMapper_ShouldNotThrowException()
     {
         // Act & Assert - Based on the test failure, the constructor doesn't validate null parameters
-        var handler = new GetAllUsersQueryHandler(_mockUserService.Object, null!);
+        var handler = new GetAllUsersQueryHandler(_mockUserService.Object, null!, _mockPhotoTransformerService.Object);
         handler.Should().NotBeNull();
     }
 
@@ -476,7 +480,8 @@ public class GetAllUsersQueryHandlerTests
     public void Constructor_WithValidDependencies_ShouldCreateInstance()
     {
         // Act
-        var handler = new GetAllUsersQueryHandler(_mockUserService.Object, _mockMapper.Object);
+        var handler = new GetAllUsersQueryHandler(_mockUserService.Object, _mockMapper.Object,
+            _mockPhotoTransformerService.Object);
 
         // Assert
         handler.Should().NotBeNull();

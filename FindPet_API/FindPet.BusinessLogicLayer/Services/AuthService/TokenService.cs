@@ -1,20 +1,24 @@
-﻿using FindPet.BusinessLogicLayer.Interfaces.IAuthService;
-using FindPet.Domain.Entities;
-using FindPet.Domain.Exceptions;
-using FindPet.Domain.ValueObjects;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using FindPet.BusinessLogicLayer.Interfaces.IAuthService;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
+using FindPet.Domain.Entities;
+using FindPet.Domain.Exceptions;
 using FindPet.Domain.Interfaces.ILoggerService;
+using FindPet.Domain.ValueObjects;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using TokenValidationResult = FindPet.Domain.ValueObjects.TokenValidationResult;
 
 namespace FindPet.BusinessLogicLayer.Services.AuthService;
 
-public class TokenService(UserManager<AuthUser> userManager, JwtSettings jwtSettings, IUnitOfWork unitOfWork, ILoggerManager logger) : ITokenService
+public class TokenService(
+    UserManager<AuthUser> userManager,
+    JwtSettings jwtSettings,
+    IUnitOfWork unitOfWork,
+    ILoggerManager logger) : ITokenService
 {
     public async Task<string> GenerateAccessTokenAsync(AuthUser user)
     {
@@ -52,14 +56,33 @@ public class TokenService(UserManager<AuthUser> userManager, JwtSettings jwtSett
         return tokenHandler.WriteToken(token);
     }
 
-    public async Task<RefreshToken> GenerateRefreshTokenAsync(string userId, string ipAddress)
+    public async Task<RefreshToken> GenerateRefreshTokenAsync(string userId)
     {
+        var existingToken = await unitOfWork.RefreshToken.GetActiveTokenByUserIdAsync(userId);
+
+        if (existingToken != null)
+        {
+            // Update existing token with new values
+            existingToken.Token = GenerateSecureToken();
+            existingToken.ExpiresAt = DateTime.UtcNow.AddDays(jwtSettings.RefreshTokenExpirationDays);
+            existingToken.CreatedAt = DateTime.UtcNow;
+            existingToken.RevokedAt = null;
+            existingToken.ReplacedByToken = null;
+            existingToken.ReasonRevoked = null;
+
+            await unitOfWork.RefreshToken.UpdateAsync(existingToken);
+            await unitOfWork.SaveAsync();
+
+            logger.LogInfo($"Refresh token updated for user {userId}");
+            return existingToken;
+        }
+
+
         var refreshToken = new RefreshToken
         {
             Token = GenerateSecureToken(),
             ExpiresAt = DateTime.UtcNow.AddDays(jwtSettings.RefreshTokenExpirationDays),
             CreatedAt = DateTime.UtcNow,
-            CreatedByIp = ipAddress,
             UserId = userId
         };
 
@@ -71,137 +94,115 @@ public class TokenService(UserManager<AuthUser> userManager, JwtSettings jwtSett
         return refreshToken;
     }
 
-    public async Task<AuthResponse> RefreshTokenAsync(string token, string ipAddress)
+    public async Task<AuthResponse> RefreshTokenAsync(string token)
     {
-        //var refreshToken = await unitOfWork.RefreshToken
-        //    .GetByConditionAsync(rt => rt.Token == token)
-        //    .Result
-        //    .FirstOrDefaultAsync();
+        var refreshToken = await unitOfWork.RefreshToken
+            .GetByTokenAsync(token);
 
-        //if (refreshToken == null || !refreshToken.IsActive)
-        //{
-        //    logger.LogWarn($"Invalid refresh token attempt from IP: {ipAddress}");
-        //    throw new UnauthorizedException("Invalid or expired refresh token");
-        //}
+        if (refreshToken == null || !refreshToken.IsActive)
+            throw new UnauthorizedException("Invalid or unactive refresh token");
 
-        //// Get user
-        //var user = await userManager.FindByIdAsync(refreshToken.UserId);
-        //if (user == null)
-        //    throw new UnauthorizedException("User not found");
+        // Get user
+        var user = await userManager.FindByIdAsync(refreshToken.UserId);
+        if (user == null)
+            throw new UnauthorizedException("User not found");
 
-        //// Revoke old refresh token
-        //await RevokeTokenAsync(token, ipAddress, "Replaced by new token");
+        // Revoke old refresh token
+        await RevokeTokenAsync(token);
 
-        //// Generate new tokens
-        //var newAccessToken = await GenerateAccessTokenAsync(user);
-        //var newRefreshToken = await GenerateRefreshTokenAsync(user.Id, ipAddress);
+        // Generate new tokens
+        var newAccessToken = await GenerateAccessTokenAsync(user);
+        var newRefreshToken = await GenerateRefreshTokenAsync(user.Id);
 
-        //return new AuthResponse
-        //{
-        //    AccessToken = newAccessToken,
-        //    RefreshToken = newRefreshToken.Token,
-        //    AccessTokenExpiration = DateTime.UtcNow.AddMinutes(jwtSettings.AccessTokenExpirationMinutes),
-        //    RefreshTokenExpiration = newRefreshToken.ExpiresAt,
-        //    IsSuccess = true,
-        //    Message = "Token refreshed successfully"
-        //};
-        throw new NotImplementedException();
+        return new AuthResponse
+        {
+            AccessToken = newAccessToken,
+            RefreshToken = newRefreshToken.Token,
+            AccessTokenExpiration = DateTime.UtcNow.AddMinutes(jwtSettings.AccessTokenExpirationMinutes),
+            RefreshTokenExpiration = newRefreshToken.ExpiresAt,
+            IsSuccess = true,
+            Message = "Token refreshed successfully"
+        };
     }
 
-    public async Task<bool> RevokeTokenAsync(string token, string ipAddress, string? reason = null)
+    public async Task RevokeTokenAsync(string token, string? reason = null)
     {
-        //var refreshToken = await unitOfWork.RefreshToken
-        //    .GetByConditionAsync(rt => rt.Token == token)
-        //    .Result
-        //    .FirstOrDefaultAsync();
+        if (string.IsNullOrEmpty(token))
+            return;
 
-        //if (refreshToken == null || !refreshToken.IsActive)
-        //    return false;
+        var refreshToken = await unitOfWork.RefreshToken.GetByTokenAsync(token);
 
-        //refreshToken.RevokedAt = DateTime.UtcNow;
-        //refreshToken.RevokedByIp = ipAddress;
-        //refreshToken.ReasonRevoked = reason ?? "Revoked without reason";
+        if (refreshToken != null && refreshToken.IsActive)
+        {
+            refreshToken.RevokedAt = DateTime.UtcNow;
+            refreshToken.ReasonRevoked = reason ?? "Manually revoked";
 
-        //await unitOfWork.RefreshToken.UpdateAsync(refreshToken);
-        //await unitOfWork.SaveAsync();
+            await unitOfWork.RefreshToken.UpdateAsync(refreshToken);
+            await unitOfWork.SaveAsync();
 
-        //logger.LogInfo($"Token revoked for user {refreshToken.UserId}");
-        //return true;
-        throw new NotImplementedException();
+            logger.LogInfo($"Token revoked for user {refreshToken.UserId}. Reason: {reason}");
+        }
     }
 
-    public async Task RevokeUserTokensAsync(string userId, string ipAddress)
+    public async Task RevokeUserTokensAsync(string userId)
     {
-        //var userTokens = await unitOfWork.RefreshToken
-        //    .GetByConditionAsync(rt => rt.UserId == userId && rt.IsActive)
-        //    .Result
-        //    .ToListAsync();
+        var userTokens = await unitOfWork.RefreshToken
+            .GetActiveTokensByUserIdAsync(userId);
 
-        //foreach (var token in userTokens)
-        //{
-        //    await RevokeTokenAsync(token.Token, ipAddress, "User logout");
-        //}
-        throw new NotImplementedException();
+        foreach (var token in userTokens) await RevokeTokenAsync(token.Token);
     }
 
     public async Task CleanupExpiredTokensAsync()
     {
-        //var expiredTokens = await unitOfWork.RefreshToken
-        //    .GetByConditionAsync(rt => rt.ExpiresAt < DateTime.UtcNow)
-        //    .Result
-        //    .ToListAsync();
+        var expiredTokens = await unitOfWork.RefreshToken
+            .GetExpiredTokensAsync();
 
-        //foreach (var token in expiredTokens)
-        //{
-        //    await unitOfWork.RefreshToken.DeleteAsync(token.Id);
-        //}
+        foreach (var token in expiredTokens) await unitOfWork.RefreshToken.DeleteAsync(token.Id);
 
-        //await unitOfWork.SaveAsync();
-        //logger.LogInfo($"Cleaned up {expiredTokens.Count} expired tokens");
-        throw new NotImplementedException();
+        await unitOfWork.SaveAsync();
+        logger.LogInfo($"Cleaned up {expiredTokens.Count()} expired tokens");
     }
 
     public async Task<TokenValidationResult> ValidateTokenAsync(string token)
     {
-        //var tokenHandler = new JwtSecurityTokenHandler();
-        //var key = Encoding.ASCII.GetBytes(jwtSettings.Secret);
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(jwtSettings.Secret);
 
-        //try
-        //{
-        //    var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
-        //    {
-        //        ValidateIssuerSigningKey = true,
-        //        IssuerSigningKey = new SymmetricSecurityKey(key),
-        //        ValidateIssuer = true,
-        //        ValidIssuer = jwtSettings.ValidIssuer,
-        //        ValidateAudience = true,
-        //        ValidAudience = jwtSettings.ValidAudience,
-        //        ValidateLifetime = true,
-        //        ClockSkew = TimeSpan.Zero
-        //    }, out var validatedToken);
+        try
+        {
+            var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = true,
+                ValidIssuer = jwtSettings.ValidIssuer,
+                ValidateAudience = true,
+                ValidAudience = jwtSettings.ValidAudience,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            }, out var validatedToken);
 
-        //    var jwtToken = (JwtSecurityToken)validatedToken;
-        //    var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //    var email = principal.FindFirst(ClaimTypes.Email)?.Value;
-        //    var roles = principal.FindAll(ClaimTypes.Role).Select(c => c.Value).ToArray();
+            var jwtToken = (JwtSecurityToken)validatedToken;
+            var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var email = principal.FindFirst(ClaimTypes.Email)?.Value;
+            var roles = principal.FindAll(ClaimTypes.Role).Select(c => c.Value).ToArray();
 
-        //    return new TokenValidationResult
-        //    {
-        //        IsValid = true,
-        //        UserId = userId,
-        //        Email = email,
-        //        Roles = roles
-        //    };
-        //}
-        //catch (Exception ex)
-        //{
-        //    return new TokenValidationResult
-        //    {
-        //        IsValid = false,
-        //        ErrorMessage = ex.Message
-        //    };
-        //}
-        throw new NotImplementedException();
+            return new TokenValidationResult
+            {
+                IsValid = true,
+                UserId = userId,
+                Email = email,
+                Roles = roles
+            };
+        }
+        catch (Exception ex)
+        {
+            return new TokenValidationResult
+            {
+                IsValid = false,
+                ErrorMessage = ex.Message
+            };
+        }
     }
 
     private static string GenerateSecureToken()

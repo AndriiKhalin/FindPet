@@ -9,6 +9,6 @@ public class RefreshTokenCommandHandler(ITokenService tokenService) : ICommandHa
 {
     public async Task<AuthResponse> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
     {
-        return await tokenService.RefreshTokenAsync(request.RefreshToken, request.IpAddress);
+        return await tokenService.RefreshTokenAsync(request.RefreshToken);
     }
 }

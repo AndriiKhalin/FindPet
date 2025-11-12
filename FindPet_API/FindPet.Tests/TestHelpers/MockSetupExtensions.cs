@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using System.Security.Claims;
 using AutoMapper;
+using FindPet.BusinessLogicLayer.Helpers.Resolver.PhotoUrlTransformer;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
 using FindPet.BusinessLogicLayer.Interfaces.IMLService;
@@ -1022,6 +1023,33 @@ public static class MockSetupExtensions
         mockMapper.Setup(m => m.Map(It.IsAny<TSource>(), It.IsAny<TDestination>()));
         return mockMapper;
     }
+
+    public static void SetupMapUserWithPhotosAsync(this Mock<IMapper> mockMapper,
+        Mock<IPhotoUrlTransformerService> mockPhotoTransformerService, IEnumerable<User> users,
+        IEnumerable<UserDto> userDtos)
+    {
+        mockMapper
+            .Setup(x => x.Map<IEnumerable<UserDto>>(users))
+            .Returns(userDtos);
+
+        mockPhotoTransformerService
+            .Setup(x => x.TransformUserPhotosAsync(userDtos))
+            .ReturnsAsync(userDtos);
+    }
+
+    public static void SetupMapUserWithPhotoAsync(this Mock<IMapper> mockMapper,
+        Mock<IPhotoUrlTransformerService> mockPhotoTransformerService, User users,
+        UserDto userDtos)
+    {
+        mockMapper
+            .Setup(x => x.Map<UserDto>(users))
+            .Returns(userDtos);
+
+        mockPhotoTransformerService
+            .Setup(x => x.TransformUserPhotoAsync(userDtos))
+            .ReturnsAsync(userDtos);
+    }
+
 
     public static Mock<ILoggerManager> SetupLoggerMock()
     {

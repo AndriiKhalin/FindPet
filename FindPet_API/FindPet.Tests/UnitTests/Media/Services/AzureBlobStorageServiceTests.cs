@@ -230,13 +230,20 @@ public class AzureBlobStorageServiceTests : IDisposable
         // Arrange
         SetupFileExistenceCheck(false);
 
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<FileNotFoundException>(() =>
-            _azureBlobStorageService.DownloadFileAsync(TEST_FILE_PATH));
+        // Act
+        var result = await _azureBlobStorageService.DownloadFileAsync(TEST_FILE_PATH);
 
-        exception.Message.Should().Contain(TEST_FILE_PATH);
+        // Assert
+        result.Should().BeSameAs(Stream.Null);
         VerifyFileExistenceCheck();
         VerifyDownloadStreamingNotCalled();
+
+        // Verify warning was logged
+        _mockLogger.Verify(l => l.LogWarn(
+            It.Is<string>(s => s.Contains("not found")),
+            It.IsAny<string>(),
+            It.IsAny<string>(),
+            It.IsAny<int>()), Times.Once);
     }
 
     [Fact]
@@ -348,11 +355,20 @@ public class AzureBlobStorageServiceTests : IDisposable
         // Arrange
         SetupFileExistenceCheck(false);
 
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<FileNotFoundException>(() =>
-            _azureBlobStorageService.GetFileUrlAsync(TEST_FILE_PATH));
+        // Act
+        var result = await _azureBlobStorageService.DownloadFileAsync(TEST_FILE_PATH);
 
-        exception.Message.Should().Contain(TEST_FILE_PATH);
+        // Assert
+        result.Should().BeSameAs(Stream.Null);
+        VerifyFileExistenceCheck();
+        VerifyDownloadStreamingNotCalled();
+
+        // Verify warning was logged
+        _mockLogger.Verify(l => l.LogWarn(
+            It.Is<string>(s => s.Contains("not found")),
+            It.IsAny<string>(),
+            It.IsAny<string>(),
+            It.IsAny<int>()), Times.Once);
     }
 
     [Fact]

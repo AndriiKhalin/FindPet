@@ -49,7 +49,7 @@ public class GetUserByIdQueryHandlerTests
             name: "John");
 
         _mockUserService.SetupGetUserById(userId, userEntity);
-        _mockMapper.SetupMap(userEntity, expectedUserDto);
+        _mockMapper.SetupMapUserWithPhotoAsync(_mockPhotoUrlTransformerService, userEntity, expectedUserDto);
 
         // Act
         var result = await _handler.Handle(query, cancellationToken);
@@ -78,7 +78,7 @@ public class GetUserByIdQueryHandlerTests
         var userDto = new UserDto { Id = userId };
 
         _mockUserService.SetupGetUserById(userId, userEntity);
-        _mockMapper.SetupMap(userEntity, userDto);
+        _mockMapper.SetupMapUserWithPhotoAsync(_mockPhotoUrlTransformerService, userEntity, userDto);
 
         // Act
         var result = await _handler.Handle(query, cancellationToken);
@@ -189,7 +189,7 @@ public class GetUserByIdQueryHandlerTests
         var userDto = new UserDto { Id = userId };
 
         _mockUserService.SetupGetUserById(userId, userEntity);
-        _mockMapper.SetupMap<Domain.Entities.User, UserDto>(userEntity, userDto);
+        _mockMapper.SetupMapUserWithPhotoAsync(_mockPhotoUrlTransformerService, userEntity, userDto);
 
         // Act
         var result = await _handler.Handle(query, cancellationToken);
@@ -242,7 +242,7 @@ public class GetUserByIdQueryHandlerTests
         );
 
         _mockUserService.SetupGetUserById(userId, userEntity);
-        _mockMapper.SetupMap(userEntity, expectedUserDto);
+        _mockMapper.SetupMapUserWithPhotoAsync(_mockPhotoUrlTransformerService, userEntity, expectedUserDto);
 
         // Act
         var result = await _handler.Handle(query, cancellationToken);
@@ -272,7 +272,7 @@ public class GetUserByIdQueryHandlerTests
         var userDto = new UserDto { Id = userId };
 
         _mockUserService.SetupGetUserById(userId, userEntity);
-        _mockMapper.SetupMap<Domain.Entities.User, UserDto>(userEntity, userDto);
+        _mockMapper.SetupMapUserWithPhotoAsync(_mockPhotoUrlTransformerService, userEntity, userDto);
 
         // Act
         var result = await _handler.Handle(query, cancellationToken);

@@ -10,7 +10,6 @@ using FindPet.Domain.Interfaces.ILoggerService;
 using FindPet.Domain.ValueObjects;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using TokenValidationResult = FindPet.Domain.ValueObjects.TokenValidationResult;
 
 namespace FindPet.BusinessLogicLayer.Services.AuthService;
 
@@ -161,48 +160,6 @@ public class TokenService(
 
         await unitOfWork.SaveAsync();
         logger.LogInfo($"Cleaned up {expiredTokens.Count()} expired tokens");
-    }
-
-    public async Task<TokenValidationResult> ValidateTokenAsync(string token)
-    {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(jwtSettings.Secret);
-
-        try
-        {
-            var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = true,
-                ValidIssuer = jwtSettings.ValidIssuer,
-                ValidateAudience = true,
-                ValidAudience = jwtSettings.ValidAudience,
-                ValidateLifetime = true,
-                ClockSkew = TimeSpan.Zero
-            }, out var validatedToken);
-
-            var jwtToken = (JwtSecurityToken)validatedToken;
-            var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var email = principal.FindFirst(ClaimTypes.Email)?.Value;
-            var roles = principal.FindAll(ClaimTypes.Role).Select(c => c.Value).ToArray();
-
-            return new TokenValidationResult
-            {
-                IsValid = true,
-                UserId = userId,
-                Email = email,
-                Roles = roles
-            };
-        }
-        catch (Exception ex)
-        {
-            return new TokenValidationResult
-            {
-                IsValid = false,
-                ErrorMessage = ex.Message
-            };
-        }
     }
 
     private static string GenerateSecureToken()

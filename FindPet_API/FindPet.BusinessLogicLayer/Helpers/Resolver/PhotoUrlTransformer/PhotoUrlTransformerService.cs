@@ -52,9 +52,10 @@ public class PhotoUrlTransformerService(
     /// </summary>
     public async Task<IEnumerable<T>> TransformPhotoUrlsAsync<T>(IEnumerable<T> dtos) where T : class
     {
-        if (dtos == null || !dtos.Any()) return dtos;
+        var dtosList = dtos?.ToList();
+        if (dtosList == null || dtosList.Count == 0) return dtosList;
+        var tasks = dtosList.Select(TransformPhotoUrlAsync);
 
-        var tasks = dtos.Select(TransformPhotoUrlAsync);
         return await Task.WhenAll(tasks);
     }
 

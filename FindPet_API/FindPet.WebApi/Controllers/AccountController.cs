@@ -67,7 +67,7 @@ public class AccountController(IMediator mediator, ITokenService tokenService) :
     public async Task<ActionResult<AuthResponse>> RefreshToken()
     {
         if (string.IsNullOrEmpty(RefreshTokenFromCookie))
-            return Unauthorized("Refresh token is required");
+            return Unauthorized("Refresh token is required in cookie");
 
         var response = await mediator.Send(new RefreshTokenCommand(RefreshTokenFromCookie));
 

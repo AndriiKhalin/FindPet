@@ -95,8 +95,6 @@ public class AuthService(
         var accessToken = await tokenService.GenerateAccessTokenAsync(user);
         var refreshToken = await tokenService.GenerateRefreshTokenAsync(user.Id);
 
-        var roles = await userManager.GetRolesAsync(user);
-
         return new AuthResponse
         {
             AccessToken = accessToken,

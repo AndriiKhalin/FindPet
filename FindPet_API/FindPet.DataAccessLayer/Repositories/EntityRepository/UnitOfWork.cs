@@ -14,6 +14,7 @@ public class UnitOfWork : IUnitOfWork
 
     private bool _disposedValue;
     private IPetRepository? _pet;
+    private IRefreshTokenRepository _refreshToken;
     private IUserRepository<User> _user;
 
     public UnitOfWork(FindPetDbContext context)
@@ -44,6 +45,8 @@ public class UnitOfWork : IUnitOfWork
 
     public IAdRepository Ad => _ad ??= new AdRepository(_context);
     public IUserRepository<User> User => _user ??= new UserRepository(_context);
+
+    public IRefreshTokenRepository RefreshToken => _refreshToken ??= new RefreshTokenRepository(_context);
 
     public async Task SaveAsync()
     {

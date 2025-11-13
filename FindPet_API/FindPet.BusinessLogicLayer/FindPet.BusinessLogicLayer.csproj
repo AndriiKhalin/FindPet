@@ -10,7 +10,9 @@
   <ItemGroup>
     <Folder Include="CQRS\Handlers\CommandHandlers\Image\" />
     <Folder Include="Exceptions\" />
+    <Folder Include="Helpers\Resolver\PhotoUrlTransformer\" />
     <Folder Include="Helpers\UrlHelper\" />
+    <Folder Include="Extensions\" />
     <Folder Include="Services\MLService\" />
     <Folder Include="Utilts\" />
   </ItemGroup>
@@ -18,6 +20,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="FluentValidation" Version="12.0.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
     <PackageReference Include="MediatR" Version="13.0.0" />

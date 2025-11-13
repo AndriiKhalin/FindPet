@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FindPet.BusinessLogicLayer.CQRS.Handlers.QueryHandlers.User;
 using FindPet.BusinessLogicLayer.CQRS.Queries.User;
+using FindPet.BusinessLogicLayer.Helpers.Resolver.PhotoUrlTransformer;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
 using FindPet.Domain.Exceptions;
@@ -19,6 +20,7 @@ public class GetAllUsersQueryHandlerTests
 {
     private readonly GetAllUsersQueryHandler _handler;
     private readonly Mock<IMapper> _mockMapper;
+    private readonly Mock<IPhotoUrlTransformerService> _mockPhotoTransformerService;
     private readonly Mock<IUserService> _mockUserService;
     private readonly GetAllUsersQuery _query;
 
@@ -26,11 +28,13 @@ public class GetAllUsersQueryHandlerTests
     {
         _mockUserService = new Mock<IUserService>();
         _mockMapper = new Mock<IMapper>();
-        _handler = new GetAllUsersQueryHandler(_mockUserService.Object, _mockMapper.Object);
+        _mockPhotoTransformerService = MockSetupExtensions.CreateMock<IPhotoUrlTransformerService>();
+        _handler = new GetAllUsersQueryHandler(_mockUserService.Object, _mockMapper.Object,
+            _mockPhotoTransformerService.Object);
         _query = new GetAllUsersQuery();
     }
 
-    #region Cancellation Token Scenarios
+    #region Cancellation AccessToken Scenarios
 
     [Fact]
     public async Task Handle_WithCancelledToken_ShouldNotAffectSynchronousOperations()
@@ -41,7 +45,7 @@ public class GetAllUsersQueryHandlerTests
         var cancelledToken = new CancellationToken(true);
 
         _mockUserService.SetupGetUsers(users);
-        _mockMapper.SetupMap(users, (IEnumerable<UserDto>)userDtos);
+        _mockMapper.SetupMapUserWithPhotosAsync(_mockPhotoTransformerService, users, userDtos);
 
         // Act
         var result = await _handler.Handle(_query, cancelledToken);
@@ -76,7 +80,7 @@ public class GetAllUsersQueryHandlerTests
         var expectedUserDtos = TestDataBuilder.BuildUserDtoList();
 
         _mockUserService.SetupGetUsers(users);
-        _mockMapper.SetupMap(users, (IEnumerable<UserDto>)expectedUserDtos);
+        _mockMapper.SetupMapUserWithPhotosAsync(_mockPhotoTransformerService, users, expectedUserDtos);
 
         // Act
         var result = await _handler.Handle(_query, CancellationToken.None);
@@ -100,7 +104,7 @@ public class GetAllUsersQueryHandlerTests
         var expectedUserDtos = new List<UserDto> { userDto };
 
         _mockUserService.SetupGetUsers(users);
-        _mockMapper.SetupMap(users, (IEnumerable<UserDto>)expectedUserDtos);
+        _mockMapper.SetupMapUserWithPhotosAsync(_mockPhotoTransformerService, users, expectedUserDtos);
 
         // Act
         var result = await _handler.Handle(_query, CancellationToken.None);
@@ -143,7 +147,7 @@ public class GetAllUsersQueryHandlerTests
         var userDtos = TestDataBuilder.BuildUserDtoList(1000);
 
         _mockUserService.SetupGetUsers(users);
-        _mockMapper.SetupMap(users, (IEnumerable<UserDto>)userDtos);
+        _mockMapper.SetupMapUserWithPhotosAsync(_mockPhotoTransformerService, users, userDtos);
 
         // Act
         var result = await _handler.Handle(_query, CancellationToken.None);
@@ -319,9 +323,7 @@ public class GetAllUsersQueryHandlerTests
         IEnumerable<UserDto>? nullUserDtos = null;
 
         _mockUserService.SetupGetUsers(users);
-        _mockMapper
-            .Setup(x => x.Map<IEnumerable<UserDto>>(users))
-            .Returns(nullUserDtos!);
+        _mockMapper.SetupMapUserWithPhotosAsync(_mockPhotoTransformerService, users, nullUserDtos);
 
         // Act
         var result = await _handler.Handle(_query, CancellationToken.None);
@@ -366,7 +368,7 @@ public class GetAllUsersQueryHandlerTests
         };
 
         _mockUserService.SetupGetUsers(users);
-        _mockMapper.SetupMap(users, (IEnumerable<UserDto>)userDtos);
+        _mockMapper.SetupMapUserWithPhotosAsync(_mockPhotoTransformerService, users, userDtos);
 
         // Act
         var result = await _handler.Handle(_query, CancellationToken.None);
@@ -394,7 +396,7 @@ public class GetAllUsersQueryHandlerTests
         var userDtos = TestDataBuilder.BuildUserDtoList(2);
 
         _mockUserService.SetupGetUsers(users);
-        _mockMapper.SetupMap(users, (IEnumerable<UserDto>)userDtos);
+        _mockMapper.SetupMapUserWithPhotosAsync(_mockPhotoTransformerService, users, userDtos);
 
         // Act
         var result = await _handler.Handle(_query, CancellationToken.None);
@@ -431,25 +433,34 @@ public class GetAllUsersQueryHandlerTests
     }
 
     [Fact]
-    public async Task Handle_ShouldReturnTaskFromResult_NotExecuteAsynchronously()
+    public async Task Handle_WithValidUsers_ShouldExecuteAsynchronously()
     {
         // Arrange
         var users = TestDataBuilder.BuildUserList(1);
         var userDtos = TestDataBuilder.BuildUserDtoList(1);
 
         _mockUserService.SetupGetUsers(users);
-        _mockMapper.SetupMap(users, (IEnumerable<UserDto>)userDtos);
+
+        _mockMapper
+            .Setup(x => x.Map<IEnumerable<UserDto>>(users))
+            .Returns(userDtos);
+
+        _mockPhotoTransformerService
+            .Setup(x => x.TransformUserPhotosAsync(userDtos))
+            .ReturnsAsync(userDtos);
 
         // Act
-        var task = _handler.Handle(_query, CancellationToken.None);
+        var result = await _handler.Handle(_query, CancellationToken.None);
 
         // Assert
-        task.Should().NotBeNull();
-        task.IsCompleted.Should().BeTrue(); // Task.FromResult should complete immediately
-
-        var result = await task;
         result.Should().NotBeNull();
         result.Should().HaveCount(1);
+        result.Should().BeEquivalentTo(userDtos);
+
+        _mockUserService.Verify(x => x.GetUsersAsync(), Times.Once);
+        _mockMapper.Verify(x => x.Map<IEnumerable<UserDto>>(users), Times.Once);
+        _mockPhotoTransformerService.Verify(x => x.TransformUserPhotosAsync(It.IsAny<IEnumerable<UserDto>>()),
+            Times.Once);
     }
 
     #endregion
@@ -460,7 +471,7 @@ public class GetAllUsersQueryHandlerTests
     public void Constructor_WithNullUserService_ShouldNotThrowException()
     {
         // Act & Assert - Based on the test failure, the constructor doesn't validate null parameters
-        var handler = new GetAllUsersQueryHandler(null!, _mockMapper.Object);
+        var handler = new GetAllUsersQueryHandler(null!, _mockMapper.Object, _mockPhotoTransformerService.Object);
         handler.Should().NotBeNull();
     }
 
@@ -468,7 +479,7 @@ public class GetAllUsersQueryHandlerTests
     public void Constructor_WithNullMapper_ShouldNotThrowException()
     {
         // Act & Assert - Based on the test failure, the constructor doesn't validate null parameters
-        var handler = new GetAllUsersQueryHandler(_mockUserService.Object, null!);
+        var handler = new GetAllUsersQueryHandler(_mockUserService.Object, null!, _mockPhotoTransformerService.Object);
         handler.Should().NotBeNull();
     }
 
@@ -476,7 +487,8 @@ public class GetAllUsersQueryHandlerTests
     public void Constructor_WithValidDependencies_ShouldCreateInstance()
     {
         // Act
-        var handler = new GetAllUsersQueryHandler(_mockUserService.Object, _mockMapper.Object);
+        var handler = new GetAllUsersQueryHandler(_mockUserService.Object, _mockMapper.Object,
+            _mockPhotoTransformerService.Object);
 
         // Assert
         handler.Should().NotBeNull();

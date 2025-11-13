@@ -1,9 +1,12 @@
 ﻿using System.Reflection;
 using FindPet.BusinessLogicLayer.CQRS.Behaviors;
+using FindPet.BusinessLogicLayer.Helpers.Resolver.PhotoUrlTransformer;
+using FindPet.BusinessLogicLayer.Interfaces.IAuthService;
 using FindPet.BusinessLogicLayer.Interfaces.ICacheService;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
 using FindPet.BusinessLogicLayer.Interfaces.IMLService;
+using FindPet.BusinessLogicLayer.Services.AuthService;
 using FindPet.BusinessLogicLayer.Services.CacheService;
 using FindPet.BusinessLogicLayer.Services.EntityService;
 using FindPet.BusinessLogicLayer.Services.ImageService;
@@ -23,12 +26,15 @@ public static class BusinessLogicLayerDI
         services.AddScoped<IPetService, PetService>();
         services.AddScoped<IAdService, AdService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IAuthService, AuthService>();
         services.AddScoped(typeof(IManageImage<>), typeof(ManageImage<>));
         //services.AddScoped<IFinderService, FinderService>();
         //services.AddScoped<IOwnerService, OwnerService>();
 
         // ML Services
         services.AddScoped<IMLService, MLService>();
+        services.AddScoped<IPhotoUrlTransformerService, PhotoUrlTransformerService>();
 
         // AutoMapper
         //services.AddAutoMapper(typeof(Mapping));

@@ -14,5 +14,7 @@ public interface IUnitOfWork
 
     IAdRepository Ad { get; }
 
+    IRefreshTokenRepository RefreshToken { get; }
+
     Task SaveAsync();
 }

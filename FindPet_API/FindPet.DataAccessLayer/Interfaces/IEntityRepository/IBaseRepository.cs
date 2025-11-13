@@ -1,8 +1,6 @@
-﻿using System.Linq.Expressions;
+﻿namespace FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 
-namespace FindPet.DataAccessLayer.Interfaces.IEntityRepository;
-
-public interface IBaseRepository<T> where T : class
+public interface IBaseRepository<T> : IHelperBaseRepository<T> where T : class
 {
     Task<IEnumerable<T>> GetsAsync();
 
@@ -10,11 +8,11 @@ public interface IBaseRepository<T> where T : class
 
     Task<bool> IsExistAsync(Guid entityId);
 
-    Task<bool> IsExistAsync(Expression<Func<T, bool>> expression);
+    //Task<bool> IsExistAsync(Expression<Func<T, bool>> expression);
 
-    Task DeleteAsync(Guid entityId);
+    //Task DeleteAsync(Guid entityId);
 
-    Task UpdateAsync(T entity);
+    //Task UpdateAsync(T entity);
 
-    Task CreateAsync(T entity);
+    //Task CreateAsync(T entity);
 }

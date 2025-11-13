@@ -74,6 +74,11 @@ public class AzureBlobStorageService : IMediaStorageService
             var response = await blobClient.DownloadStreamingAsync();
             return response.Value.Content;
         }
+        catch (FileNotFoundException ex)
+        {
+            _logger.LogWarn($"{ex.Message}. Returning null.");
+            return Stream.Null;
+        }
         catch (RequestFailedException ex)
         {
             _logger.LogError($"Azure request failed while downloading file: {filePath}. Error: {ex.Message}");
@@ -110,31 +115,39 @@ public class AzureBlobStorageService : IMediaStorageService
         }
     }
 
-    public async Task<string> GetFileUrlAsync(string filePath, TimeSpan? expiryTime = null)
+    public async Task<string?> GetFileUrlAsync(string filePath, TimeSpan? expiryTime = null)
     {
-        var blobClient = _containerClient.GetBlobClient(filePath);
-
-        // Check if the blob exists
-        if (!await blobClient.ExistsAsync()) throw new FileNotFoundException($"File {filePath} not found");
-
-        // Generate SAS token for secure access
-        if (blobClient.CanGenerateSasUri)
+        try
         {
-            var sasBuilder = new BlobSasBuilder
+            var blobClient = _containerClient.GetBlobClient(filePath);
+
+            // Check if the blob exists
+            if (!await blobClient.ExistsAsync()) throw new FileNotFoundException($"File {filePath} not found");
+
+            // Generate SAS token for secure access
+            if (blobClient.CanGenerateSasUri)
             {
-                BlobContainerName = _containerName,
-                BlobName = filePath,
-                Resource = "b",
-                ExpiresOn = DateTimeOffset.UtcNow.Add(expiryTime ?? TimeSpan.FromHours(1))
-            };
+                var sasBuilder = new BlobSasBuilder
+                {
+                    BlobContainerName = _containerName,
+                    BlobName = filePath,
+                    Resource = "b",
+                    ExpiresOn = DateTimeOffset.UtcNow.Add(expiryTime ?? TimeSpan.FromHours(1))
+                };
 
-            sasBuilder.SetPermissions(BlobSasPermissions.Read);
+                sasBuilder.SetPermissions(BlobSasPermissions.Read);
 
-            return blobClient.GenerateSasUri(sasBuilder).ToString();
+                return blobClient.GenerateSasUri(sasBuilder).ToString();
+            }
+
+            // Fallback to regular URL if SAS is not available
+            return blobClient.Uri.ToString();
         }
-
-        // Fallback to regular URL if SAS is not available
-        return blobClient.Uri.ToString();
+        catch (FileNotFoundException ex)
+        {
+            _logger.LogWarn($"{ex.Message}. Returning null.");
+            return null;
+        }
     }
 
     public async Task<bool> FileExistsAsync(string filePath)

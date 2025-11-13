@@ -14,7 +14,7 @@ public interface IMediaStorageService
 
     Task<Stream> GetFileAsync(string filePath);
 
-    Task<string> GetFileUrlAsync(string filePath, TimeSpan? expiryTime = null);
+    Task<string?> GetFileUrlAsync(string filePath, TimeSpan? expiryTime = null);
 
     Task<bool> FileExistsAsync(string filePath);
 }

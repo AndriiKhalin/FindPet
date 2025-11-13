@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
+using FindPet.WebApi.BackgroundServices;
 using Microsoft.OpenApi.Models;
 
 namespace FindPet.WebApi;
@@ -11,6 +12,7 @@ public static class WebApiLayerDI
         // Controllers
         services.AddControllers();
         services.AddApiVersioningConfig();
+        services.AddHostedService<TokenCleanupService>();
 
         // API Documentation
         services.AddEndpointsApiExplorer();

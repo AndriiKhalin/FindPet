@@ -1,5 +1,6 @@
 ﻿using FindPet.BusinessLogicLayer;
 using FindPet.DataAccessLayer;
+using FindPet.Email;
 using FindPet.Infrastructure.Configurations.AuthExtensions;
 using FindPet.Infrastructure.Configurations.ServiceExtensions;
 using Microsoft.Extensions.Configuration;
@@ -32,5 +33,6 @@ public static class InfrastructureDI
     {
         services.AddDataAccessServices(configuration);
         services.AddBusinessLogicServices();
+        services.AddEmailServices(configuration);
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
-namespace FindPet.Email.Templates;
+﻿namespace FindPet.Email.Templates;
 
 /// <summary>
 ///     Builds professional HTML email templates for FindPet
@@ -253,17 +251,5 @@ public static class EmailTemplateBuilder
             <p style='margin-top: 30px;'>Stay secure,<br><strong>The FindPet Team</strong></p>";
 
         return string.Format(BaseTemplate, "Password Changed - FindPet", content, DateTime.UtcNow.Year);
-    }
-
-    public static string ToPlainText(string htmlContent)
-    {
-        // Simple HTML to plain text conversion
-        return Regex.Replace(htmlContent, "<.*?>", string.Empty)
-            .Replace("&nbsp;", " ")
-            .Replace("&quot;", "\"")
-            .Replace("&lt;", "<")
-            .Replace("&gt;", ">")
-            .Replace("&amp;", "&")
-            .Trim();
     }
 }

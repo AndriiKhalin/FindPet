@@ -9,5 +9,4 @@ public class EmailMessage
     public string ToName { get; set; } = string.Empty;
     public string Subject { get; set; } = string.Empty;
     public string HtmlContent { get; set; } = string.Empty;
-    public string TextContent { get; set; } = string.Empty;
 }

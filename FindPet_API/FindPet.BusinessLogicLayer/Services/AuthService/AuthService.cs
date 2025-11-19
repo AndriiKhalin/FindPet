@@ -189,7 +189,20 @@ public class AuthService(
         if (user == null)
             return false;
 
-        var result = await userManager.ResetPasswordAsync(user, token, newPassword);
+        // 🔥 Decode the Base64Url token first
+        string decodedToken;
+        try
+        {
+            var tokenBytes = WebEncoders.Base64UrlDecode(token);
+            decodedToken = Encoding.UTF8.GetString(tokenBytes);
+        }
+        catch (FormatException)
+        {
+            // If decoding fails, the token might already be decoded (legacy support)
+            decodedToken = token;
+        }
+
+        var result = await userManager.ResetPasswordAsync(user, decodedToken, newPassword);
 
         if (result.Succeeded)
         {
@@ -229,7 +242,20 @@ public class AuthService(
         if (user == null)
             throw new NotFoundException("User", userId);
 
-        var result = await userManager.ConfirmEmailAsync(user, token);
+        // 🔥 Decode the Base64Url token first
+        string decodedToken;
+        try
+        {
+            var tokenBytes = WebEncoders.Base64UrlDecode(token);
+            decodedToken = Encoding.UTF8.GetString(tokenBytes);
+        }
+        catch (FormatException)
+        {
+            // If decoding fails, the token might already be decoded (legacy support)
+            decodedToken = token;
+        }
+
+        var result = await userManager.ConfirmEmailAsync(user, decodedToken);
 
         if (result.Succeeded)
             // Send welcome email after successful confirmation

@@ -20,15 +20,13 @@ public class BrevoEmailService(EmailSettings emailSettings, ILoggerManager logge
             var fullUrl = $"{emailSettings.BaseUrl}/auth/confirm-email?userId={userId}&token={confirmationToken}";
 
             var htmlContent = EmailTemplateBuilder.BuildEmailConfirmationTemplate(userName, fullUrl);
-            var textContent = EmailTemplateBuilder.ToPlainText(htmlContent);
 
             await SendEmailAsync(new EmailMessage
             {
                 ToEmail = email,
                 ToName = userName,
                 Subject = "Confirm Your Email - FindPet 🐾",
-                HtmlContent = htmlContent,
-                TextContent = textContent
+                HtmlContent = htmlContent
             });
 
             logger.LogInfo("Email confirmation sent successfully to {Email}", email);
@@ -47,15 +45,13 @@ public class BrevoEmailService(EmailSettings emailSettings, ILoggerManager logge
             var fullUrl = $"{emailSettings.BaseUrl}/auth/reset-password?email={email}&token={resetToken}";
 
             var htmlContent = EmailTemplateBuilder.BuildPasswordResetTemplate(userName, fullUrl);
-            var textContent = EmailTemplateBuilder.ToPlainText(htmlContent);
 
             await SendEmailAsync(new EmailMessage
             {
                 ToEmail = email,
                 ToName = userName,
                 Subject = "Reset Your Password - FindPet 🔒",
-                HtmlContent = htmlContent,
-                TextContent = textContent
+                HtmlContent = htmlContent
             });
 
             logger.LogInfo("Password reset email sent successfully to {Email}", email);
@@ -73,15 +69,13 @@ public class BrevoEmailService(EmailSettings emailSettings, ILoggerManager logge
         {
             var dashboardUrl = $"{emailSettings.BaseUrl}/dashboard";
             var htmlContent = EmailTemplateBuilder.BuildWelcomeTemplate(userName, dashboardUrl);
-            var textContent = EmailTemplateBuilder.ToPlainText(htmlContent);
 
             await SendEmailAsync(new EmailMessage
             {
                 ToEmail = email,
                 ToName = userName,
                 Subject = "Welcome to FindPet! 🎉",
-                HtmlContent = htmlContent,
-                TextContent = textContent
+                HtmlContent = htmlContent
             });
 
             logger.LogInfo("Welcome email sent successfully to {Email}", email);
@@ -98,15 +92,13 @@ public class BrevoEmailService(EmailSettings emailSettings, ILoggerManager logge
         try
         {
             var htmlContent = EmailTemplateBuilder.BuildPasswordChangedTemplate(userName);
-            var textContent = EmailTemplateBuilder.ToPlainText(htmlContent);
 
             await SendEmailAsync(new EmailMessage
             {
                 ToEmail = email,
                 ToName = userName,
                 Subject = "Password Changed Successfully - FindPet ✅",
-                HtmlContent = htmlContent,
-                TextContent = textContent
+                HtmlContent = htmlContent
             });
 
             logger.LogInfo("Password changed notification sent successfully to {Email}", email);
@@ -154,8 +146,7 @@ public class BrevoEmailService(EmailSettings emailSettings, ILoggerManager logge
                 sender,
                 new List<SendSmtpEmailTo> { recipient },
                 subject: emailMessage.Subject,
-                htmlContent: emailMessage.HtmlContent,
-                textContent: emailMessage.TextContent
+                htmlContent: emailMessage.HtmlContent
             );
 
             // Send email

@@ -55,8 +55,7 @@ public class AuthService(
             throw new BadRequestException(string.Join(", ", result.Errors.Select(e => e.Description)));
 
         // Email confirmation
-        var emailToken = await userManager.GenerateEmailConfirmationTokenAsync(authUser);
-        var confirmToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(emailToken));
+        var confirmToken = await GenerateEmailConfirmationTokenAsync(authUser.Id);
 
         await emailService.SendEmailConfirmationAsync(authUser.Email!, authUser.Id, authUser.Name!, confirmToken);
 
@@ -190,17 +189,7 @@ public class AuthService(
             return false;
 
         // 🔥 Decode the Base64Url token first
-        string decodedToken;
-        try
-        {
-            var tokenBytes = WebEncoders.Base64UrlDecode(token);
-            decodedToken = Encoding.UTF8.GetString(tokenBytes);
-        }
-        catch (FormatException)
-        {
-            // If decoding fails, the token might already be decoded (legacy support)
-            decodedToken = token;
-        }
+        string decodedToken = DecodeBase64UrlToken(token);
 
         var result = await userManager.ResetPasswordAsync(user, decodedToken, newPassword);
 
@@ -243,17 +232,7 @@ public class AuthService(
             throw new NotFoundException("User", userId);
 
         // 🔥 Decode the Base64Url token first
-        string decodedToken;
-        try
-        {
-            var tokenBytes = WebEncoders.Base64UrlDecode(token);
-            decodedToken = Encoding.UTF8.GetString(tokenBytes);
-        }
-        catch (FormatException)
-        {
-            // If decoding fails, the token might already be decoded (legacy support)
-            decodedToken = token;
-        }
+        var decodedToken = DecodeBase64UrlToken(token);
 
         var result = await userManager.ConfirmEmailAsync(user, decodedToken);
 
@@ -277,7 +256,10 @@ public class AuthService(
         if (user == null)
             throw new NotFoundException("User", userId);
 
-        return await userManager.GenerateEmailConfirmationTokenAsync(user);
+        var emailToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
+        var confirmToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(emailToken));
+
+        return confirmToken;
     }
 
     public async Task<IEnumerable<SessionDto>> GetActiveSessionsAsync(string userId, string currentToken)
@@ -304,6 +286,20 @@ public class AuthService(
         await tokenService.RevokeTokenAsync(token.Token, "Revoked by user");
 
         return true;
+    }
+
+    private static string DecodeBase64UrlToken(string token)
+    {
+        try
+        {
+            var tokenBytes = WebEncoders.Base64UrlDecode(token);
+            return Encoding.UTF8.GetString(tokenBytes);
+        }
+        catch (FormatException)
+        {
+            // If decoding fails, assume the token is already decoded (legacy support)
+            return token;
+        }
     }
 
     private async Task EnsureRolesExistAsync()

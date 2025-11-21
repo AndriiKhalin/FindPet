@@ -10,10 +10,7 @@ public class ForgotPasswordCommandHandler(IAuthService authService)
 {
     public async Task<AuthResponse> Handle(ForgotPasswordCommand request, CancellationToken cancellationToken)
     {
-        var token = await authService.GeneratePasswordResetTokenAsync(request.ForgotPassword.Email);
-
-        // TODO: Send email with token via IEmailService
-        // await _emailService.SendPasswordResetEmailAsync(request.Dto.Email, token);
+        await authService.GeneratePasswordResetTokenAsync(request.ForgotPassword.Email);
 
         return new AuthResponse
         {

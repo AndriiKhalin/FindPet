@@ -189,7 +189,7 @@ public class AuthService(
             return false;
 
         // 🔥 Decode the Base64Url token first
-        string decodedToken = DecodeBase64UrlToken(token);
+        var decodedToken = DecodeBase64UrlToken(token);
 
         var result = await userManager.ResetPasswordAsync(user, decodedToken, newPassword);
 

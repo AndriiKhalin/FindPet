@@ -1092,7 +1092,7 @@ public class AuthServiceTests
         var tokenId = Guid.NewGuid();
 
         _mockRefreshTokenRepository.Setup(x => x.GetAsync(tokenId))
-            .ReturnsAsync((RefreshToken)null);
+            .ReturnsAsync((RefreshToken?)null);
 
         // Act
         var result = await _authService.RevokeSessionAsync(userId, tokenId);
@@ -1197,8 +1197,8 @@ public class AuthServiceTests
             Password = TestDataBuilder.TestConstants.DEFAULT_PASSWORD
         };
 
-        var cts = new CancellationTokenSource();
-        cts.Cancel();
+        using var cts = new CancellationTokenSource();
+        await cts.CancelAsync();
 
         // Act
         Func<Task> act = async () => await _authService.LoginAsync(loginDto, cts.Token);

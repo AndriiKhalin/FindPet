@@ -26,48 +26,49 @@ public class LoggerManager : ILoggerManager
         [CallerFilePath] string sourceFilePath = "",
         [CallerLineNumber] int sourceLineNumber = 0)
     {
-        var sanitizedMessage = SanitizeMessage(message, true);
-        var className = GetSafeClassName();
-        var sanitizedMemberName = SanitizeMemberName(memberName);
-
-        logger.Debug(
-            $"<span style='background:rgb(100,220,0)'> {DateTime.Now} | DEBUG | Project: {className} | Method: {sanitizedMemberName} | Message: {sanitizedMessage} | Line: {sourceLineNumber}</span>");
+        var logEntry = CreateSafeLogEntry("DEBUG", message, memberName, sourceLineNumber, "rgb(100,220,0)");
+        logger.Debug(logEntry);
     }
 
     public void LogError(string message, [CallerMemberName] string memberName = "",
         [CallerFilePath] string sourceFilePath = "",
         [CallerLineNumber] int sourceLineNumber = 0)
     {
-        var sanitizedMessage = SanitizeMessage(message, true);
-        var className = GetSafeClassName();
-        var sanitizedMemberName = SanitizeMemberName(memberName);
-
-        logger.Error(
-            $"<span style='background:rgb(160,0,0)'> {DateTime.Now} | ERROR | Project: {className} | Method: {sanitizedMemberName} | Message: {sanitizedMessage} | Line: {sourceLineNumber}</span>");
+        var logEntry = CreateSafeLogEntry("ERROR", message, memberName, sourceLineNumber, "rgb(160,0,0)");
+        logger.Error(logEntry);
     }
 
     public void LogInfo(string message, [CallerMemberName] string memberName = "",
         [CallerFilePath] string sourceFilePath = "",
         [CallerLineNumber] int sourceLineNumber = 0)
     {
-        var sanitizedMessage = SanitizeMessage(message, true);
-        var className = GetSafeClassName();
-        var sanitizedMemberName = SanitizeMemberName(memberName);
-
-        logger.Info(
-            $"<span style='background:rgb(0,160,0)'> {DateTime.Now} | INFO | Project: {className} | Method: {sanitizedMemberName} | Message: {sanitizedMessage} | Line: {sourceLineNumber}</span>");
+        var logEntry = CreateSafeLogEntry("INFO", message, memberName, sourceLineNumber, "rgb(0,160,0)");
+        logger.Info(logEntry);
     }
 
     public void LogWarn(string message, [CallerMemberName] string memberName = "",
         [CallerFilePath] string sourceFilePath = "",
         [CallerLineNumber] int sourceLineNumber = 0)
     {
+        var logEntry = CreateSafeLogEntry("WARN", message, memberName, sourceLineNumber, "rgb(200,200,0)");
+        logger.Warn(logEntry);
+    }
+
+    /// <summary>
+    ///     Creates a safe log entry with complete sanitization and encoding
+    /// </summary>
+    private static string CreateSafeLogEntry(string level, string message, string memberName, int lineNumber, string backgroundColor)
+    {
+        // Sanitize all components separately
         var sanitizedMessage = SanitizeMessage(message, true);
         var className = GetSafeClassName();
         var sanitizedMemberName = SanitizeMemberName(memberName);
 
-        logger.Warn(
-            $"<span style='background:rgb(200,200,0)'> {DateTime.Now} | WARN | Project: {className} | Method: {sanitizedMemberName} | Message: {sanitizedMessage} | Line: {sourceLineNumber}</span>");
+        // Use structured logging approach - build safe log entry
+        var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+        // All values are now sanitized, HTML encoded, and safe for logging
+        return $"<span style='background:{backgroundColor}'> {timestamp} | {level} | Project: {className} | Method: {sanitizedMemberName} | Message: {sanitizedMessage} | Line: {lineNumber}</span>";
     }
 
     /// <summary>
@@ -79,28 +80,59 @@ public class LoggerManager : ILoggerManager
     private static string SanitizeMessage(string message, bool redactSensitiveData = true)
     {
         if (string.IsNullOrEmpty(message))
-            return message ?? string.Empty;
+            return string.Empty;
 
         var sanitized = message;
 
-        // Remove control characters and newlines that could forge log entries
-        sanitized = sanitized
-            .Replace("\r", "")
-            .Replace("\n", " ")
-            .Replace("\t", " ")
-            .Replace(Environment.NewLine, " ");
+        // CRITICAL: Remove ALL control characters and newlines that could forge log entries
+        sanitized = RemoveControlCharacters(sanitized);
 
         // Redact sensitive information patterns
-        if (redactSensitiveData) sanitized = RedactSensitiveData(sanitized);
+        if (redactSensitiveData)
+            sanitized = RedactSensitiveData(sanitized);
 
         // HTML encode to prevent HTML injection in log viewers
         sanitized = HttpUtility.HtmlEncode(sanitized);
 
         // Limit length to prevent log flooding
         const int maxLength = 500;
-        if (sanitized.Length > maxLength) sanitized = sanitized.Substring(0, maxLength) + "... [truncated]";
+        if (sanitized.Length > maxLength)
+            sanitized = sanitized.Substring(0, maxLength) + "... [truncated]";
 
         return sanitized;
+    }
+
+    /// <summary>
+    ///     Removes all control characters, newlines, and potential log forging characters
+    /// </summary>
+    private static string RemoveControlCharacters(string input)
+    {
+        if (string.IsNullOrEmpty(input))
+            return string.Empty;
+
+        // Remove all newline variations
+        var cleaned = input
+            .Replace("\r\n", " ")
+            .Replace("\r", " ")
+            .Replace("\n", " ")
+            .Replace("\t", " ")
+            .Replace(Environment.NewLine, " ");
+
+        // Remove other control characters (ASCII 0-31 and 127)
+        var result = new System.Text.StringBuilder(cleaned.Length);
+        foreach (var ch in cleaned)
+        {
+            if (ch >= 32 && ch != 127) // Keep only printable characters
+            {
+                result.Append(ch);
+            }
+            else
+            {
+                result.Append(' '); // Replace control chars with space
+            }
+        }
+
+        return result.ToString();
     }
 
     /// <summary>
@@ -109,7 +141,7 @@ public class LoggerManager : ILoggerManager
     private static string RedactSensitiveData(string message)
     {
         if (string.IsNullOrEmpty(message))
-            return message;
+            return string.Empty;
 
         var redacted = message;
 
@@ -118,7 +150,8 @@ public class LoggerManager : ILoggerManager
         {
             var email = match.Value;
             var atIndex = email.IndexOf('@');
-            if (atIndex > 2) return email.Substring(0, 2) + "***@" + email.Substring(atIndex + 1);
+            if (atIndex > 2)
+                return email.Substring(0, 2) + "***@" + email.Substring(atIndex + 1);
             return "***@***";
         });
 
@@ -126,14 +159,14 @@ public class LoggerManager : ILoggerManager
         redacted = PhonePattern.Replace(redacted, "XXX-XXX-****");
 
         // Redact GUIDs (keep first 8 chars for debugging)
-        redacted = GuidPattern.Replace(redacted,
-            match => { return match.Value.Substring(0, 8) + "-****-****-****-************"; });
+        redacted = GuidPattern.Replace(redacted, match =>
+            match.Value.Substring(0, 8) + "-****-****-****-************");
 
         // Redact IP addresses (keep first octet)
         redacted = IpPattern.Replace(redacted, match =>
         {
             var parts = match.Value.Split('.');
-            return parts.Length == 4 ? $"{parts[0]}.***.***.***" : "***.***.***";
+            return parts.Length == 4 ? $"{parts[0]}.***.***.***" : "***.***.***.***";
         });
 
         // Redact common sensitive keywords
@@ -151,20 +184,14 @@ public class LoggerManager : ILoggerManager
         {
             "password", "pwd", "passwd", "token", "secret", "key", "apikey",
             "api_key", "authorization", "auth", "credential", "ssn", "social",
-            "connectionstring", "email", "phone", "creditcard", "bearer"
+            "connectionstring", "email", "phone", "creditcard", "bearer", "session"
         };
 
-        foreach (var keyword in sensitiveKeywords)
-        {
-            // Match patterns like "password: value" or "password=value"
-            var pattern = new Regex(
+        return sensitiveKeywords
+            .Select(keyword => new Regex(
                 $@"({keyword})\s*[:=]\s*[^\s,;]+",
-                RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
-            message = pattern.Replace(message, "$1: [REDACTED]");
-        }
-
-        return message;
+                RegexOptions.IgnoreCase | RegexOptions.Compiled))
+            .Aggregate(message, (current, pattern) => pattern.Replace(current, "$1: [REDACTED]"));
     }
 
     /// <summary>
@@ -174,7 +201,7 @@ public class LoggerManager : ILoggerManager
     {
         try
         {
-            var frame = new StackTrace().GetFrame(2);
+            var frame = new StackTrace().GetFrame(1); // Adjusted frame index
             var method = frame?.GetMethod();
             var declaringType = method?.DeclaringType;
 
@@ -202,7 +229,13 @@ public class LoggerManager : ILoggerManager
         if (string.IsNullOrEmpty(memberName))
             return "Unknown";
 
-        // Remove async suffix for cleaner logs
-        return memberName.Replace("Async", "").Replace("<>", "");
+        // Remove async suffix and special characters for cleaner logs
+        var sanitized = memberName
+            .Replace("Async", "")
+            .Replace("<>", "")
+            .Replace(".", "_");
+
+        // HTML encode for safety
+        return HttpUtility.HtmlEncode(sanitized);
     }
 }

@@ -200,7 +200,7 @@ public class TokenServiceTests
         var userId = Guid.NewGuid().ToString();
 
         _mockRefreshTokenRepository.Setup(x => x.GetActiveTokenByUserIdAsync(userId))
-            .ReturnsAsync((RefreshToken)null);
+            .ReturnsAsync((RefreshToken?)null);
 
         _mockRefreshTokenRepository.Setup(x => x.CreateAsync(It.IsAny<RefreshToken>()))
             .Returns(Task.CompletedTask);
@@ -297,7 +297,7 @@ public class TokenServiceTests
         var userId = Guid.NewGuid().ToString();
 
         _mockRefreshTokenRepository.Setup(x => x.GetActiveTokenByUserIdAsync(userId))
-            .ReturnsAsync((RefreshToken)null);
+            .ReturnsAsync((RefreshToken?)null);
 
         _mockRefreshTokenRepository.Setup(x => x.CreateAsync(It.IsAny<RefreshToken>()))
             .Returns(Task.CompletedTask);
@@ -309,7 +309,7 @@ public class TokenServiceTests
 
         // Setup again for second call
         _mockRefreshTokenRepository.Setup(x => x.GetActiveTokenByUserIdAsync(userId))
-            .ReturnsAsync((RefreshToken)null);
+            .ReturnsAsync((RefreshToken?)null);
 
         var token2 = await _tokenService.GenerateRefreshTokenAsync(userId);
 
@@ -379,7 +379,7 @@ public class TokenServiceTests
 
         // Setup for new token generation
         _mockRefreshTokenRepository.Setup(x => x.GetActiveTokenByUserIdAsync(userId))
-            .ReturnsAsync((RefreshToken)null);
+            .ReturnsAsync((RefreshToken?)null);
 
         _mockRefreshTokenRepository.Setup(x => x.CreateAsync(It.IsAny<RefreshToken>()))
             .Returns(Task.CompletedTask);
@@ -411,7 +411,7 @@ public class TokenServiceTests
         string nullToken = null;
 
         _mockRefreshTokenRepository.Setup(x => x.GetByTokenAsync(nullToken))
-            .ReturnsAsync((RefreshToken)null);
+            .ReturnsAsync((RefreshToken?)null);
 
         // Act
         Func<Task> act = async () => await _tokenService.RefreshTokenAsync(nullToken);
@@ -610,7 +610,7 @@ public class TokenServiceTests
         var token = "non-existent-token";
 
         _mockRefreshTokenRepository.Setup(x => x.GetByTokenAsync(token))
-            .ReturnsAsync((RefreshToken)null);
+            .ReturnsAsync((RefreshToken?)null);
 
         // Act
         await _tokenService.RevokeTokenAsync(token);
@@ -872,7 +872,7 @@ public class TokenServiceTests
             .ReturnsAsync(new List<string> { UserRoles.User });
 
         _mockRefreshTokenRepository.Setup(x => x.GetActiveTokenByUserIdAsync(userId))
-            .ReturnsAsync((RefreshToken)null);
+            .ReturnsAsync((RefreshToken?)null);
 
         _mockRefreshTokenRepository.Setup(x => x.CreateAsync(It.IsAny<RefreshToken>()))
             .Returns(Task.CompletedTask);
@@ -962,7 +962,7 @@ public class TokenServiceTests
         var userId = Guid.NewGuid().ToString();
 
         _mockRefreshTokenRepository.Setup(x => x.GetActiveTokenByUserIdAsync(userId))
-            .ReturnsAsync((RefreshToken)null);
+            .ReturnsAsync((RefreshToken?)null);
 
         _mockRefreshTokenRepository.Setup(x => x.CreateAsync(It.IsAny<RefreshToken>()))
             .Returns(Task.CompletedTask);
@@ -992,7 +992,7 @@ public class TokenServiceTests
         var userId = Guid.NewGuid().ToString();
 
         _mockRefreshTokenRepository.Setup(x => x.GetActiveTokenByUserIdAsync(userId))
-            .ReturnsAsync((RefreshToken)null);
+            .ReturnsAsync((RefreshToken?)null);
 
         _mockRefreshTokenRepository.Setup(x => x.CreateAsync(It.IsAny<RefreshToken>()))
             .Returns(Task.CompletedTask);
@@ -1003,7 +1003,7 @@ public class TokenServiceTests
         var token1 = await _tokenService.GenerateRefreshTokenAsync(userId);
 
         _mockRefreshTokenRepository.Setup(x => x.GetActiveTokenByUserIdAsync(userId))
-            .ReturnsAsync((RefreshToken)null);
+            .ReturnsAsync((RefreshToken?)null);
 
         var token2 = await _tokenService.GenerateRefreshTokenAsync(userId);
 

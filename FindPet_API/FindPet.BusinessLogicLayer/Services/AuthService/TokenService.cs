@@ -22,8 +22,11 @@ public class TokenService(
     public async Task<string> GenerateAccessTokenAsync(AuthUser user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(jwtSettings.Secret);
+        var key = Encoding.UTF8.GetBytes(jwtSettings.Secret);
         var roles = await userManager.GetRolesAsync(user);
+
+        var expirationTime = DateTime.UtcNow.AddMinutes(jwtSettings.AccessTokenExpirationMinutes);
+        var expirationUnixTime = new DateTimeOffset(expirationTime).ToUnixTimeSeconds();
 
         List<Claim> claims =
         [
@@ -33,7 +36,10 @@ public class TokenService(
             new(JwtRegisteredClaimNames.NameId, user.Id),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new(JwtRegisteredClaimNames.Aud, jwtSettings.ValidAudience),
-            new(JwtRegisteredClaimNames.Iss, jwtSettings.ValidIssuer)
+            new(JwtRegisteredClaimNames.Iss, jwtSettings.ValidIssuer),
+            new(JwtRegisteredClaimNames.Exp, expirationUnixTime.ToString(), ClaimValueTypes.Integer64),
+            new(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(),
+                ClaimValueTypes.Integer64)
         ];
 
         foreach (var role in roles)
@@ -42,7 +48,7 @@ public class TokenService(
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddMinutes(jwtSettings.AccessTokenExpirationMinutes),
+            Expires = expirationTime,
             Audience = jwtSettings.ValidAudience,
             Issuer = jwtSettings.ValidIssuer,
             SigningCredentials = new SigningCredentials(

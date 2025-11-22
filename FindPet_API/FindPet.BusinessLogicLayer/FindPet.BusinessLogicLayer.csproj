@@ -34,6 +34,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FindPet.DataAccessLayer\FindPet.DataAccessLayer.csproj" />
+    <ProjectReference Include="..\FindPet.Email\FindPet.Email.csproj" />
     <ProjectReference Include="..\FindPet.Media\FindPet.Media.csproj" />
   </ItemGroup>
 

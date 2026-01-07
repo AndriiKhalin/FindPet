@@ -1,6 +1,11 @@
 ﻿using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
+using FindPet.BusinessLogicLayer.Interfaces.INotificationService;
+using FindPet.BusinessLogicLayer.Interfaces.IPetMatchingService;
+using FindPet.BusinessLogicLayer.Services.NotificationService;
+using FindPet.BusinessLogicLayer.Services.PetMatchingService;
 using FindPet.WebApi.BackgroundServices;
+using FindPet.WebApi.Hubs;
 using Microsoft.OpenApi.Models;
 
 namespace FindPet.WebApi;
@@ -17,6 +22,7 @@ public static class WebApiLayerDI
         // API Documentation
         services.AddEndpointsApiExplorer();
         services.AddSwaggerConfiguration();
+        services.AddSignalRServices();
     }
 
     private static void AddSwaggerConfiguration(this IServiceCollection services)
@@ -80,5 +86,22 @@ public static class WebApiLayerDI
                 options.GroupNameFormat = "'v'VVV";
                 options.SubstituteApiVersionInUrl = true;
             });
+    }
+
+    private static void AddSignalRServices(this IServiceCollection services)
+    {
+        // Add SignalR
+        services.AddSignalR(options =>
+        {
+            options.EnableDetailedErrors = true;
+            options.KeepAliveInterval = TimeSpan.FromSeconds(15);
+            options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
+        });
+
+        // Register notification service
+        services.AddScoped<INotificationService, NotificationService<NotificationHub>>();
+
+        // Register pet matching service
+        services.AddScoped<IPetMatchingService, PetMatchingService>();
     }
 }

@@ -13,7 +13,9 @@
     <Folder Include="Helpers\Resolver\PhotoUrlTransformer\" />
     <Folder Include="Helpers\UrlHelper\" />
     <Folder Include="Extensions\" />
+    <Folder Include="Interfaces\INotificationService\" />
     <Folder Include="Services\MLService\" />
+    <Folder Include="Services\PetMatchingService\" />
     <Folder Include="Utilts\" />
   </ItemGroup>
 

@@ -9,9 +9,15 @@ public static class CorsExtension
         services.AddCors(options =>
         {
             options.AddPolicy("CorsPolicy",
-                builder => builder.AllowAnyOrigin()
+                builder => builder.WithOrigins(
+                        "http://localhost:4200",
+                        "https://localhost:4200",
+                        "http://localhost:4000",
+                        "https://localhost:4000"
+                    )
                     .AllowAnyMethod()
-                    .AllowAnyHeader());
+                    .AllowAnyHeader()
+                    .AllowCredentials());
         });
     }
 }

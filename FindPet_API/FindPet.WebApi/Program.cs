@@ -1,6 +1,7 @@
 using FindPet.Infrastructure;
 using FindPet.Infrastructure.Configurations.ServiceExtensions;
 using FindPet.WebApi;
+using FindPet.WebApi.Hubs;
 using FindPet.WebApi.Middlewares;
 using NLog;
 using Swashbuckle.AspNetCore.SwaggerUI;
@@ -36,6 +37,8 @@ app.UseCors("CorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+app.MapHub<NotificationHub>("/notificationHub");
 
 // Initialize app
 app.OpenLogFile();

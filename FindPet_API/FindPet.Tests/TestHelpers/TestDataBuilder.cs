@@ -1,4 +1,4 @@
-﻿using System.Net;
+﻿using FindPet.Domain.DTOs.AuthDTOs;
 using FindPet.Domain.DTOs.EntitiesDTOs.AdDTO;
 using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
 using FindPet.Domain.DTOs.EntitiesDTOs.UserDTO;
@@ -6,6 +6,7 @@ using FindPet.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using System.Net;
 
 namespace FindPet.Tests.TestHelpers;
 
@@ -469,7 +470,16 @@ public static class TestDataBuilder
         return dto;
     }
 
-    //TODO: Add BuildUserForLoginDto , return LoginDto
+    public static LoginDto BuildUserForLoginDto(
+        string email = "testuser@example.com",
+        string password = "Password123!")
+    {
+        return new LoginDto
+        {
+            Email = email,
+            Password = password
+        };
+    }
 
     public static UserForCreateDto BuildInvalidUserForCreateDto(string invalidField = "email")
     {

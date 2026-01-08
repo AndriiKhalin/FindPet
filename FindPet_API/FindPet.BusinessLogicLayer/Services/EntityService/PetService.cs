@@ -228,22 +228,19 @@ public class PetService : IPetService
         {
             var matches = await _petMatchingService.FindMatchesAsync(newPet);
 
-            foreach (var matchedPet in matches)
+            foreach (var matchedPet in matches.Where(m => m.UserId.HasValue))
             {
-                if (matchedPet.UserId.HasValue)
-                {
-                    // Send notification to the owner of the matching pet
-                    await _notificationService.NotifyPetOwnerAsync(
-                        matchedPet.UserId.Value.ToString(),
-                        matchedPet.Nickname ?? "your pet",
-                        newPet.Id);
+                // Send notification to the owner of the matching pet
+                await _notificationService.NotifyPetOwnerAsync(
+                    matchedPet.UserId.Value.ToString(),
+                    matchedPet.Nickname ?? "your pet",
+                    newPet.Id);
 
-                    // Also send a general match notification
-                    await _notificationService.SendMatchNotificationAsync(
-                        matchedPet.Id,
-                        newPet.Id,
-                        $"Potential match found between '{matchedPet.Nickname}' and '{newPet.Nickname}'!");
-                }
+                // Also send a general match notification
+                await _notificationService.SendMatchNotificationAsync(
+                    matchedPet.Id,
+                    newPet.Id,
+                    $"Potential match found between '{matchedPet.Nickname}' and '{newPet.Nickname}'!");
             }
 
             if (matches.Any())

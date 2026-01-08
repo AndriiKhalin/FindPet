@@ -299,7 +299,7 @@ public class UserServiceTests
         await _userService.DeleteUserAsync(userId);
 
         // Assert
-        _mediaStorageServer.VerifyFIleDelete(user.Photo!);
+        _mediaStorageServer.VerifyFileDelete(user.Photo!);
         _userRepositoryMock.Verify(x => x.DeleteAsync(userId), Times.Once);
         _unitOfWorkMock.Verify(x => x.SaveAsync(), Times.Once);
     }
@@ -364,7 +364,7 @@ public class UserServiceTests
 
         _userRepositoryMock.Verify(x => x.IsExistAsync(userId), Times.AtLeast(2));
         _userRepositoryMock.Verify(x => x.GetAsync(userId), Times.AtLeastOnce);
-        _mediaStorageServer.VerifyFIleDelete(existingUser.Photo);
+        _mediaStorageServer.VerifyFileDelete(existingUser.Photo);
         _mapperMock.Verify(x => x.Map(updateDto, existingUser), Times.Once);
         _userRepositoryMock.Verify(x => x.UpdateAsync(existingUser), Times.Once);
         _unitOfWorkMock.Verify(x => x.SaveAsync(), Times.Once);

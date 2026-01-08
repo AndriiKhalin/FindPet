@@ -2,7 +2,7 @@
 
 namespace FindPet.BusinessLogicLayer.Interfaces.IPetMatchingService;
 
-// <summary>
+/// <summary>
 /// Service interface for finding potential pet matches based on ML predictions.
 /// </summary>
 public interface IPetMatchingService

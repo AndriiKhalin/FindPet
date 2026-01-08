@@ -8,45 +8,80 @@ namespace FindPet.BusinessLogicLayer.Services.PetMatchingService;
 /// <summary>
 /// Service for finding potential pet matches based on characteristics.
 /// </summary>
-public class PetMatchingService : IPetMatchingService
+public class PetMatchingService(IUnitOfWork unitOfWork, ILoggerManager logger) : IPetMatchingService
 {
-    private readonly ILoggerManager _logger;
-    private readonly IUnitOfWork _unitOfWork;
-
-    public PetMatchingService(IUnitOfWork unitOfWork, ILoggerManager logger)
-    {
-        _unitOfWork = unitOfWork;
-        _logger = logger;
-    }
-
     public async Task<IEnumerable<Pet>> FindMatchesAsync(Pet newPet)
     {
         try
         {
-            var allPets = await _unitOfWork.Pet.GetsAsync();
+            if (newPet == null)
+            {
+                logger.LogWarn("FindMatchesAsync called with null pet");
+                return [];
+            }
+
+            // Determine opposite statuses for filtering
+            var targetStatuses = GetOppositeStatuses(newPet.Status);
 
             // Find pets that could be a match based on:
             // - Same type (Dog, Cat, etc.) predicted by ML
             // - Same or similar breed
             // - Opposite status (if new pet is "Found", look for "Missing" pets)
-            var potentialMatches = allPets.Where(existingPet =>
+            var potentialMatches = await unitOfWork.Pet.GetByConditionAsync(existingPet =>
                 existingPet.Id != newPet.Id &&
                 existingPet.UserId != newPet.UserId &&
-                IsTypeMatch(existingPet.Type, newPet.Type) &&
-                IsStatusOpposite(existingPet.Status, newPet.Status) &&
-                (IsBreedMatch(existingPet.Breed, newPet.Breed) ||
-                 IsColorMatch(existingPet.Color, newPet.Color))
+                existingPet.UserId != null &&
+                !string.IsNullOrEmpty(existingPet.Type) &&
+                !string.IsNullOrEmpty(newPet.Type) &&
+                existingPet.Type.ToLower() == newPet.Type.ToLower() &&
+                !string.IsNullOrEmpty(existingPet.Status) &&
+                targetStatuses.Contains(existingPet.Status.ToLower())
+            );
+
+            // Apply additional in-memory filtering for complex matching logic
+            var refinedMatches = potentialMatches.Where(existingPet =>
+                IsBreedMatch(existingPet.Breed, newPet.Breed) ||
+                IsColorMatch(existingPet.Color, newPet.Color)
             ).ToList();
 
-            _logger.LogInfo($"Found {potentialMatches.Count} potential matches for pet type: {newPet.Type}");
+            logger.LogInfo($"Found {refinedMatches.Count} potential matches for pet type: {newPet.Type}");
 
-            return potentialMatches;
+            return refinedMatches;
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Error finding pet matches: {ex.Message}");
-            return Enumerable.Empty<Pet>();
+            logger.LogError($"Error finding pet matches: {ex.Message}");
+            return [];
         }
+    }
+
+    /// <summary>
+    /// Gets the opposite status values for matching.
+    /// Missing/Lost pets should match with Found/Sighted pets and vice versa.
+    /// </summary>
+    private static List<string> GetOppositeStatuses(string? status)
+    {
+        if (string.IsNullOrEmpty(status))
+        {
+            // If status unknown, return all possible statuses
+            return new List<string> { "missing", "lost", "found", "sighted" };
+        }
+
+        var missingStatuses = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "missing", "lost" };
+        var foundStatuses = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "found", "sighted" };
+
+        if (missingStatuses.Contains(status))
+        {
+            return new List<string> { "found", "sighted" };
+        }
+
+        if (foundStatuses.Contains(status))
+        {
+            return new List<string> { "missing", "lost" };
+        }
+
+        // Unknown status - return all
+        return new List<string> { "missing", "lost", "found", "sighted" };
     }
 
     private static bool IsTypeMatch(string? existingType, string? newType)

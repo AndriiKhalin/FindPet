@@ -33,7 +33,6 @@ public class NotificationService<THub> : INotificationService where THub : Hub
         catch (Exception ex)
         {
             _logger.LogError($"Failed to send broadcast notification: {ex.Message}");
-            throw;
         }
     }
 
@@ -55,7 +54,6 @@ public class NotificationService<THub> : INotificationService where THub : Hub
         catch (Exception ex)
         {
             _logger.LogError($"Failed to send match notification: {ex.Message}");
-            throw;
         }
     }
 
@@ -74,7 +72,6 @@ public class NotificationService<THub> : INotificationService where THub : Hub
         catch (Exception ex)
         {
             _logger.LogError($"Failed to send notification to user {userId}: {ex.Message}");
-            throw;
         }
     }
 
@@ -94,7 +91,6 @@ public class NotificationService<THub> : INotificationService where THub : Hub
         catch (Exception ex)
         {
             _logger.LogError($"Failed to send notification to group {groupName}: {ex.Message}");
-            throw;
         }
     }
 
@@ -128,7 +124,6 @@ public class NotificationService<THub> : INotificationService where THub : Hub
         catch (Exception ex)
         {
             _logger.LogError($"Failed to notify pet owner {ownerId}: {ex.Message}");
-            throw;
         }
     }
 }

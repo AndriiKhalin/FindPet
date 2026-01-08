@@ -228,11 +228,15 @@ public class PetService : IPetService
         {
             var matches = await _petMatchingService.FindMatchesAsync(newPet);
 
-            foreach (var matchedPet in matches.Where(m => m.UserId.HasValue))
+            var matchesWithOwners = matches.Where(m => m.UserId.HasValue).ToList();
+
+            foreach (var matchedPet in matchesWithOwners)
             {
+                var ownerId = matchedPet.UserId!.Value;
+
                 // Send notification to the owner of the matching pet
                 await _notificationService.NotifyPetOwnerAsync(
-                    matchedPet.UserId.Value.ToString(),
+                    ownerId.ToString(),
                     matchedPet.Nickname ?? "your pet",
                     newPet.Id);
 
@@ -243,9 +247,9 @@ public class PetService : IPetService
                     $"Potential match found between '{matchedPet.Nickname}' and '{newPet.Nickname}'!");
             }
 
-            if (matches.Any())
+            if (matchesWithOwners.Any())
             {
-                _logger.LogInfo($"Sent {matches.Count()} match notifications for new pet {newPet.Id}");
+                _logger.LogInfo($"Sent {matchesWithOwners.Count()} match notifications for new pet {newPet.Id}");
             }
         }
         catch (Exception ex)

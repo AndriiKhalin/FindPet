@@ -8,6 +8,7 @@ namespace FindPet.WebApi.Hubs;
 /// SignalR hub for real-time notifications in the FindPet application.
 /// Handles pet match notifications, status updates, and user-specific alerts.
 /// </summary>
+[Authorize]
 public class NotificationHub : Hub
 {
     private readonly ILoggerManager _logger;
@@ -19,7 +20,7 @@ public class NotificationHub : Hub
     /// Sends a notification to all connected clients.
     /// </summary>
     /// <param name="message">The notification message.</param>
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin")]
     public async Task SendNotification(string message)
     {
         _logger.LogInfo($"SendNotification called with message: {message}");
@@ -32,7 +33,7 @@ public class NotificationHub : Hub
     /// </summary>
     /// <param name="matchedPetId">The ID of the matched pet.</param>
     /// <param name="message">The notification message.</param>
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin")]
     public async Task SendMatchNotification(string matchedPetId, string message)
     {
         _logger.LogInfo($"SendMatchNotification called - PetId: {matchedPetId}, Message: {message}");
@@ -49,7 +50,7 @@ public class NotificationHub : Hub
     /// </summary>
     /// <param name="userId">The target user's ID.</param>
     /// <param name="message">The notification message.</param>
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin")]
     public async Task SendNotificationToUser(string userId, string message)
     {
         await Clients.User(userId).SendAsync("ReceiveNotification", new
@@ -63,7 +64,6 @@ public class NotificationHub : Hub
     /// Joins a user to a specific notification group (e.g., by pet type or location).
     /// </summary>
     /// <param name="groupName">The name of the group to join.</param>
-    [AllowAnonymous]
     public async Task JoinGroup(string groupName)
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
@@ -74,7 +74,6 @@ public class NotificationHub : Hub
     /// Leaves a notification group.
     /// </summary>
     /// <param name="groupName">The name of the group to leave.</param>
-    [AllowAnonymous]
     public async Task LeaveGroup(string groupName)
     {
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);

@@ -8,7 +8,7 @@ namespace FindPet.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin")]
     public class TestNotificationController : ControllerBase
     {
         private readonly IHubContext<NotificationHub> _hubContext;
@@ -24,7 +24,8 @@ namespace FindPet.WebApi.Controllers
         /// <param name="message">The notification message</param>
         /// <returns>Success status</returns>
         [HttpPost("broadcast")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> BroadcastNotification([FromBody] NotificationRequest request)
         {
             await _hubContext.Clients.All.SendAsync("ReceiveNotification", new
@@ -47,7 +48,8 @@ namespace FindPet.WebApi.Controllers
         /// Send a pet match notification to all connected clients.
         /// </summary>
         [HttpPost("pet-match")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> SendPetMatchNotification([FromBody] MatchNotificationRequest request)
         {
             await _hubContext.Clients.All.SendAsync("ReceiveMatchNotification", new
@@ -71,7 +73,8 @@ namespace FindPet.WebApi.Controllers
         /// Get SignalR hub status.
         /// </summary>
         [HttpGet("status")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public IActionResult GetStatus()
         {
             return Ok(new

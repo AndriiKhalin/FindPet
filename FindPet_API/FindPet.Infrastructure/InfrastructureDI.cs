@@ -18,7 +18,7 @@ public static class InfrastructureDI
         services.AddLayersServices(configuration);
 
         // Infrastructure-specific services
-        services.ConfigureCors();
+        services.ConfigureCors(configuration);
         services.Configure_FileProvider();
         services.ConfigureForm();
         services.ConfigureIISIntegration();

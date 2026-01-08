@@ -3,6 +3,8 @@ using FindPet.BusinessLogicLayer.Interfaces.ICacheService;
 using FindPet.BusinessLogicLayer.Interfaces.IEntityService;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
 using FindPet.BusinessLogicLayer.Interfaces.IMLService;
+using FindPet.BusinessLogicLayer.Interfaces.INotificationService;
+using FindPet.BusinessLogicLayer.Interfaces.IPetMatchingService;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using FindPet.Domain.Constants;
 using FindPet.Domain.DTOs.EntitiesDTOs.PetDTO;
@@ -23,6 +25,8 @@ public class PetService : IPetService
     private readonly IMapper _mapper;
     private readonly IMediaStorageService _mediaStorageService;
     private readonly IMLService _mlService;
+    private readonly INotificationService _notificationService;
+    private readonly IPetMatchingService _petMatchingService;
     private readonly IUnitOfWork _unitOfWorkRep;
 
     public PetService(IUnitOfWork unitOfWorkRep,
@@ -32,7 +36,9 @@ public class PetService : IPetService
         ILoggerManager logger,
         IWebHostEnvironment hostingEnvironment,
         IMediaStorageService mediaStorageService,
-        IRedisCacheService cache)
+        IRedisCacheService cache,
+        INotificationService notificationService,
+        IPetMatchingService petMatchingService)
     {
         _unitOfWorkRep = unitOfWorkRep;
         _mapper = mapper;
@@ -42,6 +48,8 @@ public class PetService : IPetService
         _hostingEnvironment = hostingEnvironment;
         _mediaStorageService = mediaStorageService;
         _cache = cache;
+        _notificationService = notificationService;
+        _petMatchingService = petMatchingService;
     }
 
     public async Task<IEnumerable<Pet>> GetPetsAsync()
@@ -170,6 +178,8 @@ public class PetService : IPetService
         await _unitOfWorkRep.SaveAsync();
 
         await InvalidatePetCaches(petId, petEntity.UserId);
+
+        await CheckAndNotifyMatchesAsync(petEntity!);
     }
 
     public async Task<Pet> CreatePetAsync(Guid userId, PetForCreateDto createPetDto)
@@ -199,7 +209,54 @@ public class PetService : IPetService
 
         await InvalidatePetCaches(null, userId);
 
+        // Send broadcast notification about new pet
+        await _notificationService.SendToAllAsync(
+            $"A new {pet.Type ?? "pet"} named '{pet.Nickname}' has been posted!");
+
+        // Check for matches and notify owners
+        await CheckAndNotifyMatchesAsync(pet);
+
         return pet;
+    }
+
+    /// <summary>
+    /// Checks for potential pet matches and sends notifications to owners.
+    /// </summary>
+    private async Task CheckAndNotifyMatchesAsync(Pet newPet)
+    {
+        try
+        {
+            var matches = await _petMatchingService.FindMatchesAsync(newPet);
+
+            var matchesWithOwners = matches.Where(m => m.UserId.HasValue).ToList();
+
+            foreach (var matchedPet in matchesWithOwners)
+            {
+                var ownerId = matchedPet.UserId!.Value;
+
+                // Send notification to the owner of the matching pet
+                await _notificationService.NotifyPetOwnerAsync(
+                    ownerId.ToString(),
+                    matchedPet.Nickname ?? "your pet",
+                    newPet.Id);
+
+                // Also send a general match notification
+                await _notificationService.SendMatchNotificationAsync(
+                    matchedPet.Id,
+                    newPet.Id,
+                    $"Potential match found between '{matchedPet.Nickname}' and '{newPet.Nickname}'!");
+            }
+
+            if (matchesWithOwners.Any())
+            {
+                _logger.LogInfo($"Sent {matchesWithOwners.Count()} match notifications for new pet {newPet.Id}");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error checking matches for pet {newPet.Id}: {ex.Message}");
+            // Don't throw - notification failure shouldn't fail pet creation
+        }
     }
 
     /// <summary>

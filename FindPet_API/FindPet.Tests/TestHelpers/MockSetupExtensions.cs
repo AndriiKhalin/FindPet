@@ -79,7 +79,7 @@ public static class MockSetupExtensions
         imageServiceMock.Verify(x => x.UploadPhotoAsync(photo, userId), Times.Once);
     }
 
-    public static void VerifyFIleDelete(this Mock<IMediaStorageService> mediaStorageService, string photo)
+    public static void VerifyFileDelete(this Mock<IMediaStorageService> mediaStorageService, string photo)
     {
         mediaStorageService.Verify(x => x.DeleteFileAsync(photo), Times.Once);
     }

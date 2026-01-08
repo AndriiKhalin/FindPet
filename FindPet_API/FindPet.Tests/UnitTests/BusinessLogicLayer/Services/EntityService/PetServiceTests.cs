@@ -1,8 +1,9 @@
-﻿using System.Diagnostics;
-using AutoMapper;
+﻿using AutoMapper;
 using FindPet.BusinessLogicLayer.Interfaces.ICacheService;
 using FindPet.BusinessLogicLayer.Interfaces.IImageService;
 using FindPet.BusinessLogicLayer.Interfaces.IMLService;
+using FindPet.BusinessLogicLayer.Interfaces.INotificationService;
+using FindPet.BusinessLogicLayer.Interfaces.IPetMatchingService;
 using FindPet.BusinessLogicLayer.Services.EntityService;
 using FindPet.DataAccessLayer.Interfaces.IEntityRepository;
 using FindPet.Domain.Entities;
@@ -12,6 +13,7 @@ using FindPet.Media.Interfaces;
 using FindPet.Tests.TestHelpers;
 using Microsoft.AspNetCore.Hosting;
 using Moq;
+using System.Diagnostics;
 using Xunit;
 
 namespace FindPet.Tests.UnitTests.BusinessLogicLayer.Services.EntityService;
@@ -30,6 +32,8 @@ public class PetServiceTests
         _mockHostingEnvironment = MockSetupExtensions.CreateMock<IWebHostEnvironment>();
         _mockMediaStorageService = MockSetupExtensions.CreateMock<IMediaStorageService>();
         _mockCacheRedisService = MockSetupExtensions.CreateMock<IRedisCacheService>();
+        _mockNotificationService = MockSetupExtensions.CreateMock<INotificationService>();
+        _mockPetMatchingService = MockSetupExtensions.CreateMock<IPetMatchingService>();
 
         _mockPetRepository = MockSetupExtensions.SetupPetRepositoryMock();
         _mockUserRepository = MockSetupExtensions.SetupUserRepositoryMock();
@@ -52,6 +56,22 @@ public class PetServiceTests
                 It.IsAny<TimeSpan>()))
             .Returns<string, Func<Task<IEnumerable<Pet>>>, TimeSpan>(async (key, func, duration) => await func());
 
+        _mockNotificationService
+            .Setup(x => x.SendToAllAsync(It.IsAny<string>()))
+            .Returns(Task.CompletedTask);
+
+        _mockNotificationService
+            .Setup(x => x.NotifyPetOwnerAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>()))
+            .Returns(Task.CompletedTask);
+
+        _mockNotificationService
+            .Setup(x => x.SendMatchNotificationAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>()))
+            .Returns(Task.CompletedTask);
+
+        _mockPetMatchingService
+            .Setup(x => x.FindMatchesAsync(It.IsAny<Pet>()))
+            .ReturnsAsync(new List<Pet>());
+
         _petService = new PetService(
             _mockUnitOfWork.Object,
             _mockMapper.Object,
@@ -60,9 +80,28 @@ public class PetServiceTests
             _mockLogger.Object,
             _mockHostingEnvironment.Object,
             _mockMediaStorageService.Object,
-            _mockCacheRedisService.Object
-        );
+            _mockCacheRedisService.Object,
+            _mockNotificationService.Object,
+            _mockPetMatchingService.Object);
     }
+
+    #endregion
+
+    #region Private Fields
+
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<IMapper> _mockMapper;
+    private readonly Mock<IManageImage<Pet>> _mockManageImage;
+    private readonly Mock<IMLService> _mockMLService;
+    private readonly Mock<ILoggerManager> _mockLogger;
+    private readonly Mock<IWebHostEnvironment> _mockHostingEnvironment;
+    private readonly Mock<IPetRepository> _mockPetRepository;
+    private readonly Mock<IUserRepository<User>> _mockUserRepository;
+    private readonly Mock<IMediaStorageService> _mockMediaStorageService;
+    private readonly Mock<IRedisCacheService> _mockCacheRedisService;
+    private readonly Mock<INotificationService> _mockNotificationService;
+    private readonly Mock<IPetMatchingService> _mockPetMatchingService;
+    private readonly PetService _petService;
 
     #endregion
 
@@ -123,22 +162,6 @@ public class PetServiceTests
         Assert.Equal(1000, result.Count());
         Assert.True(stopwatch.ElapsedMilliseconds < 100, "Method should complete in under 100ms");
     }
-
-    #endregion
-
-    #region Private Fields
-
-    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
-    private readonly Mock<IMapper> _mockMapper;
-    private readonly Mock<IManageImage<Pet>> _mockManageImage;
-    private readonly Mock<IMLService> _mockMLService;
-    private readonly Mock<ILoggerManager> _mockLogger;
-    private readonly Mock<IWebHostEnvironment> _mockHostingEnvironment;
-    private readonly Mock<IPetRepository> _mockPetRepository;
-    private readonly Mock<IUserRepository<User>> _mockUserRepository;
-    private readonly Mock<IMediaStorageService> _mockMediaStorageService;
-    private readonly PetService _petService;
-    private readonly Mock<IRedisCacheService> _mockCacheRedisService;
 
     #endregion
 
